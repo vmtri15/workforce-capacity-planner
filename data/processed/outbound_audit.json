@@ -1,0 +1,81 @@
+{
+  "source_sha256": "bcbe73b35f5b7babf197fb0cb983a11f5d9ff929078d4aa53d171b1f2df2e980",
+  "rule": "Non-C invoice, positive quantity, five-digit stock code with optional letters, nonempty description; candidate physical demand only",
+  "classification_counts": {
+    "candidate_outbound": 1015916,
+    "nonstandard_code_review": 4769,
+    "cancellation": 19165,
+    "nonpositive_quantity": 3393,
+    "missing_description_review": 1605
+  },
+  "skipped": {
+    "second_sheet_overlap": 22523
+  },
+  "invoices_spanning_dates": 0,
+  "full_history": {
+    "totals": {
+      "legacy_invoice_count": 53628,
+      "positive_quantity_invoice_count": 41944,
+      "candidate_outbound_orders": 39748,
+      "candidate_lines": 1015916,
+      "candidate_units": 11290869,
+      "legacy_positive_lines": 1022291,
+      "legacy_positive_units": 11490122
+    },
+    "units_per_order": {
+      "count": 39748,
+      "mean": 284.06131126094397,
+      "p50": 148,
+      "p90": 525,
+      "p95": 799,
+      "p99": 2232,
+      "p100": 87167
+    },
+    "lines_per_order": {
+      "count": 39748,
+      "mean": 25.55892120358257,
+      "p50": 15,
+      "p90": 52,
+      "p95": 76,
+      "p99": 198,
+      "p100": 1112
+    },
+    "orders_over_100_units": 25264,
+    "units_in_orders_over_100": 10608409
+  },
+  "planning_window": {
+    "totals": {
+      "legacy_invoice_count": 5903,
+      "positive_quantity_invoice_count": 4888,
+      "candidate_outbound_orders": 4759,
+      "candidate_lines": 140506,
+      "candidate_units": 1338847,
+      "legacy_positive_lines": 141080,
+      "legacy_positive_units": 1347632
+    },
+    "units_per_order": {
+      "count": 4759,
+      "mean": 281.3294809833999,
+      "p50": 162,
+      "p90": 556,
+      "p95": 835,
+      "p99": 2111,
+      "p100": 14149
+    },
+    "lines_per_order": {
+      "count": 4759,
+      "mean": 29.524269804580793,
+      "p50": 15,
+      "p90": 60,
+      "p95": 87,
+      "p99": 287,
+      "p100": 1112
+    },
+    "orders_over_100_units": 3207,
+    "units_in_orders_over_100": 1264029
+  },
+  "checks": {
+    "legacy_daily_reconciliation": "PASS",
+    "classification_reconciliation": "PASS"
+  }
+}

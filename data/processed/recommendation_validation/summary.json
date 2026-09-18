@@ -1,0 +1,237 @@
+{
+  "price_grid": [
+    {
+      "wage": 18,
+      "overtime_multiplier": 1.25,
+      "temporary_rate": 24,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 18,
+      "overtime_multiplier": 1.25,
+      "temporary_rate": 30,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 18,
+      "overtime_multiplier": 1.25,
+      "temporary_rate": 40,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 18,
+      "overtime_multiplier": 1.5,
+      "temporary_rate": 24,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 18,
+      "overtime_multiplier": 1.5,
+      "temporary_rate": 30,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 18,
+      "overtime_multiplier": 1.5,
+      "temporary_rate": 40,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 18,
+      "overtime_multiplier": 2,
+      "temporary_rate": 24,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 18,
+      "overtime_multiplier": 2,
+      "temporary_rate": 30,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 18,
+      "overtime_multiplier": 2,
+      "temporary_rate": 40,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 22,
+      "overtime_multiplier": 1.25,
+      "temporary_rate": 24,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 22,
+      "overtime_multiplier": 1.25,
+      "temporary_rate": 30,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 22,
+      "overtime_multiplier": 1.25,
+      "temporary_rate": 40,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 22,
+      "overtime_multiplier": 1.5,
+      "temporary_rate": 24,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 22,
+      "overtime_multiplier": 1.5,
+      "temporary_rate": 30,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 22,
+      "overtime_multiplier": 1.5,
+      "temporary_rate": 40,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 22,
+      "overtime_multiplier": 2,
+      "temporary_rate": 24,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 22,
+      "overtime_multiplier": 2,
+      "temporary_rate": 30,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 22,
+      "overtime_multiplier": 2,
+      "temporary_rate": 40,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 28,
+      "overtime_multiplier": 1.25,
+      "temporary_rate": 24,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 28,
+      "overtime_multiplier": 1.25,
+      "temporary_rate": 30,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 28,
+      "overtime_multiplier": 1.25,
+      "temporary_rate": 40,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 28,
+      "overtime_multiplier": 1.5,
+      "temporary_rate": 24,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 28,
+      "overtime_multiplier": 1.5,
+      "temporary_rate": 30,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 28,
+      "overtime_multiplier": 1.5,
+      "temporary_rate": 40,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 28,
+      "overtime_multiplier": 2,
+      "temporary_rate": 24,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 28,
+      "overtime_multiplier": 2,
+      "temporary_rate": 30,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    },
+    {
+      "wage": 28,
+      "overtime_multiplier": 2,
+      "temporary_rate": 40,
+      "base_choice": "extra0_ot0_temps0",
+      "robust_choice": "extra3_ot2_temps0"
+    }
+  ],
+  "price_winners": {
+    "base": {
+      "extra0_ot0_temps0": 27
+    },
+    "robust": {
+      "extra3_ot2_temps0": 27
+    }
+  },
+  "selection": {
+    "base": "extra0_ot0_temps0",
+    "robust": "extra3_ot2_temps0"
+  },
+  "evaluation": {
+    "base": {
+      "policy": "extra0_ot0_temps0",
+      "cases": 1,
+      "passed": 0,
+      "worst_service": 0.9273538194050723
+    },
+    "robust": {
+      "policy": "extra3_ot2_temps0",
+      "cases": 36,
+      "passed": 32,
+      "worst_service": 0.9189880434919555
+    }
+  },
+  "exploratory_replacement": {
+    "base": "extra0_ot2_temps0",
+    "robust": "extra4_ot2_temps0"
+  },
+  "split": "Select on creation dates before 2023-07-01; evaluate frozen selected policies on dates from 2023-07-01 onward.",
+  "caveats": [
+    "Exploratory chronological check: full dataset was previously inspected, not untouched validation.",
+    "Independent periods each reset backlog/bookings to zero and append 28 zero-arrival recovery days.",
+    "Earlier-period recovery is artificial and does not consume later-period arrivals.",
+    "Cost repricing holds reactive policy behavior fixed because triggers do not depend on prices.",
+    "Frozen-policy validation was not retuned after later months; exploratory replacements use the later period and are not fresh holdout results.",
+    "The 27 illustrative prices are not market quotes."
+  ],
+  "source_hashes": {
+    "config/footwear_scenarios.json": "3474ae1b5db7d7dc2f76590e1d98eee89d564b36fb1e8e9df72bcd752abbaabf",
+    "config/staffing_cost_scenarios.json": "f74576ee2f60dda6de5a7646a06804941e0128a5cc808e6bf0833d53dd22cbb8",
+    "data/raw/warehouse_picking/Customer_Order.csv": "e28ae8ac9b368b9496b153fafb5af685bd94ba1530ffcb308dfcd5403601f325"
+  }
+}

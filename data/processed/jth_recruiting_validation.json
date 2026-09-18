@@ -1,0 +1,182 @@
+{
+  "job_count": 6011,
+  "history_count": 42288,
+  "blank_manual_job_categories": 4722,
+  "top_manual_categories": [
+    [
+      "backend developer",
+      216
+    ],
+    [
+      "_rare_job_category_",
+      183
+    ],
+    [
+      "full stack developer",
+      130
+    ],
+    [
+      "frontend developer",
+      70
+    ],
+    [
+      "devops engineer",
+      68
+    ],
+    [
+      "system administrator;system engineer",
+      49
+    ],
+    [
+      "moa project manager",
+      46
+    ],
+    [
+      "product owner",
+      44
+    ],
+    [
+      "technical lead",
+      41
+    ],
+    [
+      "mobile developer",
+      39
+    ],
+    [
+      "embedded system engineer",
+      36
+    ],
+    [
+      "hardware engineer",
+      30
+    ],
+    [
+      "business analyst",
+      23
+    ],
+    [
+      "production engineer",
+      20
+    ],
+    [
+      "software engineer",
+      17
+    ]
+  ],
+  "keyword_screen_terms": [
+    "warehouse",
+    "logistic",
+    "supply chain",
+    "entrepot",
+    "entrep\u00f4t",
+    "magasinier",
+    "packer",
+    "packing",
+    "order picker"
+  ],
+  "role_coverage": {
+    "manual_category": {
+      "keyword_matched_jobs": 0,
+      "linked_histories": 0,
+      "category_examples": []
+    },
+    "llm_category": {
+      "keyword_matched_jobs": 0,
+      "linked_histories": 0,
+      "category_examples": []
+    },
+    "llm_industry": {
+      "keyword_matched_jobs": 34,
+      "linked_histories": 260,
+      "category_examples": [
+        {
+          "llm_industry_domains": "Logistics"
+        },
+        {
+          "llm_industry_domains": "Logistics;E-Commerce;Technology"
+        },
+        {
+          "llm_industry_domains": "Logistics;Technology"
+        },
+        {
+          "llm_industry_domains": "Logistics;E-Commerce;Technology"
+        },
+        {
+          "llm_industry_domains": "Logistics;E-Commerce;Technology"
+        },
+        {
+          "llm_industry_domains": "Logistics"
+        },
+        {
+          "llm_industry_domains": "Retail;Logistics"
+        },
+        {
+          "llm_industry_domains": "Retail;Logistics"
+        },
+        {
+          "llm_industry_domains": "Manufacturing;Supply Chain"
+        },
+        {
+          "llm_industry_domains": "Technology;Software;Retail;Logistics"
+        }
+      ]
+    }
+  },
+  "invalid_dates": 0,
+  "rows_with_reversed_observed_stages": 0,
+  "end_before_last_observed_stage": 0,
+  "stage_date_counts": {
+    "spontaneous_application_date": 3417,
+    "shortlist_date": 37734,
+    "qualification_date": 24235,
+    "resume_sent_to_company_date": 7118,
+    "1st_interview_date": 2813,
+    "2nd_interview_date": 825,
+    "3rd_interview_date": 229,
+    "4th_interview_date": 68,
+    "job_offer_proposed_date": 899,
+    "job_offer_accepted_date": 857
+  },
+  "intervals": {
+    "spontaneous_application_date -> job_offer_accepted_date": {
+      "paired_records": 51,
+      "negative": 0,
+      "same_day": 12,
+      "median_days": 6,
+      "mean_days": 9.725,
+      "max_days": 85
+    },
+    "shortlist_date -> job_offer_accepted_date": {
+      "paired_records": 696,
+      "negative": 0,
+      "same_day": 18,
+      "median_days": 23.0,
+      "mean_days": 33.619,
+      "max_days": 1136
+    },
+    "job_offer_proposed_date -> job_offer_accepted_date": {
+      "paired_records": 856,
+      "negative": 0,
+      "same_day": 492,
+      "median_days": 0.0,
+      "mean_days": 3.215,
+      "max_days": 36
+    }
+  },
+  "missing_end_date": 31240,
+  "input_hashes": {
+    "jobs.csv": "5bcd9e4379e558b98418e2242d321757612a96887b934e0d3ece6eb4a9952628",
+    "history.csv": "0348bb0017156a91fe40fdd4346846982587940a0796dae3941da55312ade2a3",
+    "dataset_card.md": "f49d9e28e68d68d151305e20723ccffbfbf141d299707be8c58c53db5981b07f"
+  },
+  "decision": "Use for generic recruiting-funnel workflow only; do not calibrate warehouse hiring lead times.",
+  "limitations": [
+    "Keyword screening does not establish absence of warehouse jobs; manual categories are often missing.",
+    "LLM-derived industries and categories are not verified role classifications.",
+    "Five-day-scale privacy noise distorts elapsed durations; same-day values are not exact measured durations.",
+    "Unobserved stages do not imply rejection, zero duration or a completed process.",
+    "Offer acceptance is not a start date or productive readiness date.",
+    "Endpoint-paired durations are selected subsets, not population time-to-hire estimates."
+  ]
+}

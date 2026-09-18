@@ -1,0 +1,123 @@
+{
+  "question": "Can each location complete the expected workload with the available workforce, and what is the least risky and most affordable action if it cannot?",
+  "answer": "Under the modeled staffing plan, every site covers at least 95% of workload on most direct-role days, but no site eliminates shortfall hours across the recorded 2023 workload. Use six workers with capped overtime as the affordable base-case response; use ten workers with capped overtime when protection across every listed productivity and absence stress is required.",
+  "site_results": [
+    {
+      "site_id": "joliet",
+      "site_name": "Joliet/Elwood",
+      "modeled_positions": 10,
+      "base_gap_hours": 89.925,
+      "low_gap_hours": 262.0667,
+      "high_gap_hours": 34.36,
+      "base_target_met_role_day_share": 0.977528,
+      "answer": "Mostly, but not completely",
+      "reason": "The modeled site clears the 95% daily coverage threshold on most direct-role days, but still records positive shortfall hours."
+    },
+    {
+      "site_id": "kenosha",
+      "site_name": "Kenosha/Pleasant Prairie",
+      "modeled_positions": 7,
+      "base_gap_hours": 19.4,
+      "low_gap_hours": 64.2,
+      "high_gap_hours": 6.78,
+      "base_target_met_role_day_share": 0.988764,
+      "answer": "Mostly, but not completely",
+      "reason": "The modeled site clears the 95% daily coverage threshold on most direct-role days, but still records positive shortfall hours."
+    },
+    {
+      "site_id": "ohare",
+      "site_name": "O'Hare area",
+      "modeled_positions": 10,
+      "base_gap_hours": 81.55,
+      "low_gap_hours": 241.6667,
+      "high_gap_hours": 31.2,
+      "base_target_met_role_day_share": 0.977528,
+      "answer": "Mostly, but not completely",
+      "reason": "The modeled site clears the 95% daily coverage threshold on most direct-role days, but still records positive shortfall hours."
+    }
+  ],
+  "actions": {
+    "affordable_base_case": {
+      "policy": "extra0_ot2_temps0",
+      "scheduled_workers": 6,
+      "overtime_limit_hours": 2,
+      "temporary_worker_limit": 0,
+      "base_on_time_share": 0.960767,
+      "base_modeled_cost": 106326.0,
+      "base_peak_backlog": 3715,
+      "stress_cases_passed": 12,
+      "stress_cases_tested": 36,
+      "worst_on_time_share": 0.330662,
+      "worst_modeled_cost": 120483.0,
+      "evidence_status": "Exploratory later-period search; not an untouched holdout result"
+    },
+    "lowest_risk_tested": {
+      "policy": "extra4_ot2_temps0",
+      "scheduled_workers": 10,
+      "overtime_limit_hours": 2,
+      "temporary_worker_limit": 0,
+      "base_on_time_share": 1.0,
+      "base_modeled_cost": 174240.0,
+      "base_peak_backlog": 2627,
+      "stress_cases_passed": 36,
+      "stress_cases_tested": 36,
+      "worst_on_time_share": 0.960767,
+      "worst_modeled_cost": 176616.0,
+      "evidence_status": "Exploratory later-period search; not an untouched holdout result"
+    },
+    "decision_rule": "Choose the affordable action only when productivity is near 40 units per productive hour and attendance is stable. Escalate to the stress-resistant action when low productivity or two-worker absence is plausible."
+  },
+  "frozen_policy_validation": {
+    "base": {
+      "policy": "extra0_ot0_temps0",
+      "cases": 1,
+      "passed": 0,
+      "worst_service": 0.9273538194050723
+    },
+    "robust": {
+      "policy": "extra3_ot2_temps0",
+      "cases": 36,
+      "passed": 32,
+      "worst_service": 0.9189880434919555
+    }
+  },
+  "labor_market_context": {
+    "latest_api_quarter": "2025-Q4",
+    "latest_complete_quarter": "2025-Q3",
+    "latest_quarter_limit": "The latest API quarter has publication-lag blanks; labor-flow comparisons use the latest complete quarter.",
+    "sites": {
+      "joliet": {
+        "beginning_employment": 27352,
+        "end_employment": 27463,
+        "hires": 4956,
+        "separations": 4845
+      },
+      "ohare": {
+        "beginning_employment": 28335,
+        "end_employment": 28592,
+        "hires": 5266,
+        "separations": 5009
+      },
+      "kenosha": {
+        "beginning_employment": 9398,
+        "end_employment": 9755,
+        "hires": 2050,
+        "separations": 1694
+      }
+    },
+    "interpretation": "County-level NAICS 493 context only; not facility staffing, applicant supply, or time-to-hire."
+  },
+  "external_benchmark": {
+    "source": "Soto-Pinedo 2025 preparation records",
+    "valid_intervals": 2138,
+    "median_cycle_hours": 7.661,
+    "p95_cycle_hours": 29.546,
+    "use": "Tail-risk context only; excluded from U.S. staffing calculations pending license and provenance confirmation."
+  },
+  "evidence_boundary": [
+    "Observed: retained 2023 order dates, units, and order mix.",
+    "Modeled: site allocation, staffing, productivity, attendance, completion timing, service, and cost.",
+    "External context: QWI labor flows and Soto-Pinedo process timing do not describe the modeled facilities.",
+    "Therefore the result is a conditional planning answer, not proof of actual staffing sufficiency or guaranteed savings."
+  ]
+}

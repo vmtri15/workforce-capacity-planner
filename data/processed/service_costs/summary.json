@@ -1,0 +1,139 @@
+{
+  "cases": 1080,
+  "policies": 30,
+  "lowest_base_cost_passing": {
+    "policy": "extra0_ot0_temps0",
+    "basis": "retained",
+    "extra_workers": 0,
+    "ot_limit": 0,
+    "temp_limit": 0,
+    "lead_days": 1,
+    "workers": 6,
+    "absent": 0,
+    "present_workers": 6,
+    "rate": 40.0,
+    "service_days": 2,
+    "arrivals": 228195,
+    "completed_on_time": 218629,
+    "completed_late": 9566,
+    "overdue_unfinished": 0,
+    "pending_not_due": 0,
+    "on_time_unit_share": 0.9580797125265672,
+    "target_met": true,
+    "peak_backlog": 4279,
+    "backlog_unit_days": 93937,
+    "regular_cost": 238656.0,
+    "overtime_cost": 0.0,
+    "temporary_cost": 0.0,
+    "committed_future_temp_shifts": 0,
+    "committed_future_temp_cost": 0,
+    "total_cost": 238656.0,
+    "overtime_paid_hours": 0,
+    "temporary_shifts": 0
+  },
+  "lowest_worst_case_cost_robust": {
+    "policy": "extra3_ot2_temps0",
+    "all_stresses_pass": true,
+    "passed_cases": 36,
+    "tested_cases": 36,
+    "worst_on_time_share": 0.9536449089594425,
+    "base_cost": 359040.0,
+    "base_on_time_share": 0.9982339665636846,
+    "worst_cost": 365772.0
+  },
+  "ranking": "Among tested policies only. Robust means passes every listed stress, not a probability. Robust ranking minimizes maximum cost over tested stresses.",
+  "config": {
+    "evidence_status": "hypothetical_capacity_scenarios_not_observed_staffing",
+    "scheduled_workers": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "units_per_productive_hour": [
+      30,
+      40,
+      50
+    ],
+    "absent_workers_each_operating_day": [
+      0,
+      1,
+      2
+    ],
+    "service_operating_days": [
+      1,
+      2
+    ],
+    "target_on_time_unit_share": 0.95,
+    "paid_hours": 8,
+    "productive_factor": 0.85,
+    "operating_weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "recovery_calendar_days": 28,
+    "initial_backlog_units": 0,
+    "overtime_hours": 0,
+    "temporary_workers": 0
+  },
+  "costs": {
+    "currency": "hypothetical_USD",
+    "regular_hourly_cost": 22,
+    "overtime_multiplier": 1.5,
+    "temporary_hourly_cost": 30,
+    "temporary_productivity_factor": 0.8,
+    "temporary_lead_operating_days": [
+      1,
+      3
+    ],
+    "base_workers": 6,
+    "extra_permanent_workers": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "max_overtime_hours_per_present_worker": [
+      0,
+      2
+    ],
+    "max_temporary_workers_per_day": [
+      0,
+      2,
+      4
+    ],
+    "stress_productivity_rates": [
+      30,
+      40,
+      50
+    ],
+    "stress_absent_workers": [
+      0,
+      1,
+      2
+    ],
+    "service_operating_days": 2,
+    "assumptions": [
+      "Illustrative rates, not wage benchmarks, quoted agency prices or actual company costs.",
+      "Permanent capacity is available from the first day; no recruiting lead time or hiring cost.",
+      "Scheduled regular hours are paid even when absent or idle, including the fixed recovery window.",
+      "Overtime is paid only to present workers; no weekly, fatigue, legal or skill constraints modeled.",
+      "Temporary workers are assumed available after the stated operating-day delay; bookings cannot be cancelled.",
+      "No benefits, onboarding, severance, late-order penalties, packing or shipping costs."
+    ]
+  },
+  "source_hashes": {
+    "config/footwear_scenarios.json": "3474ae1b5db7d7dc2f76590e1d98eee89d564b36fb1e8e9df72bcd752abbaabf",
+    "config/staffing_cost_scenarios.json": "f74576ee2f60dda6de5a7646a06804941e0128a5cc808e6bf0833d53dd22cbb8",
+    "data/raw/warehouse_picking/Customer_Order.csv": "e28ae8ac9b368b9496b153fafb5af685bd94ba1530ffcb308dfcd5403601f325"
+  }
+}

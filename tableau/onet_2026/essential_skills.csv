@@ -1,0 +1,41 @@
+role_id,database_version,release_month,O*NET-SOC Code,Title,Element ID,Element Name,Scale ID,Scale Name,Data Value,N,Standard Error,Lower CI Bound,Upper CI Bound,Recommend Suppress,Not Relevant,Date,Domain Source
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.1.a,Reading Comprehension,IM,Importance,3.12,8,0.125,2.88,3.37,N,,08/2019,Analyst
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.1.b,Active Listening,IM,Importance,3.12,8,0.125,2.88,3.37,N,,08/2019,Analyst
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.1.c,Writing,IM,Importance,2.62,8,0.183,2.2664,2.9836,N,,08/2019,Analyst
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.1.d,Speaking,IM,Importance,3.25,8,0.1637,2.9292,3.5708,N,,08/2019,Analyst
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.1.e,Mathematics,IM,Importance,2.25,8,0.1637,1.9292,2.5708,N,,08/2019,Analyst
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.1.f,Science,IM,Importance,1,8,0,1,1,N,,08/2019,Analyst
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.2.a,Critical Thinking,IM,Importance,3,8,0,3,3,N,,08/2019,Analyst
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.2.b,Active Learning,IM,Importance,2.38,8,0.183,2.0164,2.7336,N,,08/2019,Analyst
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.2.c,Learning Strategies,IM,Importance,2.12,8,0.125,1.88,2.37,N,,08/2019,Analyst
+shipping_receiving_coordinator,31.0,2026-08,43-5071.00,"Shipping, Receiving, and Inventory Clerks",2.A.2.d,Monitoring,IM,Importance,3,8,0,3,3,N,,08/2019,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.1.a,Reading Comprehension,IM,Importance,3.12,8,0.125,2.88,3.37,N,,08/2024,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.1.b,Active Listening,IM,Importance,3.5,8,0.189,3.1296,3.8704,N,,08/2024,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.1.c,Writing,IM,Importance,3.12,8,0.125,2.88,3.37,N,,08/2024,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.1.d,Speaking,IM,Importance,3.62,8,0.183,3.2664,3.9836,N,,08/2024,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.1.e,Mathematics,IM,Importance,2.25,8,0.1637,1.9292,2.5708,N,,08/2024,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.1.f,Science,IM,Importance,1.38,8,0.183,1.0164,1.7336,N,,08/2024,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.2.a,Critical Thinking,IM,Importance,3.38,8,0.183,3.0164,3.7336,N,,08/2024,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.2.b,Active Learning,IM,Importance,2.75,8,0.1637,2.4292,3.0708,N,,08/2024,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.2.c,Learning Strategies,IM,Importance,3,8,0.189,2.6296,3.3704,N,,08/2024,Analyst
+warehouse_supervisor,31.0,2026-08,53-1042.00,"First-Line Supervisors of Helpers, Laborers, and Material Movers, Hand",2.A.2.d,Monitoring,IM,Importance,3.38,8,0.183,3.0164,3.7336,N,,08/2024,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.1.a,Reading Comprehension,IM,Importance,2.62,8,0.183,2.2664,2.9836,N,,08/2020,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.1.b,Active Listening,IM,Importance,2.75,8,0.1637,2.4292,3.0708,N,,08/2020,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.1.c,Writing,IM,Importance,2,8,0,2,2,N,,08/2020,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.1.d,Speaking,IM,Importance,2.62,8,0.183,2.2664,2.9836,N,,08/2020,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.1.e,Mathematics,IM,Importance,2,8,0,2,2,N,,08/2020,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.1.f,Science,IM,Importance,1,8,0,1,1,N,,08/2020,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.2.a,Critical Thinking,IM,Importance,2.75,8,0.1637,2.4292,3.0708,N,,08/2020,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.2.b,Active Learning,IM,Importance,2.12,8,0.125,1.88,2.37,N,,08/2020,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.2.c,Learning Strategies,IM,Importance,2,8,0.189,1.6296,2.3704,N,,08/2020,Analyst
+packing_associate,31.0,2026-08,53-7064.00,"Packers and Packagers, Hand",2.A.2.d,Monitoring,IM,Importance,3,8,0,3,3,N,,08/2020,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.1.a,Reading Comprehension,IM,Importance,3,8,0,3,3,N,,08/2026,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.1.b,Active Listening,IM,Importance,3.12,8,0.125,2.88,3.37,N,,08/2026,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.1.c,Writing,IM,Importance,2.62,8,0.183,2.2664,2.9836,N,,08/2026,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.1.d,Speaking,IM,Importance,2.75,8,0.1637,2.4292,3.0708,N,,08/2026,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.1.e,Mathematics,IM,Importance,2,8,0,2,2,N,,08/2026,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.1.f,Science,IM,Importance,1,8,0,1,1,N,,08/2026,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.2.a,Critical Thinking,IM,Importance,2.75,8,0.1637,2.4292,3.0708,N,,08/2026,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.2.b,Active Learning,IM,Importance,2.12,8,0.125,1.88,2.37,N,,08/2026,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.2.c,Learning Strategies,IM,Importance,2,8,0,2,2,N,,08/2026,Analyst
+fulfillment_associate,31.0,2026-08,53-7065.00,Stockers and Order Fillers,2.A.2.d,Monitoring,IM,Importance,2.62,8,0.183,2.2664,2.9836,N,,08/2026,Analyst

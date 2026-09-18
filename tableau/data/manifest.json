@@ -1,0 +1,48 @@
+{
+  "tables": {
+    "demand_daily": {
+      "rows": 694,
+      "primary_key": "demand_key",
+      "sha256": "0e2c4246ad214a6725e280faae2c2d874a7ff187f7326a5b9d3eea1f195f7bf4"
+    },
+    "scenario_results": {
+      "rows": 2232,
+      "primary_key": "case_key",
+      "sha256": "534de6dae209be5052c2a41bbde64e9deabf87378f2792127aa98f14983954c0"
+    },
+    "policies": {
+      "rows": 30,
+      "primary_key": "policy",
+      "sha256": "d8b63bae652170c75e68095fb47f7c8055eb78e7ecb8207b4a3bd1d8b1af0033"
+    },
+    "price_sensitivity": {
+      "rows": 27,
+      "primary_key": "price_key",
+      "sha256": "22e729dc330f5d5741b8ea7fadb32537d32cc7504f2722f95408f99db3bfee58"
+    },
+    "monthly_top_products": {
+      "rows": 100,
+      "primary_key": "product_key",
+      "sha256": "a85d2bbc3ff7f37e3ff2218c489e9af50d44cd60ef1bdb8d4216ad0622994cd7"
+    }
+  },
+  "sources": {
+    "data/processed/operational_actions/orders_retained.csv": "0d451a836c692074f96c5b28e5227b20db2bb76ee19759420a010063d2a153c7",
+    "data/processed/operational_actions/orders_deduplicated_sensitivity.csv": "7a5ad797c9c32730cededc912a57b1faa672e856d162731f37ad3b3676eae9f3",
+    "data/processed/service_costs/cases.csv": "de3ea5e8fe638ccdbac6f0fb9e8bdc03d2c6c42fcfa2507166bd3b199a0abcae",
+    "data/processed/recommendation_validation/selection_cases.csv": "a9c2c5ffcf0628ae187cc707f93a147de1b8c4a256aee2790fdca7ee206d4581",
+    "data/processed/recommendation_validation/evaluation_cases.csv": "49cd690c4705dd9e1512d8ea95c940790ebcac9d6d3f9eaaea161e56c6626ca5",
+    "data/processed/recommendation_validation/price_sensitivity.csv": "79effa59f87f8bb71d14c344703345ffdb13670f66247269ef40d7e34ec5c15c",
+    "data/processed/operational_actions/monthly_top_references.csv": "7b68703eb7c24e500fd8a9194f00ab4f1fdc82322068efd110d9293643c9e388"
+  },
+  "publication": "Prepared locally only; not uploaded. No order, customer, employee IDs or credentials exported.",
+  "source_attribution": "Rodrigo Furlan de Assis, Order Picking Dataset from a Warehouse of a Footwear Manufacturing Company, DOI 10.17632/pf2w725pw3.1, CC BY 4.0. Aggregated and modeled transformations; no endorsement.",
+  "relationships": [
+    {
+      "left": "scenario_results",
+      "right": "policies",
+      "key": "policy",
+      "cardinality": "many-to-one"
+    }
+  ]
+}

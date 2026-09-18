@@ -1,0 +1,756 @@
+{
+  "source_sha256": "1d3ca8d1a51d340e2874af2019866d3a5fa0af2071e356fd80b6f17c9db46248",
+  "method": "Leave one distinct person out within each scenario; fixed plus item-count ordinary least squares versus training-mean constant.",
+  "target": "Annotated packing-station seconds excluding Picking; no paid-time allowance.",
+  "eligibility": "Screen pass, no elapsed gap above 1 ms, 1-5 items.",
+  "total_eligible": 1526,
+  "excluded": 503,
+  "scenarios": {
+    "S1": {
+      "eligible": {
+        "boxes": 791,
+        "people": 11,
+        "mean_seconds": 90.26,
+        "median_seconds": 85.747
+      },
+      "all_records": {
+        "boxes": 1044,
+        "people": 11,
+        "mean_seconds": 93.753,
+        "median_seconds": 88.311
+      },
+      "by_item_count": {
+        "1": {
+          "boxes": 476,
+          "people": 11,
+          "mean_seconds": 79.622,
+          "median_seconds": 78.878
+        },
+        "2": {
+          "boxes": 137,
+          "people": 11,
+          "mean_seconds": 94.386,
+          "median_seconds": 91.224
+        },
+        "3": {
+          "boxes": 100,
+          "people": 11,
+          "mean_seconds": 108.132,
+          "median_seconds": 103.625
+        },
+        "4": {
+          "boxes": 31,
+          "people": 9,
+          "mean_seconds": 116.212,
+          "median_seconds": 115.294
+        },
+        "5": {
+          "boxes": 47,
+          "people": 11,
+          "mean_seconds": 130.826,
+          "median_seconds": 130.429
+        }
+      },
+      "by_person": {
+        "U0101": {
+          "boxes": 71,
+          "people": 1,
+          "mean_seconds": 76.058,
+          "median_seconds": 70.458
+        },
+        "U0102": {
+          "boxes": 76,
+          "people": 1,
+          "mean_seconds": 102.93,
+          "median_seconds": 97.645
+        },
+        "U0103": {
+          "boxes": 76,
+          "people": 1,
+          "mean_seconds": 90.887,
+          "median_seconds": 84.562
+        },
+        "U0104": {
+          "boxes": 58,
+          "people": 1,
+          "mean_seconds": 113.569,
+          "median_seconds": 112.574
+        },
+        "U0105": {
+          "boxes": 74,
+          "people": 1,
+          "mean_seconds": 89.581,
+          "median_seconds": 87.46
+        },
+        "U0106": {
+          "boxes": 65,
+          "people": 1,
+          "mean_seconds": 98.383,
+          "median_seconds": 93.892
+        },
+        "U0107": {
+          "boxes": 78,
+          "people": 1,
+          "mean_seconds": 87.013,
+          "median_seconds": 82.959
+        },
+        "U0108": {
+          "boxes": 77,
+          "people": 1,
+          "mean_seconds": 90.986,
+          "median_seconds": 87.983
+        },
+        "U0109": {
+          "boxes": 56,
+          "people": 1,
+          "mean_seconds": 96.268,
+          "median_seconds": 88.059
+        },
+        "U0110": {
+          "boxes": 81,
+          "people": 1,
+          "mean_seconds": 62.385,
+          "median_seconds": 60.209
+        },
+        "U0111": {
+          "boxes": 79,
+          "people": 1,
+          "mean_seconds": 93.889,
+          "median_seconds": 90.13
+        }
+      },
+      "exploratory_fit": {
+        "fixed_seconds": 66.984,
+        "seconds_per_item": 13.067
+      },
+      "person_held_out_mae_seconds": {
+        "constant": 19.409,
+        "item_count": 15.589
+      },
+      "box_weighted_held_out_mae_seconds": {
+        "constant": 19.315,
+        "item_count": 15.515
+      },
+      "folds": [
+        {
+          "person_id": "U0101",
+          "boxes": 71,
+          "constant_mae": 21.138866549295773,
+          "item_count_mae": 18.803220366323853
+        },
+        {
+          "person_id": "U0102",
+          "boxes": 76,
+          "constant_mae": 18.015609238130292,
+          "item_count_mae": 17.86928794196058
+        },
+        {
+          "person_id": "U0103",
+          "boxes": 76,
+          "constant_mae": 15.408056256900993,
+          "item_count_mae": 7.833568958831043
+        },
+        {
+          "person_id": "U0104",
+          "boxes": 58,
+          "constant_mae": 28.100029943077573,
+          "item_count_mae": 24.838339784393614
+        },
+        {
+          "person_id": "U0105",
+          "boxes": 74,
+          "constant_mae": 16.449337215876962,
+          "item_count_mae": 10.46519558858158
+        },
+        {
+          "person_id": "U0106",
+          "boxes": 65,
+          "constant_mae": 16.0274090273363,
+          "item_count_mae": 13.235074566477218
+        },
+        {
+          "person_id": "U0107",
+          "boxes": 78,
+          "constant_mae": 15.113412989535012,
+          "item_count_mae": 11.399368348275798
+        },
+        {
+          "person_id": "U0108",
+          "boxes": 77,
+          "constant_mae": 13.662212375859436,
+          "item_count_mae": 8.806002399879377
+        },
+        {
+          "person_id": "U0109",
+          "boxes": 56,
+          "constant_mae": 19.33783743926142,
+          "item_count_mae": 13.971421505217686
+        },
+        {
+          "person_id": "U0110",
+          "boxes": 81,
+          "constant_mae": 32.439870022604765,
+          "item_count_mae": 31.627208671629987
+        },
+        {
+          "person_id": "U0111",
+          "boxes": 79,
+          "constant_mae": 17.806265218318874,
+          "item_count_mae": 12.625367292547004
+        }
+      ]
+    },
+    "S2": {
+      "eligible": {
+        "boxes": 286,
+        "people": 10,
+        "mean_seconds": 77.416,
+        "median_seconds": 75.061
+      },
+      "all_records": {
+        "boxes": 400,
+        "people": 10,
+        "mean_seconds": 81.27,
+        "median_seconds": 77.049
+      },
+      "by_item_count": {
+        "1": {
+          "boxes": 152,
+          "people": 10,
+          "mean_seconds": 69.561,
+          "median_seconds": 68.934
+        },
+        "2": {
+          "boxes": 71,
+          "people": 10,
+          "mean_seconds": 76.567,
+          "median_seconds": 75.159
+        },
+        "3": {
+          "boxes": 37,
+          "people": 9,
+          "mean_seconds": 92.431,
+          "median_seconds": 89.768
+        },
+        "4": {
+          "boxes": 19,
+          "people": 9,
+          "mean_seconds": 95.365,
+          "median_seconds": 100.267
+        },
+        "5": {
+          "boxes": 7,
+          "people": 5,
+          "mean_seconds": 128.526,
+          "median_seconds": 128.309
+        }
+      },
+      "by_person": {
+        "U0103": {
+          "boxes": 33,
+          "people": 1,
+          "mean_seconds": 68.65,
+          "median_seconds": 65.696
+        },
+        "U0105": {
+          "boxes": 29,
+          "people": 1,
+          "mean_seconds": 85.139,
+          "median_seconds": 84.357
+        },
+        "U0107": {
+          "boxes": 32,
+          "people": 1,
+          "mean_seconds": 82.211,
+          "median_seconds": 79.197
+        },
+        "U0108": {
+          "boxes": 29,
+          "people": 1,
+          "mean_seconds": 90.144,
+          "median_seconds": 81.324
+        },
+        "U0110": {
+          "boxes": 29,
+          "people": 1,
+          "mean_seconds": 58.088,
+          "median_seconds": 56.817
+        },
+        "U0201": {
+          "boxes": 27,
+          "people": 1,
+          "mean_seconds": 83.411,
+          "median_seconds": 81.944
+        },
+        "U0206": {
+          "boxes": 19,
+          "people": 1,
+          "mean_seconds": 87.048,
+          "median_seconds": 83.525
+        },
+        "U0207": {
+          "boxes": 27,
+          "people": 1,
+          "mean_seconds": 64.837,
+          "median_seconds": 63.435
+        },
+        "U0208": {
+          "boxes": 35,
+          "people": 1,
+          "mean_seconds": 75.794,
+          "median_seconds": 75.916
+        },
+        "U0209": {
+          "boxes": 26,
+          "people": 1,
+          "mean_seconds": 83.373,
+          "median_seconds": 81.698
+        }
+      },
+      "exploratory_fit": {
+        "fixed_seconds": 57.47,
+        "seconds_per_item": 11.055
+      },
+      "person_held_out_mae_seconds": {
+        "constant": 15.431,
+        "item_count": 13.188
+      },
+      "box_weighted_held_out_mae_seconds": {
+        "constant": 15.211,
+        "item_count": 12.897
+      },
+      "folds": [
+        {
+          "person_id": "U0103",
+          "boxes": 33,
+          "constant_mae": 14.234149478979516,
+          "item_count_mae": 8.58059367128645
+        },
+        {
+          "person_id": "U0105",
+          "boxes": 29,
+          "constant_mae": 13.229256406816049,
+          "item_count_mae": 12.39149018153967
+        },
+        {
+          "person_id": "U0107",
+          "boxes": 32,
+          "constant_mae": 9.04793971456693,
+          "item_count_mae": 6.793492915417332
+        },
+        {
+          "person_id": "U0108",
+          "boxes": 29,
+          "constant_mae": 17.46531705353549,
+          "item_count_mae": 13.513120772862484
+        },
+        {
+          "person_id": "U0110",
+          "boxes": 29,
+          "constant_mae": 23.03063759559908,
+          "item_count_mae": 20.071512301501247
+        },
+        {
+          "person_id": "U0201",
+          "boxes": 27,
+          "constant_mae": 16.842010010010007,
+          "item_count_mae": 19.260022277227723
+        },
+        {
+          "person_id": "U0206",
+          "boxes": 19,
+          "constant_mae": 17.557380248373743,
+          "item_count_mae": 12.996984906372276
+        },
+        {
+          "person_id": "U0207",
+          "boxes": 27,
+          "constant_mae": 17.06755326755327,
+          "item_count_mae": 16.522958102341544
+        },
+        {
+          "person_id": "U0208",
+          "boxes": 35,
+          "constant_mae": 12.478929766647695,
+          "item_count_mae": 8.453932077799521
+        },
+        {
+          "person_id": "U0209",
+          "boxes": 26,
+          "constant_mae": 13.356445857988167,
+          "item_count_mae": 13.297404019897085
+        }
+      ]
+    },
+    "S3": {
+      "eligible": {
+        "boxes": 304,
+        "people": 10,
+        "mean_seconds": 73.075,
+        "median_seconds": 70.269
+      },
+      "all_records": {
+        "boxes": 391,
+        "people": 10,
+        "mean_seconds": 75.724,
+        "median_seconds": 72.341
+      },
+      "by_item_count": {
+        "1": {
+          "boxes": 144,
+          "people": 10,
+          "mean_seconds": 62.729,
+          "median_seconds": 61.406
+        },
+        "2": {
+          "boxes": 89,
+          "people": 10,
+          "mean_seconds": 74.189,
+          "median_seconds": 74.952
+        },
+        "3": {
+          "boxes": 39,
+          "people": 10,
+          "mean_seconds": 86.093,
+          "median_seconds": 82.504
+        },
+        "4": {
+          "boxes": 19,
+          "people": 10,
+          "mean_seconds": 95.8,
+          "median_seconds": 92.055
+        },
+        "5": {
+          "boxes": 13,
+          "people": 8,
+          "mean_seconds": 107.778,
+          "median_seconds": 101.608
+        }
+      },
+      "by_person": {
+        "U0103": {
+          "boxes": 37,
+          "people": 1,
+          "mean_seconds": 70.542,
+          "median_seconds": 68.203
+        },
+        "U0105": {
+          "boxes": 26,
+          "people": 1,
+          "mean_seconds": 79.577,
+          "median_seconds": 72.028
+        },
+        "U0107": {
+          "boxes": 30,
+          "people": 1,
+          "mean_seconds": 78.176,
+          "median_seconds": 71.909
+        },
+        "U0108": {
+          "boxes": 26,
+          "people": 1,
+          "mean_seconds": 82.007,
+          "median_seconds": 78.928
+        },
+        "U0110": {
+          "boxes": 34,
+          "people": 1,
+          "mean_seconds": 60.392,
+          "median_seconds": 59.77
+        },
+        "U0201": {
+          "boxes": 25,
+          "people": 1,
+          "mean_seconds": 92.99,
+          "median_seconds": 91.046
+        },
+        "U0206": {
+          "boxes": 27,
+          "people": 1,
+          "mean_seconds": 68.069,
+          "median_seconds": 65.516
+        },
+        "U0207": {
+          "boxes": 34,
+          "people": 1,
+          "mean_seconds": 62.773,
+          "median_seconds": 61.445
+        },
+        "U0208": {
+          "boxes": 35,
+          "people": 1,
+          "mean_seconds": 69.86,
+          "median_seconds": 70.04
+        },
+        "U0209": {
+          "boxes": 30,
+          "people": 1,
+          "mean_seconds": 75.427,
+          "median_seconds": 78.042
+        }
+      },
+      "exploratory_fit": {
+        "fixed_seconds": 51.542,
+        "seconds_per_item": 11.286
+      },
+      "person_held_out_mae_seconds": {
+        "constant": 15.017,
+        "item_count": 11.901
+      },
+      "box_weighted_held_out_mae_seconds": {
+        "constant": 14.809,
+        "item_count": 11.698
+      },
+      "folds": [
+        {
+          "person_id": "U0103",
+          "boxes": 37,
+          "constant_mae": 13.016809798562608,
+          "item_count_mae": 8.233503383211541
+        },
+        {
+          "person_id": "U0105",
+          "boxes": 26,
+          "constant_mae": 17.658461538461538,
+          "item_count_mae": 10.808793723134631
+        },
+        {
+          "person_id": "U0107",
+          "boxes": 30,
+          "constant_mae": 13.247445742092458,
+          "item_count_mae": 9.11928938447751
+        },
+        {
+          "person_id": "U0108",
+          "boxes": 26,
+          "constant_mae": 15.565019092418371,
+          "item_count_mae": 13.224058559020941
+        },
+        {
+          "person_id": "U0110",
+          "boxes": 34,
+          "constant_mae": 16.307154684095856,
+          "item_count_mae": 12.402045193337562
+        },
+        {
+          "person_id": "U0201",
+          "boxes": 25,
+          "constant_mae": 22.153835125448026,
+          "item_count_mae": 24.553371884679137
+        },
+        {
+          "person_id": "U0206",
+          "boxes": 27,
+          "constant_mae": 12.598825511432011,
+          "item_count_mae": 6.277067187739464
+        },
+        {
+          "person_id": "U0207",
+          "boxes": 34,
+          "constant_mae": 17.911701960784317,
+          "item_count_mae": 17.118098320513052
+        },
+        {
+          "person_id": "U0208",
+          "boxes": 35,
+          "constant_mae": 10.009636112586298,
+          "item_count_mae": 9.587050750263144
+        },
+        {
+          "person_id": "U0209",
+          "boxes": 30,
+          "constant_mae": 11.705172262773724,
+          "item_count_mae": 7.687557153797065
+        }
+      ]
+    },
+    "S4": {
+      "eligible": {
+        "boxes": 145,
+        "people": 10,
+        "mean_seconds": 60.985,
+        "median_seconds": 58.673
+      },
+      "all_records": {
+        "boxes": 194,
+        "people": 10,
+        "mean_seconds": 62.139,
+        "median_seconds": 60.298
+      },
+      "by_item_count": {
+        "1": {
+          "boxes": 69,
+          "people": 10,
+          "mean_seconds": 51.187,
+          "median_seconds": 50.844
+        },
+        "2": {
+          "boxes": 43,
+          "people": 10,
+          "mean_seconds": 61.927,
+          "median_seconds": 60.409
+        },
+        "3": {
+          "boxes": 16,
+          "people": 8,
+          "mean_seconds": 70.356,
+          "median_seconds": 68.637
+        },
+        "4": {
+          "boxes": 10,
+          "people": 5,
+          "mean_seconds": 84.686,
+          "median_seconds": 81.514
+        },
+        "5": {
+          "boxes": 7,
+          "people": 5,
+          "mean_seconds": 96.506,
+          "median_seconds": 94.34
+        }
+      },
+      "by_person": {
+        "U0103": {
+          "boxes": 13,
+          "people": 1,
+          "mean_seconds": 61.26,
+          "median_seconds": 55.415
+        },
+        "U0105": {
+          "boxes": 9,
+          "people": 1,
+          "mean_seconds": 62.63,
+          "median_seconds": 55.423
+        },
+        "U0107": {
+          "boxes": 15,
+          "people": 1,
+          "mean_seconds": 63.396,
+          "median_seconds": 60.643
+        },
+        "U0108": {
+          "boxes": 12,
+          "people": 1,
+          "mean_seconds": 60.411,
+          "median_seconds": 57.803
+        },
+        "U0110": {
+          "boxes": 18,
+          "people": 1,
+          "mean_seconds": 50.255,
+          "median_seconds": 48.755
+        },
+        "U0201": {
+          "boxes": 16,
+          "people": 1,
+          "mean_seconds": 74.866,
+          "median_seconds": 70.407
+        },
+        "U0206": {
+          "boxes": 13,
+          "people": 1,
+          "mean_seconds": 74.622,
+          "median_seconds": 75.944
+        },
+        "U0207": {
+          "boxes": 15,
+          "people": 1,
+          "mean_seconds": 52.531,
+          "median_seconds": 52.505
+        },
+        "U0208": {
+          "boxes": 19,
+          "people": 1,
+          "mean_seconds": 53.681,
+          "median_seconds": 54.011
+        },
+        "U0209": {
+          "boxes": 15,
+          "people": 1,
+          "mean_seconds": 61.766,
+          "median_seconds": 53.735
+        }
+      },
+      "exploratory_fit": {
+        "fixed_seconds": 40.009,
+        "seconds_per_item": 10.941
+      },
+      "person_held_out_mae_seconds": {
+        "constant": 13.23,
+        "item_count": 8.388
+      },
+      "box_weighted_held_out_mae_seconds": {
+        "constant": 13.1,
+        "item_count": 8.772
+      },
+      "folds": [
+        {
+          "person_id": "U0103",
+          "boxes": 13,
+          "constant_mae": 13.527930069930072,
+          "item_count_mae": 8.814925177928934
+        },
+        {
+          "person_id": "U0105",
+          "boxes": 9,
+          "constant_mae": 15.634283496732023,
+          "item_count_mae": 5.545765755571029
+        },
+        {
+          "person_id": "U0107",
+          "boxes": 15,
+          "constant_mae": 10.63446,
+          "item_count_mae": 7.07354899860834
+        },
+        {
+          "person_id": "U0108",
+          "boxes": 12,
+          "constant_mae": 9.835076441102757,
+          "item_count_mae": 5.6661515299617475
+        },
+        {
+          "person_id": "U0110",
+          "boxes": 18,
+          "constant_mae": 12.850513123359583,
+          "item_count_mae": 10.531018005895177
+        },
+        {
+          "person_id": "U0201",
+          "boxes": 16,
+          "constant_mae": 16.778286337209302,
+          "item_count_mae": 16.851702549140043
+        },
+        {
+          "person_id": "U0206",
+          "boxes": 13,
+          "constant_mae": 17.234465617715617,
+          "item_count_mae": 3.64869854309464
+        },
+        {
+          "person_id": "U0207",
+          "boxes": 15,
+          "constant_mae": 12.362488717948718,
+          "item_count_mae": 8.264307196445063
+        },
+        {
+          "person_id": "U0208",
+          "boxes": 19,
+          "constant_mae": 11.121781537176274,
+          "item_count_mae": 10.121183322059226
+        },
+        {
+          "person_id": "U0209",
+          "boxes": 15,
+          "constant_mae": 12.316331794871795,
+          "item_count_mae": 7.362829371980676
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Experimental reference only; item count does not control box size or work location.",
+    "Filtering incidents and gaps can bias times downward; all-record means are descriptive comparisons, not causal estimates.",
+    "Exploratory cross-validation is not a final independent deployment test.",
+    "Do not extrapolate to 12/24/48-unit jobs or interpret station-local Picking as warehouse route picking."
+  ]
+}

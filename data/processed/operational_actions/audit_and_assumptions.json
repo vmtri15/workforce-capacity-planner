@@ -1,0 +1,46 @@
+{
+  "totals": {
+    "retained": {
+      "rows": 122370,
+      "units": 228195,
+      "orders": 32634
+    },
+    "deduplicated_sensitivity": {
+      "rows": 119811,
+      "units": 215460,
+      "orders": 32634
+    }
+  },
+  "exact_duplicate_extra_rows": 2559,
+  "duplicate_extra_units": 12735,
+  "zero_quantity_rows": 33,
+  "missing_size_rows": 16,
+  "pick_units": 215192,
+  "unmatched_location_codes": 22,
+  "unmatched_location_units": 23609,
+  "duplicate_resolution": "Unresolved: no unique source row ID or extraction contract; retain raw, show sensitivity.",
+  "location_scope": "Independent pick-file location counts, not matched customer-order completions.",
+  "packing_scope": "Experimental 1-5 item station reference only; not applied to footwear or paid staffing.",
+  "policy_assumptions": {
+    "workers": 6,
+    "paid_hours": 8,
+    "productive_factor": 0.85,
+    "rates": [
+      30,
+      40,
+      50
+    ],
+    "operating_days": "Monday-Friday",
+    "initial_backlog": 0,
+    "arrivals": "Creation-date proxy; available at day start; missing dates zero",
+    "overtime": "All six workers receive two paid extra hours when start-of-day work exceeds base capacity",
+    "temporary": "Two eight-hour shifts at 80% productivity if previous calendar-day backlog exceeds base capacity; assumed next-day availability",
+    "recovery": "14 calendar days of zero new demand; no costs, deadlines, legal or fatigue constraints modeled"
+  },
+  "source_fingerprints": {
+    "/Users/minhtrivi/Documents/ChatGPT/Workforce Capacity Planner/workforce-capacity-planner/data/raw/warehouse_picking/Customer_Order.csv": "e28ae8ac9b368b9496b153fafb5af685bd94ba1530ffcb308dfcd5403601f325",
+    "/Users/minhtrivi/Documents/ChatGPT/Workforce Capacity Planner/workforce-capacity-planner/data/raw/warehouse_picking/Picking_Wave.csv": "4065a8a94f68c402ef4543245373ac91f6835ecdf34a1e4674cb6981b394b88c",
+    "/Users/minhtrivi/Downloads/Order Picking Dataset from a Warehouse of a Footwear Manufacturing Company/Storage_Location.csv": "2895d9da16b4d63e85a17bfe050cc77b72d5654298072d6fa3b1732b1c1d6cc3",
+    "/Users/minhtrivi/Documents/ChatGPT/Workforce Capacity Planner/workforce-capacity-planner/data/processed/openpack_timing_evaluation.json": "15a17ca8aa40085e8c8a043753f3f182926576a6ec44a849699ae67704a41a4e"
+  }
+}

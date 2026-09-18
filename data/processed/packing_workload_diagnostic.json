@@ -1,0 +1,31 @@
+{
+  "status": "diagnostic_only_uncalibrated_not_optimizer_input",
+  "source_sha256": "bcbe73b35f5b7babf197fb0cb983a11f5d9ff929078d4aa53d171b1f2df2e980",
+  "demand_scale": 5,
+  "fixed_seconds_per_package": 67.2,
+  "seconds_per_unit": 4.2,
+  "legacy_50_jobs_per_hour": 590.3,
+  "candidate_orders_only_50_jobs_per_hour": 475.9,
+  "package_count_is_assumed": true,
+  "allowances_included": false,
+  "comparisons": [
+    {
+      "assumed_packages_per_order": 1,
+      "estimated_packages": 23795,
+      "modeled_units": 6694235,
+      "productive_hours": 8254.114166666666
+    },
+    {
+      "assumed_packages_per_order": 2,
+      "estimated_packages": 47590,
+      "modeled_units": 6694235,
+      "productive_hours": 8698.2875
+    },
+    {
+      "assumed_packages_per_order": 4,
+      "estimated_packages": 95180,
+      "modeled_units": 6694235,
+      "productive_hours": 9586.634166666667
+    }
+  ]
+}

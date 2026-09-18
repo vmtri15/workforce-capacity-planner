@@ -1,0 +1,42 @@
+{
+  "config": {
+    "scenario_id": "individual_unit_handling_diagnostic_v1",
+    "status": "assumed_uncalibrated_diagnostic_only",
+    "handling_unit": "one positive source unit handled individually; no inferred case packs",
+    "order_scope": "all reviewed candidate orders; no order-size trimming",
+    "package_rule": "sum ceil(order_units / assumed_units_per_job) separately per invoice",
+    "units_per_job_sensitivity": [
+      12,
+      24,
+      48
+    ],
+    "package_rule_evidence": "arbitrary stress grid, not published carton capacities; volume/weight fit unknown",
+    "fixed_seconds_per_job": 67.2,
+    "seconds_per_unit": 4.2,
+    "time_evidence": "thesis example used only as diagnostic; not calibrated for this order mix",
+    "demand_scale": 5,
+    "source_window_start": "2011-10-14",
+    "source_window_end": "2011-12-08",
+    "allowances_in_task_times": false,
+    "optimizer_integration": false
+  },
+  "source_sha256": "bcbe73b35f5b7babf197fb0cb983a11f5d9ff929078d4aa53d171b1f2df2e980",
+  "summaries": [
+    {
+      "assumed_units_per_job": 12,
+      "estimated_jobs": 566925,
+      "productive_hours": 18378.2025
+    },
+    {
+      "assumed_units_per_job": 24,
+      "estimated_jobs": 289395,
+      "productive_hours": 13197.6425
+    },
+    {
+      "assumed_units_per_job": 48,
+      "estimated_jobs": 150935,
+      "productive_hours": 10613.055833333334
+    }
+  ],
+  "checks": "PASS: 56-day calendars, candidate-order and unit reconciliation, sensitivity ordering"
+}

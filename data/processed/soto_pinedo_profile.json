@@ -1,0 +1,116 @@
+{
+  "metadata": {
+    "title": "Soto-Pinedo privacy-safe operational benchmark profile",
+    "source": "User-supplied Soto-Pinedo workbook archive",
+    "license_status": "Not established; no license file was included in the archive",
+    "allowed_use": "Internal research profile only until license and provenance are confirmed",
+    "geographic_scope": "Peru; external to the U.S. network capacity model",
+    "created_at": "2026-09-18T03:52:35.271653+00:00"
+  },
+  "picking_benchmarks": {
+    "daily_picking_errors": {
+      "observations": 1440,
+      "mean": 10.219,
+      "median": 10.0,
+      "p95": 15.0,
+      "minimum": 5.0,
+      "maximum": 15.0
+    },
+    "daily_travel_distance_m": {
+      "observations": 1440,
+      "mean": 1197.904,
+      "median": 1196.805,
+      "p95": 1381.186,
+      "minimum": 1000.249,
+      "maximum": 1400.988
+    },
+    "order_preparation_time_min": {
+      "observations": 240,
+      "mean": 150.302,
+      "median": 150.806,
+      "p95": 178.329,
+      "minimum": 120.038,
+      "maximum": 180.911
+    },
+    "orders_per_day": {
+      "observations": 240,
+      "mean": 9.729,
+      "median": 9.55,
+      "p95": 11.801,
+      "minimum": 7.96,
+      "maximum": 12.0
+    },
+    "operator_columns": 8,
+    "classification": "External benchmark; observed-versus-simulated provenance is not established in the archive"
+  },
+  "preparation_2025": {
+    "rows": 2138,
+    "valid_preparation_intervals": 2138,
+    "interval_coverage_share": 1.0,
+    "preparation_cycle_hours": {
+      "observations": 2138,
+      "mean": 10.467,
+      "median": 7.661,
+      "p95": 29.546,
+      "minimum": 0.53,
+      "maximum": 71.95
+    },
+    "launch_date_start": "2025-02-13",
+    "launch_date_end": "2025-04-23",
+    "status_counts": {
+      "ANULADO": 1,
+      "CERRADO": 2,
+      "DESPACHADO": 2135
+    },
+    "privacy": "Only aggregate durations and status counts retained; names, customers, carriers, plates, and IDs excluded"
+  },
+  "fulfillment_coverage": {
+    "records": 25252,
+    "requested_quantity": 284590.698,
+    "fulfilled_quantity": 228907.437,
+    "weighted_fill_share": 0.8043,
+    "top_fulfillment_reasons": [
+      {
+        "reason": "FACTURADO",
+        "records": 20038
+      },
+      {
+        "reason": "NO ATENDIDO FALTA STOCK PLANEAMIENTO",
+        "records": 1543
+      },
+      {
+        "reason": "RECHAZO CR\u00c9DITO",
+        "records": 760
+      },
+      {
+        "reason": "NO ATENDIDO DISTRIBUCI\u00d3N",
+        "records": 730
+      },
+      {
+        "reason": "INH - PRODUCTO DISCONTINUADO",
+        "records": 607
+      },
+      {
+        "reason": "INH - DECISI\u00d3N COMERCIAL",
+        "records": 241
+      },
+      {
+        "reason": "ERROR EN EL PEDIDO",
+        "records": 220
+      },
+      {
+        "reason": "RC-PROB EN CALIDAD DE ENVASE",
+        "records": 140
+      }
+    ],
+    "privacy": "Customer, employee, location-detail, and order identifiers excluded"
+  },
+  "excluded_fields": [
+    "customer names and customer IDs",
+    "vehicle plates",
+    "carrier names",
+    "employee or programmer identifiers",
+    "order and shipment identifiers"
+  ],
+  "model_use": "Descriptive external benchmark only; values do not replace U.S. site productivity or staffing assumptions"
+}

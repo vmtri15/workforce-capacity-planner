@@ -1,0 +1,30 @@
+{
+  "evidence_class": "synthetic_sensitivity_inputs_not_observed_worker_data",
+  "cross_training": {
+    "eligible_packers_per_site": 2,
+    "training_paid_hours": 4,
+    "external_trainer_fee": 100,
+    "max_redeployment_hours_per_day": 4,
+    "picking_productivity_factor": 0.75
+  },
+  "hiring": {
+    "candidate_pool_per_site": 3,
+    "recruitment_lead_calendar_days": 14,
+    "paid_training_days": 2,
+    "recruitment_and_external_training_fee": 600,
+    "productive_factor_after_training": 0.8,
+    "weekdays": [0, 1, 2, 3, 4]
+  },
+  "transfers": {
+    "eligible_pickers_per_site": 2,
+    "round_trip_paid_travel_hours": 2,
+    "transport_cost_per_person_day": 25,
+    "destination_readiness_delay_days": 3,
+    "allowed_routes": [
+      ["joliet", "ohare"], ["ohare", "joliet"],
+      ["joliet", "kenosha"], ["kenosha", "joliet"],
+      ["ohare", "kenosha"], ["kenosha", "ohare"]
+    ]
+  },
+  "solver_seconds": 30
+}

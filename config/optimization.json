@@ -1,0 +1,17 @@
+{
+  "evidence_class": "assumed_synthetic_policy",
+  "service_target": 0.95,
+  "regular_days_per_week": 5,
+  "ot_step_hours": 0.25,
+  "ot_daily_hours": 2,
+  "ot_weekly_hours": 8,
+  "weekly_total_hours": 48,
+  "ot_wage_multiplier": 1.5,
+  "temp_wage_multiplier": 1.5,
+  "temp_productivity_factor": 0.8,
+  "temp_pool_per_site_role": 6,
+  "temp_ready_delay_days": 3,
+  "ot_unavailable_dates": [],
+  "temp_unavailable_dates": [],
+  "solver_seconds_per_group": 10
+}

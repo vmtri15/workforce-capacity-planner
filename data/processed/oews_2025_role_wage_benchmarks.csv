@@ -1,0 +1,9 @@
+release,benchmark_area,planning_role,soc_code,occupation_title,employment,mean_hourly_wage,median_hourly_wage,source_file
+May 2025 OEWS,"Chicago-Naperville-Elgin, IL-IN",Shipping and receiving coordinator,43-5071,"Shipping, Receiving, and Inventory Clerks",26030,24.05,22.95,data/raw/bls/oews_2025/chicago_16980.json
+May 2025 OEWS,"Chicago-Naperville-Elgin, IL-IN",Warehouse supervisor,53-1047,"First-Line Supervisors of Transportation and Material Moving Workers, Except Aircraft Cargo Handling",19280,34.27,32.85,data/raw/bls/oews_2025/chicago_16980.json
+May 2025 OEWS,"Chicago-Naperville-Elgin, IL-IN",Packing associate,53-7064,"Packers and Packagers, Hand",17960,18.54,17.40,data/raw/bls/oews_2025/chicago_16980.json
+May 2025 OEWS,"Chicago-Naperville-Elgin, IL-IN",Fulfillment associate,53-7065,Stockers and Order Fillers,79850,19.57,18.48,data/raw/bls/oews_2025/chicago_16980.json
+May 2025 OEWS,"Kenosha, WI",Shipping and receiving coordinator,43-5071,"Shipping, Receiving, and Inventory Clerks",1040,23.48,23.02,data/raw/bls/oews_2025/kenosha_28450.json
+May 2025 OEWS,"Kenosha, WI",Warehouse supervisor,53-1047,"First-Line Supervisors of Transportation and Material Moving Workers, Except Aircraft Cargo Handling",610,35.16,34.86,data/raw/bls/oews_2025/kenosha_28450.json
+May 2025 OEWS,"Kenosha, WI",Packing associate,53-7064,"Packers and Packagers, Hand",1040,18.70,18.18,data/raw/bls/oews_2025/kenosha_28450.json
+May 2025 OEWS,"Kenosha, WI",Fulfillment associate,53-7065,Stockers and Order Fillers,2530,21.25,22.13,data/raw/bls/oews_2025/kenosha_28450.json

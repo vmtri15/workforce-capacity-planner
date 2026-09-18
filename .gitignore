@@ -1,0 +1,10 @@
+.DS_Store
+.Rhistory
+.env
+data/raw/
+data/reference/*.zip
+data/*.db
+.venv/
+__pycache__/
+*.pyc
+workforce-capacity-planner/

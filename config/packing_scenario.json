@@ -1,0 +1,17 @@
+{
+  "scenario_id": "individual_unit_handling_diagnostic_v1",
+  "status": "assumed_uncalibrated_diagnostic_only",
+  "handling_unit": "one positive source unit handled individually; no inferred case packs",
+  "order_scope": "all reviewed candidate orders; no order-size trimming",
+  "package_rule": "sum ceil(order_units / assumed_units_per_job) separately per invoice",
+  "units_per_job_sensitivity": [12, 24, 48],
+  "package_rule_evidence": "arbitrary stress grid, not published carton capacities; volume/weight fit unknown",
+  "fixed_seconds_per_job": 67.2,
+  "seconds_per_unit": 4.2,
+  "time_evidence": "thesis example used only as diagnostic; not calibrated for this order mix",
+  "demand_scale": 5,
+  "source_window_start": "2011-10-14",
+  "source_window_end": "2011-12-08",
+  "allowances_in_task_times": false,
+  "optimizer_integration": false
+}

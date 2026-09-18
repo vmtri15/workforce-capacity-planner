@@ -1,0 +1,285 @@
+{
+  "openpack": {
+    "files": 313,
+    "recording_ids": 21,
+    "distinct_people_documented": 16,
+    "boxes": 2029,
+    "sessions": 104,
+    "invalid_durations": 0,
+    "overlapping_adjacent_intervals": 0,
+    "unmatched_boxes": [],
+    "zero_core_box_records": [
+      {
+        "recording_id": "U0202",
+        "session": "S0500",
+        "box": "15"
+      }
+    ],
+    "core_operations": [
+      "Assemble Box",
+      "Attach Box Label",
+      "Attach Shipping Label",
+      "Close Box",
+      "Insert Items"
+    ],
+    "core_seconds_by_scenario": {
+      "S1": {
+        "count": 1044,
+        "mean": 50.865,
+        "median": 49.26,
+        "min": 23.622,
+        "max": 125.517
+      },
+      "S2": {
+        "count": 400,
+        "mean": 46.165,
+        "median": 44.621,
+        "min": 22.488,
+        "max": 118.938
+      },
+      "S3": {
+        "count": 391,
+        "mean": 41.249,
+        "median": 38.996,
+        "min": 19.668,
+        "max": 99.751
+      },
+      "S4": {
+        "count": 194,
+        "mean": 33.695,
+        "median": 32.401,
+        "min": 0,
+        "max": 71.573
+      }
+    },
+    "core_seconds_by_item_count": {
+      "1": {
+        "count": 1077,
+        "mean": 44.677,
+        "median": 43.9,
+        "min": 18.159,
+        "max": 110.618
+      },
+      "4": {
+        "count": 117,
+        "mean": 49.871,
+        "median": 47.716,
+        "min": 23.236,
+        "max": 100.813
+      },
+      "2": {
+        "count": 449,
+        "mean": 45.408,
+        "median": 43.827,
+        "min": 0,
+        "max": 104.191
+      },
+      "5": {
+        "count": 100,
+        "mean": 55.553,
+        "median": 52.562,
+        "min": 27.489,
+        "max": 125.517
+      },
+      "3": {
+        "count": 270,
+        "mean": 50.586,
+        "median": 48.749,
+        "min": 21.608,
+        "max": 99.751
+      },
+      "14": {
+        "count": 1,
+        "mean": 51.24,
+        "median": 51.24,
+        "min": 51.24,
+        "max": 51.24
+      },
+      "11": {
+        "count": 5,
+        "mean": 36.465,
+        "median": 33.665,
+        "min": 31.075,
+        "max": 47.962
+      },
+      "10": {
+        "count": 6,
+        "mean": 35.734,
+        "median": 35.986,
+        "min": 26.907,
+        "max": 43.532
+      },
+      "13": {
+        "count": 1,
+        "mean": 71.143,
+        "median": 71.143,
+        "min": 71.143,
+        "max": 71.143
+      },
+      "6": {
+        "count": 1,
+        "mean": 34.883,
+        "median": 34.883,
+        "min": 34.883,
+        "max": 34.883
+      },
+      "12": {
+        "count": 2,
+        "mean": 62.758,
+        "median": 62.758,
+        "min": 58.314,
+        "max": 67.203
+      }
+    },
+    "operation_seconds": {
+      "Picking": {
+        "count": 2073,
+        "mean": 10.339,
+        "median": 9.585,
+        "min": 0.427,
+        "max": 96.979
+      },
+      "Relocate Item Label": {
+        "count": 2095,
+        "mean": 13.742,
+        "median": 10.233,
+        "min": 0.704,
+        "max": 92.019
+      },
+      "Assemble Box": {
+        "count": 2066,
+        "mean": 15.293,
+        "median": 14.725,
+        "min": 1.327,
+        "max": 55.386
+      },
+      "Insert Items": {
+        "count": 2066,
+        "mean": 9.463,
+        "median": 8.166,
+        "min": 1.118,
+        "max": 67.695
+      },
+      "Close Box": {
+        "count": 2044,
+        "mean": 10.101,
+        "median": 9.763,
+        "min": 1.402,
+        "max": 32.781
+      },
+      "Attach Box Label": {
+        "count": 2032,
+        "mean": 4.033,
+        "median": 3.725,
+        "min": 0.668,
+        "max": 20.126
+      },
+      "Scan Label": {
+        "count": 2172,
+        "mean": 11.653,
+        "median": 11.018,
+        "min": 0.835,
+        "max": 140.857
+      },
+      "Attach Shipping Label": {
+        "count": 2039,
+        "mean": 6.986,
+        "median": 6.86,
+        "min": 0.255,
+        "max": 24.732
+      },
+      "Put on Back Table": {
+        "count": 1360,
+        "mean": 5.467,
+        "median": 5.523,
+        "min": 0.488,
+        "max": 12.589
+      },
+      "Fill out Order": {
+        "count": 2214,
+        "mean": 7.353,
+        "median": 6.663,
+        "min": 0.105,
+        "max": 90.526
+      },
+      "Null": {
+        "count": 102,
+        "mean": 4.442,
+        "median": 3.654,
+        "min": 1.21,
+        "max": 15.049
+      },
+      "System Error": {
+        "count": 1,
+        "mean": 66.217,
+        "median": 66.217,
+        "min": 66.217,
+        "max": 66.217
+      }
+    },
+    "interpretation": "Experimental reference, not calibrated warehouse productivity; incident annotations retained in raw data, not excluded from timing summaries."
+  },
+  "jth": {
+    "history_rows": 42288,
+    "jobs": 6011,
+    "candidates": 37554,
+    "duplicate_application_ids": 0,
+    "accepted_without_offer_date": 1,
+    "duplicate_candidate_ids": 0,
+    "duplicate_job_ids": 0,
+    "unmatched_candidate_rows": 0,
+    "unmatched_job_rows": 0,
+    "date_present_counts": {
+      "spontaneous_application_date": 3417,
+      "shortlist_date": 37734,
+      "qualification_date": 24235,
+      "resume_sent_to_company_date": 7118,
+      "1st_interview_date": 2813,
+      "2nd_interview_date": 825,
+      "3rd_interview_date": 229,
+      "4th_interview_date": 68,
+      "job_offer_proposed_date": 899,
+      "job_offer_accepted_date": 857,
+      "end_of_process_date": 11048
+    },
+    "last_stage_counts": {
+      "2nd Interview": 416,
+      "1st Interview": 1700,
+      "Offer Accepted": 857,
+      "Resume Sent": 4140,
+      "Shortlist": 14697,
+      "Offer Received": 43,
+      "3rd Interview": 98,
+      "Qualification": 17107,
+      "Application Made": 3210,
+      "4th Interview": 20
+    },
+    "offer_to_acceptance_days": {
+      "count": 856,
+      "mean": 3.215,
+      "median": 0.0,
+      "min": 0,
+      "max": 36
+    },
+    "negative_offer_intervals": 0,
+    "history_columns": [
+      "application_id",
+      "candidate_id",
+      "job_id",
+      "spontaneous_application_date",
+      "shortlist_date",
+      "qualification_date",
+      "resume_sent_to_company_date",
+      "1st_interview_date",
+      "2nd_interview_date",
+      "3rd_interview_date",
+      "4th_interview_date",
+      "job_offer_proposed_date",
+      "job_offer_accepted_date",
+      "end_of_process_date",
+      "last_stage_reached",
+      "application_source"
+    ],
+    "interpretation": "Privacy-altered dates from French recruiting; not warehouse hiring calibration or actual employee start dates."
+  }
+}

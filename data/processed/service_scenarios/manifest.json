@@ -1,0 +1,57 @@
+{
+  "config": {
+    "evidence_status": "hypothetical_capacity_scenarios_not_observed_staffing",
+    "scheduled_workers": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "units_per_productive_hour": [
+      30,
+      40,
+      50
+    ],
+    "absent_workers_each_operating_day": [
+      0,
+      1,
+      2
+    ],
+    "service_operating_days": [
+      1,
+      2
+    ],
+    "target_on_time_unit_share": 0.95,
+    "paid_hours": 8,
+    "productive_factor": 0.85,
+    "operating_weekdays": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "recovery_calendar_days": 28,
+    "initial_backlog_units": 0,
+    "overtime_hours": 0,
+    "temporary_workers": 0
+  },
+  "cases": 324,
+  "sources": {
+    "config/footwear_scenarios.json": "3474ae1b5db7d7dc2f76590e1d98eee89d564b36fb1e8e9df72bcd752abbaabf",
+    "data/raw/warehouse_picking/Customer_Order.csv": "e28ae8ac9b368b9496b153fafb5af685bd94ba1530ffcb308dfcd5403601f325"
+  },
+  "deadline_definition": "Arrival operating day counts as day 1; closed-day arrivals start next operating day; due at day end.",
+  "metric": "Unit-weighted service, not whole-order or shipping SLA; arrivals available at day start.",
+  "limits": [
+    "Absences persist every operating day, representing a stress level, not measured attendance.",
+    "Missing dates assume zero demand; initial backlog zero; no packing, costs or shift feasibility constraints.",
+    "Historical replay, not forecast or calibrated staffing. No overtime or temporary workers in this grid.",
+    "4 is the lower search bound; a result of 4 does not prove fewer workers would fail."
+  ]
+}
