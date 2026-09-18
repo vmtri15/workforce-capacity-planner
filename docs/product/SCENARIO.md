@@ -56,9 +56,9 @@ These are product personas. Actual modeled production roles and leadership requi
 | Input | Candidate source and access | Verification and limits |
 |---|---|---|
 | Regional employment and industry wages | BLS QCEW downloadable CSV endpoints | 2025 Q4 NAICS 492/493 files downloaded and compared. Industry-average wages are not role-specific wage rates. |
-| Occupational tasks and skills | Local O*NET Database 31.0 download | Four production and support roles mapped in `ROLE_RESEARCH.md`; tasks/skills do not set wage or productivity values. |
+| Occupational tasks and skills | Local O*NET Database 31.0 download | Four production and support roles mapped in `../research/ROLE_RESEARCH.md`; tasks/skills do not set wage or productivity values. |
 | Hiring, separations, earnings | Census QWI API | Documentation identified; test selected geographies/industries and suppression before adoption. Aggregate flows do not provide a company recruiting pipeline or time-to-hire. |
-| Role-specific wages | BLS OEWS occupational wage tables | OEWS geography is now mapped in `LABOR_MARKET_RESEARCH.md`; retain each saved extract's release year and SOC coding. |
+| Role-specific wages | BLS OEWS occupational wage tables | OEWS geography is now mapped in `../research/LABOR_MARKET_RESEARCH.md`; retain each saved extract's release year and SOC coding. |
 | Workload patterns | UCI Online Retail II; LaDe as an alternative last-mile source | UCI ZIP and a LaDe CSV sample were accessed. Neither supplies actual workload at the selected US sites. Retail transactions are not SOC arrivals; LaDe is last-mile activity, not internal sorting. |
 | Weather | Open-Meteo historical API | Documentation identified; not yet integrated. Use only if dates/geography align and an operational use is justified. |
 | Facility roster and hiring pipeline | Reproducible simulation or editable scenario inputs | No private company data is required or available. |

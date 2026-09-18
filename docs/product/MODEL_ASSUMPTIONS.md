@@ -90,7 +90,7 @@ Those coverage rules are policy assumptions, not inferred productivity ratios.
 These are active daily positions. Phase 3B constructs a minimum synthetic roster
 of 102 people to cover them with at most five regular paid days per rolling
 seven-day window. This assumes unrestricted availability and does not include
-absence or training coverage; see `PHASE_3B_RESULTS.md`.
+absence or training coverage; see `../validation/PHASE_3B_RESULTS.md`.
 
 ## Model controls that remain editable
 

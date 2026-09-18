@@ -32,7 +32,7 @@ metro values are context proxies and do not describe an identified facility.
 | `scenario_assumptions` | Named assumption | Varies | Numeric/text values with classification, unit, basis, and editability |
 
 The configuration tables keep assumptions separate from observed source
-records. `MODEL_ASSUMPTIONS.md` explains the initial values and limitations.
+records. `../product/MODEL_ASSUMPTIONS.md` explains the initial values and limitations.
 
 ## Phase 2B output tables
 
@@ -90,7 +90,7 @@ network solutions, eligibility records, paid hiring schedules, training and
 travel time, action costs, reconstructed capacity, solver statuses and cost
 bounds. It includes the database and network-optimizer implementation hashes.
 There are six scenarios, including four-hour transfer travel. An INFEASIBLE or
-UNKNOWN run has no total cost or action recommendation. See `PHASE_3C_RESULTS.md`.
+UNKNOWN run has no total cost or action recommendation. See `../validation/PHASE_3C_RESULTS.md`.
 
 ## Rebuild sequence
 

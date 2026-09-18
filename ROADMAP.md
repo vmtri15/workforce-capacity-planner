@@ -33,14 +33,14 @@
 
 ## Phase 3 Build scenarios and optimization
 
-- Completed Phase 3A: researched overtime and temporary-worker constraints; implemented 24 preliminary single-action comparisons across productivity cases and 95%/100% completion targets. See `STAFFING_OPTIONS_RESEARCH.md`.
-- Completed Phase 3B: configurable policy, synthetic weekly roster, finite temporary pools with readiness gates, and CP-SAT optimization of overtime plus temporary shifts. Six scenarios and twelve unit tests validate feasibility limits; see `PHASE_3B_RESULTS.md`.
-- Completed Phase 3C: paid cross-training, synthetic cross-role eligibility, fixed-term hiring with paid onboarding and guaranteed schedules, and transfers with donor capacity/travel accounting. The joint optimizer preserves feasibility versus proven optimality and tests slower travel. See `PHASE_3C_RESULTS.md`.
+- Completed Phase 3A: researched overtime and temporary-worker constraints; implemented 24 preliminary single-action comparisons across productivity cases and 95%/100% completion targets. See `docs/validation/STAFFING_OPTIONS_RESEARCH.md`.
+- Completed Phase 3B: configurable policy, synthetic weekly roster, finite temporary pools with readiness gates, and CP-SAT optimization of overtime plus temporary shifts. Six scenarios and twelve unit tests validate feasibility limits; see `docs/validation/PHASE_3B_RESULTS.md`.
+- Completed Phase 3C: paid cross-training, synthetic cross-role eligibility, fixed-term hiring with paid onboarding and guaranteed schedules, and transfers with donor capacity/travel accounting. The joint optimizer preserves feasibility versus proven optimality and tests slower travel. See `docs/validation/PHASE_3C_RESULTS.md`.
 - Phase 3C verification closed September 15, 2026: all 25 tests passed; six scenarios regenerated, with four audited feasible/optimal plans and two infeasible cases. The standard low-productivity plan remains FEASIBLE, not proven optimal. Backlog and dated absences remain outside Phase 3C.
-- Completed research follow-up: reviewed three packing sources and specified a package-plus-unit workload extension in `PACKING_RESEARCH.md`.
-- Completed: candidate outbound audit reconciled all 604 source days; implemented and tested a standalone package-plus-unit packing calculation and diagnostic. See `OUTBOUND_AUDIT_RESULTS.md`.
-- Completed: reviewed nonstandard codes, retained unresolved rows in a review register, and generated three individual-unit packing-job sensitivities. All 19 focused tests pass; see `PACKING_SCENARIO_DECISION.md`.
-- Completed: opt-in productive-hour packing demand interface, three separate sensitivity runs, and dashboard workload-model selection. All three packing scenarios are infeasible under unchanged staffing/action limits; see `PACKING_INTEGRATION_RESULTS.md`. Rates remain uncalibrated.
+- Completed research follow-up: reviewed three packing sources and specified a package-plus-unit workload extension in `docs/research/PACKING_RESEARCH.md`.
+- Completed: candidate outbound audit reconciled all 604 source days; implemented and tested a standalone package-plus-unit packing calculation and diagnostic. See `docs/validation/OUTBOUND_AUDIT_RESULTS.md`.
+- Completed: reviewed nonstandard codes, retained unresolved rows in a review register, and generated three individual-unit packing-job sensitivities. All 19 focused tests pass; see `docs/validation/PACKING_SCENARIO_DECISION.md`.
+- Completed: opt-in productive-hour packing demand interface, three separate sensitivity runs, and dashboard workload-model selection. All three packing scenarios are infeasible under unchanged staffing/action limits; see `docs/validation/PACKING_INTEGRATION_RESULTS.md`. Rates remain uncalibrated.
 - Remaining: carryover backlog, dated absences and broader disruption handling. Daily synthetic schedules do not establish intraday operational or payroll compliance.
 
 ## Phase 4 Build the product

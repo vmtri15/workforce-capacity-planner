@@ -69,7 +69,7 @@ has no observed work duration.
 
 The current capacity engine uses modeled order lines for picking and estimated
 pack jobs for packing, each divided by its separate assumed productive-hour rate.
-The proposed package-plus-unit packing model is specified in `PACKING_RESEARCH.md`.
+The proposed package-plus-unit packing model is specified in `../research/PACKING_RESEARCH.md`.
 
 The user can vary low/base/high productivity and demand cases. Outputs must
 state that the sensitivity is a planning scenario until a time-stamped labor
@@ -94,4 +94,4 @@ baseline.
 
 ## September 15 source-definition correction
 
-The existing `distinct_invoice_ids` field counts all invoice IDs before quantity filtering. It must not be described as cleaned valid outbound orders. Preserve it for provenance and derive a separate outbound-order measure through the audit specified in `PACKING_RESEARCH.md`. Parcel counts remain assumed.
+The existing `distinct_invoice_ids` field counts all invoice IDs before quantity filtering. It must not be described as cleaned valid outbound orders. Preserve it for provenance and derive a separate outbound-order measure through the audit specified in `../research/PACKING_RESEARCH.md`. Parcel counts remain assumed.

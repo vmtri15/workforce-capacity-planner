@@ -96,7 +96,7 @@ Outputs in `data/processed/recommendation_validation/`:
 
 Input fingerprints must match the saved cost analysis before repricing. All
 selection/evaluation workload totals reconcile and no deadlines remain censored.
-The direct site-and-action answer is generated in `DECISION_ANSWER.md` and shown
+The direct site-and-action answer is generated in `../../DECISION_ANSWER.md` and shown
 in the dashboard Recommendations view.
 
 Source demand: Rodrigo Furlan de Assis, Order Picking Dataset from a Warehouse

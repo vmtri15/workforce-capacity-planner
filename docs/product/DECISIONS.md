@@ -16,7 +16,7 @@
 - Approved study corridor: Chicago–southeast Wisconsin, with Joliet/Elwood, O’Hare-area logistics cluster, and Kenosha/Pleasant Prairie as modeled site areas.
 - Regional choice is supported by downloaded BLS 2025 Q4 NAICS 492/493 data and logistics infrastructure sources in SCENARIO.md. Exact sites and capacity are not verified.
 - Selected operating model: e-commerce fulfillment/distribution with outbound picking and packing. Parcel sortation was screened but not selected because the public data found so far does not connect workload to worker-level labor time as clearly.
-- Initial production/support roles: fulfillment associate, packing associate, shipping/receiving coordinator, and warehouse supervisor. Detailed mapping is in ROLE_RESEARCH.md.
+- Initial production/support roles: fulfillment associate, packing associate, shipping/receiving coordinator, and warehouse supervisor. Detailed mapping is in `../research/ROLE_RESEARCH.md`.
 - Research first: data availability, benchmarking, and sources must precede location, role, headcount, productivity, and scenario decisions.
 - Current phase is research and feasibility, not implementation. 
 - Public regional data supports context, not actual site workload or hiring pipelines. Label simulation and geographic adaptations explicitly.

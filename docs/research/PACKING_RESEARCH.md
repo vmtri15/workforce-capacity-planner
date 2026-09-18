@@ -1,6 +1,6 @@
 # Packing evidence and model design
 
-Reviewed September 15, 2026. Status: full-text review complete; standalone packing calculation and candidate audit implemented. Optimizer integration and calibration remain pending. See `OUTBOUND_AUDIT_RESULTS.md`.
+Reviewed September 15, 2026. Status: full-text review complete; standalone packing calculation and candidate audit implemented. Optimizer integration and calibration remain pending. See `../validation/OUTBOUND_AUDIT_RESULTS.md`.
 
 ## Sources and applicability
 
@@ -66,4 +66,4 @@ Next implementation task: outbound invoice and order-mix audit. Broad packing li
 
 ## Reviewed scenario follow-up
 
-See `PACKING_SCENARIO_DECISION.md` for the revised code review, candidate counts, per-order job-size sensitivities and validation. These remain separate diagnostic outputs, not calibrated rates or observed parcels.
+See `../validation/PACKING_SCENARIO_DECISION.md` for the revised code review, candidate counts, per-order job-size sensitivities and validation. These remain separate diagnostic outputs, not calibrated rates or observed parcels.

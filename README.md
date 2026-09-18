@@ -84,13 +84,13 @@ available. The dashboard workload-model selector uses these outputs after a
 reload. The browser smoke test expects these three outputs and Google Chrome.
 These are uncalibrated assumptions, not measured packing rates or carton sizes.
 Picking remains at the base productivity case. Paid-time availability is applied
-once on the capacity side. See `PACKING_INTEGRATION_RESULTS.md` for limitations.
+once on the capacity side. See [PACKING_INTEGRATION_RESULTS.md](docs/validation/PACKING_INTEGRATION_RESULTS.md) for limitations.
 
 Start with:
 
-- `PROJECT_BRIEF.md` for the product definition and agreed scope.
-- `ROADMAP.md` for the build sequence.
-- `DECISIONS.md` for choices made during collaboration.
+- [DECISION_ANSWER.md](DECISION_ANSWER.md) for the current decision and result.
+- [ROADMAP.md](ROADMAP.md) for the build sequence.
+- [docs/README.md](docs/README.md) for research, assumptions, data notes, and validation evidence.
 
 When the project changes, update the relevant file before starting a new implementation phase. Keep assumptions and open questions separate from verified results.
 
@@ -107,7 +107,7 @@ python3 scripts/build_database.py
 ```
 
 This creates `data/workforce_planner.db` from the saved inputs and runs the
-required data-quality checks. See `DATA_SCHEMA.md` for table lineage, row
+required data-quality checks. See [DATA_SCHEMA.md](docs/data/DATA_SCHEMA.md) for table lineage, row
 counts, and limitations.
 
 Run the Phase 2B planning engine after building the database:
@@ -118,13 +118,13 @@ python3 scripts/run_planning_engine.py
 
 The engine writes three fixed-staffing productivity cases to the database.
 Query `planning_run_summary` for the headline results and
-`planning_quality_results` for the engine checks. See `PHASE_2B_RESULTS.md` for
+`planning_quality_results` for the engine checks. See [PHASE_2B_RESULTS.md](docs/validation/PHASE_2B_RESULTS.md) for
 the current interpretation and limitations.
 
 For the preliminary Phase 3 staffing comparison, run
 `python3 scripts/compare_staffing_options.py` after the planning engine.
 It saves `data/processed/staffing_option_comparison.json`; assumptions, research,
-results and remaining optimization work are in `STAFFING_OPTIONS_RESEARCH.md`.
+results and remaining optimization work are in [STAFFING_OPTIONS_RESEARCH.md](docs/validation/STAFFING_OPTIONS_RESEARCH.md).
 
 Phase 3B adds synthetic rosters and constrained overtime/temporary-shift optimization:
 
@@ -137,7 +137,7 @@ PYTHONPATH=src .venv/bin/python -m unittest discover -s tests -v
 
 Build the database and run the planning engine first. Edit scenario policies in
 `config/optimization.json`. Auditable actions and solver statuses are saved in
-`data/processed/optimization_results.json`; see `PHASE_3B_RESULTS.md` for the
+`data/processed/optimization_results.json`; see [PHASE_3B_RESULTS.md](docs/validation/PHASE_3B_RESULTS.md) for the
 research, synthetic-data boundaries, results and remaining work.
 
 Phase 3C adds cross-training, paid fixed-term hiring and transfers:
@@ -148,7 +148,7 @@ Phase 3C adds cross-training, paid fixed-term hiring and transfers:
 
 The new action controls are in `config/workforce_actions.json`. Results and
 worker-level actions are saved in `data/processed/network_optimization_results.json`.
-See `PHASE_3C_RESULTS.md` for research, assumptions, interpretation and validation.
+See [PHASE_3C_RESULTS.md](docs/validation/PHASE_3C_RESULTS.md) for research, assumptions, interpretation and validation.
 The script includes a slower-travel sensitivity and preserves FEASIBLE versus
 OPTIMAL solver labels.
 
@@ -161,24 +161,24 @@ python3 scripts/build_database.py
 
 An isolated footwear demand/absence/backlog experiment is available with
 `python3 scripts/build_footwear_scenario.py`. See
-[FOOTWEAR_BACKLOG_SCENARIO.md](FOOTWEAR_BACKLOG_SCENARIO.md) for source attribution,
+[FOOTWEAR_BACKLOG_SCENARIO.md](docs/validation/FOOTWEAR_BACKLOG_SCENARIO.md) for source attribution,
 assumptions and results. It does not modify the existing dashboard or optimizer.
 
 The five evidence-first operational analyses are documented in
-[OPERATIONAL_ACTIONS.md](OPERATIONAL_ACTIONS.md): order segmentation, peak-response
+[OPERATIONAL_ACTIONS.md](docs/validation/OPERATIONAL_ACTIONS.md): order segmentation, peak-response
 comparisons, location-review priorities, experimental packing reference and
 duplicate-data sensitivity. Reproduce with `scripts/analyze_operational_actions.py`.
 
 Explicit hypothetical staffing and operating-day service scenarios are defined in
 `config/footwear_scenarios.json`. Run `python3 scripts/run_service_scenarios.py`;
-see [SERVICE_SCENARIOS.md](SERVICE_SCENARIOS.md) for definitions and results.
+see [SERVICE_SCENARIOS.md](docs/validation/SERVICE_SCENARIOS.md) for definitions and results.
 
 Compare hypothetical permanent capacity, overtime and delayed temporary shifts
 with `python3 scripts/compare_service_costs.py`. See
-[SERVICE_COST_COMPARISON.md](SERVICE_COST_COMPARISON.md) for costs, stress results
+[SERVICE_COST_COMPARISON.md](docs/validation/SERVICE_COST_COMPARISON.md) for costs, stress results
 and limitations; rates and policy limits are in `config/staffing_cost_scenarios.json`.
 
-Final price and chronological checks are in [RECOMMENDATION.md](RECOMMENDATION.md).
+Final price and chronological checks are in [RECOMMENDATION.md](docs/validation/RECOMMENDATION.md).
 Run `python3 scripts/validate_recommendations.py`. The preferred policies remained
 stable across tested prices but the two frozen choices did not meet their targets
 in every later-period case. Run `python3 scripts/build_decision_answer.py` after
