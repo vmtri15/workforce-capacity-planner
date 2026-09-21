@@ -351,6 +351,43 @@ function renderDecisionAnswer() {
   document.getElementById('decision-rule').textContent = decisionAnswerData.actions.decision_rule;
 }
 
+async function setupAiExplainer() {
+  const panel = document.getElementById('ai-explainer');
+  try {
+    const status = await fetch('./api/ai-status');
+    if (!status.ok || !(await status.json()).available) return;
+  } catch (_) {
+    return;
+  }
+  panel.hidden = false;
+  document.getElementById('ai-explain').addEventListener('click', async () => {
+    const button = document.getElementById('ai-explain');
+    const output = document.getElementById('ai-explanation');
+    button.disabled = true;
+    button.textContent = 'Preparing explanation...';
+    output.hidden = false;
+    output.classList.remove('error');
+    output.textContent = 'Reviewing the validated recommendation and its limitations...';
+    try {
+      const response = await fetch('./api/explain-recommendation', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({audience: document.getElementById('ai-audience').value,
+          decision: decisionAnswerData}),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'The explanation could not be generated.');
+      output.textContent = result.explanation;
+    } catch (error) {
+      output.textContent = error.message;
+      output.classList.add('error');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Explain recommendation';
+    }
+  });
+}
+
 async function loadDecisionAnswer() {
   let response = await fetch('./api/decision-answer');
   if (!response.ok) response = await fetch('./data/decision_answer.json');
@@ -378,6 +415,7 @@ async function loadPortfolio() {
     setupScenarioBuilder();
     await loadNetworkCapacity();
     await loadDecisionAnswer();
+    await setupAiExplainer();
     document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => showView(button.dataset.go)));
   } catch (error) {
     const alert = document.getElementById('error');

@@ -28,6 +28,22 @@ The server binds to localhost and only serves the dashboard assets and data API.
 The browser smoke check is `node scripts/check_dashboard.cjs` with Playwright
 available and the server running on port 8765.
 
+### Optional OpenAI explanation
+
+The Recommendations view can translate the saved decision artifact into a short
+manager-facing explanation. The optimizer and validation remain authoritative;
+OpenAI does not calculate staffing or change the recommendation. Start the local
+server with a server-side key:
+
+```bash
+OPENAI_API_KEY="your-key" python3 scripts/serve_dashboard.py
+```
+
+Set `OPENAI_MODEL` to override the default `gpt-5-mini`. The feature is hidden
+when no key is configured. Never add the key to frontend code, `.env` tracked by
+Git, or GitHub Pages; a public interactive deployment requires a separate secure
+backend or serverless endpoint.
+
 ### 2023 network capacity replay
 
 Run `python3 scripts/build_2023_network_capacity.py` to rebuild the portfolio's

@@ -3,7 +3,10 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import sqlite3
+import urllib.error
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -31,6 +34,45 @@ def decision_answer_snapshot():
     return json.loads(path.read_text(encoding='utf-8'))
 
 
+def build_explanation_prompt(payload):
+    audience = payload.get('audience', 'operations manager')
+    decision = payload.get('decision')
+    if audience not in {'operations manager', 'executive'} or not isinstance(decision, dict):
+        raise ValueError('A valid audience and decision object are required.')
+    return (
+        'Explain the following warehouse-capacity recommendation to an '
+        f'{audience}. Use only the supplied facts. Write 2 short paragraphs followed '
+        'by exactly 3 bullets: decision, evidence, and limitation. Clearly distinguish '
+        'observed demand from modeled assumptions. Do not invent savings, actual '
+        'headcount, operational performance, or guaranteed service.\n\n'
+        f'DECISION DATA:\n{json.dumps(decision, separators=(",", ":"), sort_keys=True)}'
+    )
+
+
+def request_ai_explanation(payload):
+    api_key = os.environ.get('OPENAI_API_KEY')
+    if not api_key:
+        raise RuntimeError('OPENAI_API_KEY is not configured on the server.')
+    body = json.dumps({
+        'model': os.environ.get('OPENAI_MODEL', 'gpt-5-mini'),
+        'input': build_explanation_prompt(payload),
+        'max_output_tokens': 500,
+        'store': False,
+    }).encode()
+    request = urllib.request.Request(
+        'https://api.openai.com/v1/responses', data=body, method='POST',
+        headers={'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'},
+    )
+    with urllib.request.urlopen(request, timeout=30) as response:
+        result = json.loads(response.read())
+    parts = [content.get('text', '') for item in result.get('output', [])
+             for content in item.get('content', []) if content.get('type') == 'output_text']
+    explanation = ''.join(parts).strip()
+    if not explanation:
+        raise RuntimeError('OpenAI returned no explanation text.')
+    return {'explanation': explanation, 'model': result.get('model', 'OpenAI model')}
+
+
 def snapshot():
     database = ROOT / 'data/workforce_planner.db'
     with sqlite3.connect(database.as_uri() + '?mode=ro', uri=True) as conn:
@@ -54,6 +96,38 @@ def snapshot():
 
 
 class Handler(BaseHTTPRequestHandler):
+    def send_json(self, status, payload):
+        body = json.dumps(payload).encode()
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json; charset=utf-8')
+        self.send_header('Content-Length', str(len(body)))
+        self.send_header('Cache-Control', 'no-store')
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_POST(self):
+        if self.path.split('?')[0] != '/api/explain-recommendation':
+            self.send_error(404)
+            return
+        try:
+            length = int(self.headers.get('Content-Length', '0'))
+            if length < 1 or length > 16384:
+                raise ValueError('Request body must be between 1 byte and 16 KB.')
+            result = request_ai_explanation(json.loads(self.rfile.read(length)))
+        except (ValueError, json.JSONDecodeError) as error:
+            self.send_json(400, {'error': str(error)})
+            return
+        except RuntimeError as error:
+            self.send_json(503, {'error': str(error)})
+            return
+        except urllib.error.HTTPError as error:
+            self.send_json(502, {'error': f'OpenAI request failed with status {error.code}.'})
+            return
+        except (urllib.error.URLError, TimeoutError):
+            self.send_json(502, {'error': 'OpenAI could not be reached. Try again later.'})
+            return
+        self.send_json(200, result)
+
     def do_GET(self):
         path = self.path.split('?')[0]
         if path == '/api/data':
@@ -84,6 +158,10 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_error(503, 'Decision answer unavailable. Rebuild the decision artifact, then reload.')
                 return
             content_type = 'application/json'
+        elif path == '/api/ai-status':
+            self.send_json(200, {'available': bool(os.environ.get('OPENAI_API_KEY')),
+                                 'model': os.environ.get('OPENAI_MODEL', 'gpt-5-mini')})
+            return
         elif path in ('/', '/app.js', '/portfolio.js', '/style.css', '/published.css', '/portfolio.css'):
             name = 'index.html' if path == '/' else path[1:]
             body = (ROOT / 'dashboard' / name).read_bytes()

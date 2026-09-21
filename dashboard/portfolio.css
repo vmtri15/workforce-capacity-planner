@@ -489,6 +489,49 @@ body:not(.legacy-active) #overview {
   margin-top: 18px;
 }
 
+.ai-explainer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: end;
+  margin: 20px 0;
+}
+
+.ai-controls {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+}
+
+.ai-controls label {
+  display: grid;
+  gap: 7px;
+  color: #627268;
+  font-size: 11px;
+}
+
+.ai-controls select {
+  min-width: 170px;
+  height: 39px;
+  border: 1px solid #d5ded8;
+  border-radius: 4px;
+  background: white;
+  padding: 8px 10px;
+}
+
+.ai-output {
+  grid-column: 1 / -1;
+  white-space: pre-wrap;
+  color: #344a40;
+  line-height: 1.65;
+  border-top: 1px solid #dce4df;
+  padding-top: 18px;
+}
+
+.ai-output.error {
+  color: #a44139;
+}
+
 @media (max-width: 900px) {
   .portfolio-grid,
   .builder-layout,
@@ -498,6 +541,14 @@ body:not(.legacy-active) #overview {
   .guardrails,
   .lineage {
     grid-template-columns: 1fr;
+  }
+
+  .ai-explainer {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-output {
+    grid-column: auto;
   }
 
   .analysis-panel.wide {
