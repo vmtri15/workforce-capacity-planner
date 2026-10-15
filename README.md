@@ -204,6 +204,24 @@ See [PHASE_3C_RESULTS.md](docs/validation/PHASE_3C_RESULTS.md) for research, ass
 The script includes a slower-travel sensitivity and preserves FEASIBLE versus
 OPTIMAL solver labels.
 
+Demand forecast and the cost of forecast error:
+
+```bash
+python3 scripts/forecast_demand.py
+```
+
+This forecasts daily units 4 weeks ahead (20 weekdays) with a rolling origin backtest of 25 forecast dates. It compares two simple baselines with Prophet, ARIMA, and XGBoost, using only past data at each origin. Monday to Friday only: 7,428 Sunday units are left out, and dates with no source records are treated as unknown, not zero. Results are written to `data/processed/demand_forecast/`.
+
+What the backtest found:
+
+- Daily demand is hard to predict. Every model has a daily WAPE (total error divided by total demand) between 60% and 64%, and the simple 20 day mean is within 3 points of the best model. ARIMA is best, but its forecast is close to a flat line. Its error on the 4 week total is about 21%.
+- With under one year of data there is no yearly seasonality, so no same week last year baseline exists.
+- Sizing headcount on the point forecast misses the 95% on time target in 60% of the 4 week windows (ARIMA), because a smooth forecast hides spikes and a level shift in August and September.
+- Adding a buffer helps. Sizing on ARIMA forecast times 1.5 gives 97% mean on time units, misses the target in 20% of windows, and costs about one extra worker on average. One worker is $3,520 per 4 weeks at the hypothetical wage in `config/staffing_cost_scenarios.json`.
+- The low and high band (10th and 90th percentile of actual divided by forecast) covered only 60% of days on the later origins, against an 80% target. Treat it as too narrow.
+
+Headcount costs use the hypothetical scenario inputs, not observed staffing. The forecast is not yet connected to the optimizer.
+
 Refresh the Census QWI extract before rebuilding when needed:
 
 ```bash

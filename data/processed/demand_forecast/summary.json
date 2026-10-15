@@ -1,0 +1,25 @@
+{
+  "data": {
+    "recorded_weekdays": 173,
+    "weekdays_in_range": 206,
+    "first_date": "2023-01-05",
+    "last_date": "2023-10-19",
+    "units": 220767,
+    "weekend_units_excluded": 7428
+  },
+  "backtest": {
+    "origins": 25,
+    "horizon_weekdays": 20,
+    "min_train_weeks": 12
+  },
+  "best_model_by_wape": "ARIMA",
+  "band": {
+    "low_ratio": 0.253,
+    "high_ratio": 1.768,
+    "nominal_coverage": 0.8,
+    "holdout_coverage": 0.603,
+    "calibration_origins": 15,
+    "holdout_origins": 10
+  },
+  "evidence_status": "forecast of observed 2023 demand; headcount costs use hypothetical scenario inputs"
+}
