@@ -1,0 +1,16 @@
+{
+  "orders_total": 99441,
+  "delivered": 96478,
+  "dropped_missing_handover_or_delivery_time": 9,
+  "dropped_delivery_before_handover_or_handover_before_purchase": 188,
+  "parcels": 96281,
+  "orders_with_more_than_one_seller": 1278,
+  "parcels_without_items": 0,
+  "distance_from_zip_prefix_share": 0.995,
+  "parcels_without_any_distance": 0,
+  "first_handover": "2016-10-08 10:34:01",
+  "last_handover": "2018-09-11 19:48:28",
+  "routes": 409,
+  "routes_with_100_or_more_parcels": 70,
+  "late_share": 0.0812
+}
