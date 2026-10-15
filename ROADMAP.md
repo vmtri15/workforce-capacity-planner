@@ -62,7 +62,7 @@
 
 ## Phase 5 Validate
 
-- Completed: 4 week daily demand forecast with a rolling origin backtest (baselines, Prophet, ARIMA, XGBoost) and a measurement of what forecast error costs in headcount and on time service. See `scripts/forecast_demand.py` and the README. Connecting the forecast to the optimizer remains.
+- Completed: 4 week daily demand forecast with a rolling origin backtest (baselines, Prophet, ARIMA, XGBoost) and a measurement of what forecast error costs in headcount and on time service. See `scripts/forecast_demand.py` and the README. The forecast is linked to the staffing policy grid in `scripts/forecast_staffing_link.py`. It is not linked to the CP-SAT optimizer, which works on the synthetic roster and modeled workload in SQLite.
 - Test normal demand, demand spike, absence spike, hiring delay, skill shortage, weather disruption, and hub closure.
 - Compare against simple staffing rules.
 - Measure forecast error, capacity coverage, cost, service level, overtime, and usability.

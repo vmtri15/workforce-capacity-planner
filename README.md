@@ -226,7 +226,23 @@ Method check on 5 years of data. The 2023 data is under one year, so `python3 sc
 - Single warehouses are much harder, at 26% to 66% depending on the warehouse. That is close to the 60% found on the 2023 footwear data, so the short 2023 history is not the only reason for the poor accuracy. Daily demand at one site is noisy, and combining many products smooths it.
 - Same weekday last year did worse than the 20 day mean, so yearly seasonality is weak in this data.
 
-Headcount costs use the hypothetical scenario inputs, not observed staffing. The forecast is not yet connected to the optimizer.
+Headcount costs use the hypothetical scenario inputs, not observed staffing.
+
+Forecast to staffing link. `python3 scripts/forecast_staffing_link.py` (run after `forecast_demand.py`) chooses a standing plan from the forecast, then replays it on the demand that really arrived. The plan is one of the 30 policies in `compare_service_costs.py`: permanent workers, an overtime limit, and a temporary shift limit, with the planner's reactive overtime and temp rules. It uses the same hypothetical wages and the base case of 40 units per hour. Results are in `data/processed/demand_forecast/staffing_link_summary.csv`. Over 25 four week windows:
+
+| Plan | Mean on time units | Windows below 95% | Mean cost per window |
+| --- | ---: | ---: | ---: |
+| Chosen on the forecast (ARIMA) | 96.3% | 24% | $41,691 |
+| 6 workers, up to 2 overtime hours (fixed) | 98.4% | 24% | $42,026 |
+| 6 workers, overtime, up to 4 temps kept available (fixed) | 99.7% | 0% | $42,285 |
+| Chosen with hindsight on actual demand | 98.7% | 0% | $42,030 |
+| 10 workers, up to 2 overtime hours (fixed) | 100% | 0% | $69,485 |
+
+- The forecast always picked the cheapest plan, 6 workers with no overtime and no temps, because the forecast is smooth. When demand roughly doubled in July to September, that plan fell to 86% to 89% on time in 6 of 25 windows. Hindsight chose the same 6 workers plus temps.
+- A buffer of 1.5 on the forecast did not fix this.
+- Keeping overtime and temp shifts available (6 workers, 2 overtime hours, up to 4 temps) reached 99.7%, never missed the target, and cost only about $255 more per window than hindsight. The 10 worker plan costs about $27,000 more per window.
+- So the forecast error costs service, not money: the surges it misses must be absorbed by flexible capacity. The standing headcount matters less than keeping that flexibility available. This uses one year of one site's data and 25 overlapping windows, so treat it as a strong hint, not proof.
+
 
 Refresh the Census QWI extract before rebuilding when needed:
 
