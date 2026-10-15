@@ -1,18 +1,54 @@
 # Workforce Capacity Planner
 
-This folder is the working source of truth for the Workforce Capacity Planner for Distributed Operations project.
+**Do three warehouse sites have enough workers for the expected workload, and if not, what is the cheapest safe fix?**
 
-## Published Tableau dashboards
+## The answer
 
-The portfolio visualization is published on Tableau Public:
+Each modeled site covers at least 95% of its workload on most days, but none removes every shortfall hour across the recorded 2023 workload. The analysis found two staffing options:
 
-- [Warehouse Workforce Capacity Planner](https://public.tableau.com/views/WarehouseWorkforceCapacityPlanner/DemandInsights?:showVizHome=no)
+| Option | Workers | Overtime | Stress cases passed | Modeled cost |
+| --- | ---: | --- | ---: | ---: |
+| Affordable base case | 6 | Up to 2 hours | 12 of 36 | $106,326 |
+| Lowest risk | 10 | Up to 2 hours | 36 of 36 | $176,616 at most |
 
-It presents observed 2023 warehouse order demand, explicitly hypothetical
-staffing cost and service scenarios, later-period validation, and O*NET 31.0
-occupational evidence. The Tableau analysis is separate from the older local
-network-planning prototype described below; scenario inputs are not observed
-company staffing records.
+Choose the 6 worker plan when productivity is near 40 units per productive hour and attendance is stable. Choose the 10 worker plan when low productivity or two worker absence is possible. See [DECISION_ANSWER.md](DECISION_ANSWER.md) for the site by site answer.
+
+## See it
+
+- [Live site](https://vmtri15.github.io/workforce-capacity-planner/)
+- [Tableau Public dashboard](https://public.tableau.com/views/WarehouseWorkforceCapacityPlanner/DemandInsights?:showVizHome=no)
+
+![Warehouse demand dashboard on Tableau Public](docs/images/dashboard.png)
+
+## What is real and what is modeled
+
+- **Observed:** the 2023 order dates, units, and order mix.
+- **Modeled:** how demand is split across the three sites, staffing, productivity, attendance, timing, service level, and cost. These are explicit assumptions, not records from a real company.
+- **External context:** labor market data (QWI) and process timing studies. They do not describe these sites.
+
+The result is a planning answer under stated assumptions. It does not prove how many workers a real site needs.
+
+## How it works
+
+1. Load the 2023 demand data and public labor data into SQLite.
+2. Size a fixed staffing plan from the 95th percentile of recorded daily demand.
+3. Replay that plan under low, base, and high productivity.
+4. Use the OR Tools CP-SAT solver to choose overtime, temporary shifts, cross training, hiring, and transfers.
+5. Test the chosen options on a later time period and across 36 stress cases.
+
+## Tech stack
+
+Python, SQL (SQLite), Google OR Tools, Tableau Public, HTML and JavaScript, GitHub Pages.
+
+## Run it locally
+
+```bash
+python3 scripts/serve_dashboard.py
+```
+
+Then open http://127.0.0.1:8765. Everything below is technical detail for rebuilding the data and rerunning the models.
+
+## Technical details
 
 ## Local dashboard
 
@@ -171,7 +207,7 @@ OPTIMAL solver labels.
 Refresh the Census QWI extract before rebuilding when needed:
 
 ```bash
-/Users/minhtrivi/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 scripts/fetch_census_qwi.py
+python3 scripts/fetch_census_qwi.py
 python3 scripts/build_database.py
 ```
 
