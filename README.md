@@ -244,6 +244,20 @@ Forecast to staffing link. `python3 scripts/forecast_staffing_link.py` (run afte
 - So the forecast error costs service, not money: the surges it misses must be absorbed by flexible capacity. The standing headcount matters less than keeping that flexibility available. This uses one year of one site's data and 25 overlapping windows, so treat it as a strong hint, not proof.
 
 
+Forecast to CP-SAT link (legacy 2011 model). The CP-SAT optimizer runs on the older 2011 retailer data (56 day window, Oct 14 to Dec 8, 2011, three modeled sites, synthetic roster), not on the 2023 footwear data. `python3 scripts/forecast_cpsat_link.py` forecasts that window from the 22 months before it, feeds each forecast through the planning engine and optimizer, and compares the result with the actual demand. Results are in `data/processed/demand_forecast/cpsat_link_summary.csv`. It needs the `.venv` setup below (ortools). Base productivity case only.
+
+| Forecast | Headcount | Planned on forecast, replayed on actual: days meeting target | Shortfall | Forecast headcount plus day of optimization |
+| --- | ---: | ---: | ---: | --- |
+| Hindsight (actual demand) | 60 | 100% | 0% | $510,042 total |
+| Same weekday last year | 53 | 95.1% | 1.6% | feasible, $455,009 total |
+| Prophet | 50 | 93.1% | 2.7% | feasible, $434,773 total |
+| Mean of last 20 days | 35 | 67.0% | 18.9% | infeasible |
+
+- Headcount is sized at the 95th percentile of daily workload, so it depends on the forecast showing peaks. A flat forecast (the 20 day mean) has no peaks and sizes only 35 positions. In this Christmas window that left 19% of the workload uncovered, and even full overtime and temp use could not recover it.
+- The two forecasts that capture seasonality sized 50 to 53 positions and missed the target on 5% to 7% of site role days when planned in advance, with 1.6% to 2.7% of workload short.
+- If overtime and temp shifts are then optimized once the daily demand is known, those two plans meet the target at a total cost 11% to 15% below the hindsight plan. That says more about the model than about the forecast: the 95th percentile sizing rule is conservative, and overtime and temp shifts are cheap in this model. The wages, temp pool, and roster are documented assumptions, not observed.
+- This is one window, in the peak season, on legacy data. Treat it as an illustration of how forecast error moves through the optimizer, not as a validated result.
+
 Refresh the Census QWI extract before rebuilding when needed:
 
 ```bash

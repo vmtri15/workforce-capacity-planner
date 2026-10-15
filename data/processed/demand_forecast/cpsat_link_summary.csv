@@ -1,0 +1,8 @@
+case,status,total_headcount,base_labor_cost,overtime_and_temp_cost,total_cost,site_role_days,share_meeting_target,shortfall_workload,shortfall_share,unit_forecast_wape
+hindsight on actual demand,OPTIMAL,60,507619.84,2421.73,510041.57,,,,,
+"SameWeekdayLastYear: planned on forecast, replayed on actual",OPTIMAL,53,448031.36,0.0,448031.36,288.0,0.9513888888888888,11931.199999999997,0.016234802664253686,0.288
+"SameWeekdayLastYear: forecast headcount, day of optimization",OPTIMAL,53,448031.36,6977.2,455008.57,,,,,0.288
+"Prophet: planned on forecast, replayed on actual",OPTIMAL,50,423194.24,0.0,423194.24,288.0,0.9305555555555556,19732.65000000001,0.026850247987862553,0.225
+"Prophet: forecast headcount, day of optimization",OPTIMAL,50,423194.24,11578.73,434772.96,,,,,0.225
+"Mean20Days: planned on forecast, replayed on actual",OPTIMAL,35,295738.24,0.0,295738.24,288.0,0.6701388888888888,139182.49999999997,0.18938584734288996,0.282
+"Mean20Days: forecast headcount, day of optimization",INFEASIBLE,35,295738.24,,,,,,,0.282
