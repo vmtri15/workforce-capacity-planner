@@ -7,7 +7,7 @@ Reviewed September 15, 2026 from full PDFs supplied by the user through Purdue L
 ### Batt and Gallino (2019): Finding a Needle in a Haystack
 
 DOI: https://doi.org/10.1287/mnsc.2018.3059
-Source: `/Users/minhtrivi/Downloads/Finding a Needle in a Haystack.pdf`
+Source: `Finding a Needle in a Haystack.pdf`
 
 - Empirical study of a California online apparel fulfillment center, May 2014–January 2015. Final sample: 2,427,758 pick events and 526 workers (pp. 4–6).
 - Mean observed inter-pick time: 49.2 seconds; includes travel between picks and searching. Excludes first picks in shipments, picks above 600 seconds, and other filtered observations. This is not full-shift throughput and must not be directly equated to lines per productive hour.
@@ -17,7 +17,7 @@ Source: `/Users/minhtrivi/Downloads/Finding a Needle in a Haystack.pdf`
 ### Loske (2022): Empirical evidence on human learning and work characteristics in the transition to automated order picking
 
 DOI: https://doi.org/10.1111/jbl.12300
-Source: `/Users/minhtrivi/Downloads/EBSCO Full Text Sept 15 2026.pdf`
+Source: `EBSCO Full Text Sept 15 2026.pdf`
 
 - Two German grocery warehouses; 100 workers over two months, with 25 incorporation and 25 control workers per system. Approximately 5.76 million picks (pp. 2, 10).
 - New-to-system workers already had food-retail logistics experience; they were not complete industry beginners (p. 10).
@@ -29,7 +29,7 @@ Source: `/Users/minhtrivi/Downloads/EBSCO Full Text Sept 15 2026.pdf`
 ### Giacomelli et al. (2026): An investigation into picking norm times and well-being: fatigue-aware order picking planning
 
 DOI: https://doi.org/10.1080/00207543.2025.2564269
-Source: `/Users/minhtrivi/Downloads/Picking Norm Times and Well-Being.pdf`
+Source: `Picking Norm Times and Well-Being.pdf`
 
 - Computational experiments with generated demand and literature-based parameters. Initial mean retrieval time of 6.8 seconds describes lifting/lowering, not a full picking cycle (p. 13).
 - Heavier-product experiments report 10% lower average modeled fatigue with 1.1% more picking time at the specified target (p. 14). These are scenario results, not universal causal effects.
@@ -39,7 +39,7 @@ Source: `/Users/minhtrivi/Downloads/Picking Norm Times and Well-Being.pdf`
 ### Mou (2022): Integrated Order Picking and Multi-Skilled Picker Scheduling in Omni-Channel Retail Stores
 
 DOI: https://doi.org/10.3390/math10091484
-Source: `/Users/minhtrivi/Downloads/Integrated Order Picking in Retail.pdf`
+Source: `Integrated Order Picking in Retail.pdf`
 
 - Computational in-store fulfillment model with specialized pickers and flexible associates. Skills are known inputs; numerical experiments vary workforce composition.
 - Learning rate 0.95 and experience values are chosen to differentiate proficiency. The author explicitly does not validate a particular learning curve (p. 11). Do not treat 0.95 as post-training productivity.
@@ -51,7 +51,7 @@ Source: `/Users/minhtrivi/Downloads/Integrated Order Picking in Retail.pdf`
 ### Zhao and Bard (2024): Batch scheduling in a multi-purpose system with machine downtime and a multi-skilled workforce
 
 DOI: https://doi.org/10.1080/00207543.2023.2265508
-Source: `/Users/minhtrivi/Downloads/Batch Scheduling Multi-Purpose System.pdf`
+Source: `Batch Scheduling Multi-Purpose System.pdf`
 
 - Manufacturing scheduling study using real and generated data based on a Johnson & Johnson operation, with data scaled to protect production capacity (p. 13).
 - Existing worker qualifications and availability constrain feasible schedules. A multi-skilled worker can fill only one role in a period; role-by-role headcounts alone may double-count shared workers (pp. 10–13).

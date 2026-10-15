@@ -214,7 +214,7 @@ def main():
                      overtime='All six workers receive two paid extra hours when start-of-day work exceeds base capacity',
                      temporary='Two eight-hour shifts at 80% productivity if previous calendar-day backlog exceeds base capacity; assumed next-day availability',
                      recovery='14 calendar days of zero new demand; no costs, deadlines, legal or fatigue constraints modeled'),
-                 source_fingerprints={str(p):hashlib.sha256(p.read_bytes()).hexdigest()
+                 source_fingerprints={p.name:hashlib.sha256(p.read_bytes()).hexdigest()
                                       for p in [source,picks_path,args.locations,packing_path]})
     (out / 'audit_and_assumptions.json').write_text(json.dumps(audit,indent=2)+'\n')
     print(json.dumps(dict(audit=audit,monthly=monthly,policies=policies),indent=2))

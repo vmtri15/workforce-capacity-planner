@@ -6,7 +6,7 @@ Reviewed September 15, 2026. Status: full-text review complete; standalone packi
 
 ### Judith Weiblen (2014), Determining Cycle Times for Packing in Distribution Centres
 
-Source: `/Users/minhtrivi/Downloads/Cycle Times for Packing.pdf`. KIT thesis, ISBN 978-3-7315-0202-9.
+Source: `Cycle Times for Packing.pdf`. KIT thesis, ISBN 978-3-7315-0202-9.
 
 PDF pp. 146–149 (printed pp. 122–125): process decomposition and standard task times produce an average-case example based on characteristics of 58 packing processes. At 5.6 articles per package, calculated basic time is 90.7 seconds: 8.8 setup + 51.8 base + 5.6 × 4.2 item handling + 5.4 steps + 1.2 turns. Travel is assumed zero. This is a constructed example, not an observed universal mean. The allowance-adjusted example is 114.8 seconds and still excludes some downtime and support work.
 
@@ -16,7 +16,7 @@ Use: distinguish per-package work, per-item work, and separately scoped travel/s
 
 ### Mauluddin and Fardiansyah (2025), Karakuri Kaizen Design to Reduce Work Time at the Packing Station
 
-Source: `/Users/minhtrivi/Downloads/Karakuri Kaizen Design to Reduce Work Time.pdf`. DOI: 10.12928/si.v23i2.330.
+Source: `Karakuri Kaizen Design to Reduce Work Time.pdf`. DOI: 10.12928/si.v23i2.330.
 
 PDF pp. 6 and 8: chili-sauce manufacturing, 48 units of 135 g per carton. Reported station time changes from 158.08 to 24.74 seconds, but filling work is transferred/shared with Seal A and Seal B operators. The task scope and labor allocation change. This does not establish equivalent per-worker or system labor savings. The straightforward time reduction is 84.35%; the reported 109.08% improvement does not match that calculation.
 
@@ -24,7 +24,7 @@ Use: workstation and bottleneck redesign example only; not a mixed-order fulfill
 
 ### Sara Pearson Specter (2015), 4 Ways Packing Stations Have Evolved
 
-Source: `/Users/minhtrivi/Downloads/EBSCO Full Text Sept 15 2026 (1).pdf`. Modern Materials Handling, September 2015, pp. 38–43.
+Source: `EBSCO Full Text Sept 15 2026 (1).pdf`. Modern Materials Handling, September 2015, pp. 38–43.
 
 Trade article based on vendor interviews. PDF p. 2 gives a conditional 10–15-second saving from printer placement; other examples concern automated equipment and mobile pick/pack workflows. No matched labor-time dataset supports adopting these claims as manual packing rates.
 
