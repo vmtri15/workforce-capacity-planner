@@ -9,3 +9,6 @@ archive.zip
 
 # derived from the raw Olist files, rebuild with scripts/prep_parcels.py
 data/processed/parcels.csv
+data/processed/journeys.csv
+data/processed/legs.csv
+data/processed/trucks.csv

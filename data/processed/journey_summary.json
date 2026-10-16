@@ -1,0 +1,16 @@
+{
+  "evidence_status": "assumed_network_on_real_olist_parcels",
+  "parcels_total": 96281,
+  "parcels_with_truck_leg": 59230,
+  "share_with_truck_leg": 0.6152,
+  "parcels_through_main_hub": 11890,
+  "lanes": 10,
+  "truck_departures": 7817,
+  "mean_truck_utilization": 0.239,
+  "parcels_that_waited_for_a_full_truck": 330,
+  "share_arriving_after_cutoff": 0.0746,
+  "share_of_cutoff_makers_with_margin_under_1h": 0.0682,
+  "share_of_cutoff_makers_with_margin_under_3h": 0.0682,
+  "share_with_real_slack_under_1_day": 0.1073,
+  "share_already_late_in_reality": 0.0942
+}
