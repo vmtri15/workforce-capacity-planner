@@ -1,0 +1,17 @@
+{
+  "scenarios": 19,
+  "cheapest_option_has_lowest_cost_per_parcel_saved": 18,
+  "cheapest_option_cost_per_parcel_saved_range": [
+    30.5,
+    244.02
+  ],
+  "cheapest_option_share_of_slips_saved_min": 0.9902,
+  "scenarios_where_something_else_wins": [
+    {
+      "swap_cost_multiplier": 4.0,
+      "split_cost_multiplier": 0.5,
+      "swap_recovers_hours": 3,
+      "lowest_cost_per_parcel_saved": "split_at_risk_trucks"
+    }
+  ]
+}
