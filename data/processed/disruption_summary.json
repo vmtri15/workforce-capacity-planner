@@ -1,0 +1,166 @@
+{
+  "evidence_status": "assumed_delay_model_on_real_olist_parcels",
+  "parcels_with_truck_leg": 59230,
+  "routine": {
+    "departures": [
+      "06:00",
+      "18:00"
+    ],
+    "parcels": 59230,
+    "parcels_slipped": 1538,
+    "share_slipped": 0.02597,
+    "mean_slip_days_when_slipped": 1.0,
+    "new_breaches": 26,
+    "share_new_breaches": 0.00044,
+    "already_late_made_later": 178
+  },
+  "routine_by_lane": {
+    "SP>NE": {
+      "slipped_parcels": 1076,
+      "slip_days_caused": 1076,
+      "new_breaches_caused": 14
+    },
+    "RJ>SP": {
+      "slipped_parcels": 85,
+      "slip_days_caused": 85,
+      "new_breaches_caused": 3
+    },
+    "S>SP": {
+      "slipped_parcels": 102,
+      "slip_days_caused": 102,
+      "new_breaches_caused": 3
+    },
+    "SP>MG": {
+      "slipped_parcels": 121,
+      "slip_days_caused": 121,
+      "new_breaches_caused": 3
+    },
+    "NE>SP": {
+      "slipped_parcels": 67,
+      "slip_days_caused": 67,
+      "new_breaches_caused": 2
+    },
+    "CW>SP": {
+      "slipped_parcels": 4,
+      "slip_days_caused": 4,
+      "new_breaches_caused": 0
+    },
+    "MG>SP": {
+      "slipped_parcels": 13,
+      "slip_days_caused": 13,
+      "new_breaches_caused": 0
+    },
+    "SP>RJ": {
+      "slipped_parcels": 72,
+      "slip_days_caused": 72,
+      "new_breaches_caused": 0
+    }
+  },
+  "departure_sensitivity": {
+    "main": {
+      "departures": [
+        "06:00",
+        "18:00"
+      ],
+      "parcels": 59230,
+      "parcels_slipped": 1538,
+      "share_slipped": 0.02597,
+      "mean_slip_days_when_slipped": 1.0,
+      "new_breaches": 26,
+      "share_new_breaches": 0.00044,
+      "already_late_made_later": 178
+    },
+    "earlier": {
+      "departures": [
+        "04:00",
+        "16:00"
+      ],
+      "parcels": 59230,
+      "parcels_slipped": 3282,
+      "share_slipped": 0.05541,
+      "mean_slip_days_when_slipped": 1.0,
+      "new_breaches": 41,
+      "share_new_breaches": 0.00069,
+      "already_late_made_later": 297
+    },
+    "later": {
+      "departures": [
+        "08:00",
+        "22:00"
+      ],
+      "parcels": 59230,
+      "parcels_slipped": 1788,
+      "share_slipped": 0.03019,
+      "mean_slip_days_when_slipped": 1.0,
+      "new_breaches": 24,
+      "share_new_breaches": 0.00041,
+      "already_late_made_later": 152
+    }
+  },
+  "cancellation": {
+    "cancelled_lane_days": 57,
+    "parcels": 59230,
+    "parcels_slipped": 491,
+    "share_slipped": 0.00829,
+    "mean_slip_days_when_slipped": 1.002,
+    "new_breaches": 8,
+    "share_new_breaches": 0.00014,
+    "already_late_made_later": 55
+  },
+  "hub_closure": [
+    {
+      "hub": "SP",
+      "days_simulated": 660,
+      "mean_parcels_slipped": 68.04,
+      "p95_parcels_slipped": 193.05,
+      "worst_day_parcels_slipped": 426,
+      "mean_new_breaches": 0.94,
+      "worst_day_new_breaches": 14
+    },
+    {
+      "hub": "RJ",
+      "days_simulated": 647,
+      "mean_parcels_slipped": 23.98,
+      "p95_parcels_slipped": 65.0,
+      "worst_day_parcels_slipped": 137,
+      "mean_new_breaches": 0.37,
+      "worst_day_new_breaches": 6
+    },
+    {
+      "hub": "S",
+      "days_simulated": 655,
+      "mean_parcels_slipped": 27.75,
+      "p95_parcels_slipped": 77.3,
+      "worst_day_parcels_slipped": 169,
+      "mean_new_breaches": 0.32,
+      "worst_day_new_breaches": 5
+    },
+    {
+      "hub": "MG",
+      "days_simulated": 639,
+      "mean_parcels_slipped": 21.86,
+      "p95_parcels_slipped": 57.0,
+      "worst_day_parcels_slipped": 139,
+      "mean_new_breaches": 0.26,
+      "worst_day_new_breaches": 6
+    },
+    {
+      "hub": "NE",
+      "days_simulated": 638,
+      "mean_parcels_slipped": 15.03,
+      "p95_parcels_slipped": 39.15,
+      "worst_day_parcels_slipped": 66,
+      "mean_new_breaches": 0.24,
+      "worst_day_new_breaches": 4
+    },
+    {
+      "hub": "CW",
+      "days_simulated": 630,
+      "mean_parcels_slipped": 6.33,
+      "p95_parcels_slipped": 20.0,
+      "worst_day_parcels_slipped": 30,
+      "mean_new_breaches": 0.07,
+      "worst_day_new_breaches": 2
+    }
+  ]
+}
