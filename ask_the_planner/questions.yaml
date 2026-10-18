@@ -1,0 +1,174 @@
+# 30 questions written the way a manager would ask them.
+# gold_sql is the hand checked answer (verified by verify_gold.py). alt_sql lists other acceptable ways to
+# show the same answer, for example a site id instead of a site name. answerable: false marks questions
+# the database cannot answer, where the right behavior is to say so.
+# Run ids: base_demand_base_productivity, base_demand_low_productivity, base_demand_high_productivity.
+
+- id: Q01
+  category: basics
+  question: "Which site carries the largest share of demand, and what is that share?"
+  expected: "Joliet/Elwood, with 43% of demand."
+  gold_sql: "SELECT site_name, allocation_share FROM sites ORDER BY allocation_share DESC LIMIT 1"
+  alt_sql: ["SELECT site_id, allocation_share FROM sites ORDER BY allocation_share DESC LIMIT 1"]
+  percent_ok: true
+- id: Q02
+  category: basics
+  question: "What share of demand does each site get?"
+  expected: "Joliet/Elwood 43%, O'Hare area 42%, Kenosha/Pleasant Prairie 15%."
+  gold_sql: "SELECT site_name, allocation_share FROM sites"
+  alt_sql: ["SELECT site_id, allocation_share FROM sites"]
+  percent_ok: true
+- id: Q03
+  category: basics
+  question: "What service target are we planning to?"
+  expected: "95% of each day's workload."
+  gold_sql: "SELECT numeric_value FROM scenario_assumptions WHERE assumption_key = 'service_target'"
+  percent_ok: true
+- id: Q04
+  category: basics
+  question: "What dates does the planning window cover, and how many calendar days is that?"
+  expected: "2011-10-14 to 2011-12-08, which is 56 calendar days."
+  gold_sql: "SELECT source_window_start, source_window_end, CAST(julianday(source_window_end) - julianday(source_window_start) + 1 AS INTEGER) AS calendar_days FROM planning_runs WHERE productivity_case = 'base'"
+- id: Q05
+  category: basics
+  question: "How many productive hours does one worker deliver in a shift?"
+  expected: "6.8 productive hours (8 paid hours times 0.85)."
+  gold_sql: "SELECT (SELECT numeric_value FROM scenario_assumptions WHERE assumption_key = 'paid_hours_per_shift') * (SELECT numeric_value FROM scenario_assumptions WHERE assumption_key = 'productive_time_factor')"
+- id: Q06
+  category: staffing
+  question: "How many workers do we have at each site?"
+  expected: "Joliet 28, O'Hare 28, Kenosha 13."
+  gold_sql: "SELECT site_id, SUM(scheduled_headcount) FROM staffing_plans WHERE run_id = 'base_demand_base_productivity' GROUP BY site_id"
+  alt_sql: ["SELECT s.site_name, SUM(p.scheduled_headcount) FROM staffing_plans p JOIN sites s USING (site_id) WHERE p.run_id = 'base_demand_base_productivity' GROUP BY s.site_name"]
+- id: Q07
+  category: staffing
+  question: "How many workers do we have in total?"
+  expected: "69 workers across the three sites."
+  gold_sql: "SELECT SUM(scheduled_headcount) FROM staffing_plans WHERE run_id = 'base_demand_base_productivity'"
+- id: Q08
+  category: staffing
+  question: "How many fulfillment associates does the O'Hare site have?"
+  expected: "23 fulfillment associates."
+  gold_sql: "SELECT scheduled_headcount FROM staffing_plans WHERE run_id = 'base_demand_base_productivity' AND site_id = 'ohare' AND role_id = 'fulfillment_associate'"
+- id: Q09
+  category: staffing
+  question: "Which role is paid the most per hour at Joliet, and what is the rate?"
+  expected: "The warehouse supervisor, at $32.85 an hour."
+  gold_sql: "SELECT role_id, median_hourly_wage FROM staffing_plans WHERE run_id = 'base_demand_base_productivity' AND site_id = 'joliet' ORDER BY median_hourly_wage DESC LIMIT 1"
+  alt_sql: ["SELECT r.planning_role, p.median_hourly_wage FROM staffing_plans p JOIN roles r USING (role_id) WHERE p.run_id = 'base_demand_base_productivity' AND p.site_id = 'joliet' ORDER BY p.median_hourly_wage DESC LIMIT 1"]
+- id: Q10
+  category: cost
+  question: "What does our staffing cost per day at each site?"
+  expected: "Joliet $4,387.92, O'Hare $4,387.92, Kenosha $2,449.12 per day."
+  gold_sql: "SELECT site_id, SUM(scheduled_headcount * paid_hours_per_person * median_hourly_wage) FROM staffing_plans WHERE run_id = 'base_demand_base_productivity' GROUP BY site_id"
+  alt_sql: ["SELECT s.site_name, SUM(p.scheduled_headcount * p.paid_hours_per_person * p.median_hourly_wage) FROM staffing_plans p JOIN sites s USING (site_id) WHERE p.run_id = 'base_demand_base_productivity' GROUP BY s.site_name"]
+- id: Q11
+  category: cost
+  question: "What is the total staffing cost over the whole planning window?"
+  expected: "$628,597.76 for all roles over the 56 days."
+  gold_sql: "SELECT all_role_scheduled_wage_cost FROM planning_run_summary WHERE productivity_case = 'base'"
+- id: Q12
+  category: capacity
+  question: "How many shortfall hours do we have in total?"
+  expected: "113.35 shortfall hours in the base case."
+  gold_sql: "SELECT SUM(capacity_gap_hours) FROM daily_capacity_results WHERE run_id = 'base_demand_base_productivity'"
+- id: Q13
+  category: capacity
+  question: "Which site has the most shortfall hours, and how many?"
+  expected: "Joliet, with 51.73 shortfall hours."
+  gold_sql: "SELECT site_id, SUM(capacity_gap_hours) AS hours FROM daily_capacity_results WHERE run_id = 'base_demand_base_productivity' GROUP BY site_id ORDER BY hours DESC LIMIT 1"
+  alt_sql: ["SELECT s.site_name, SUM(c.capacity_gap_hours) AS hours FROM daily_capacity_results c JOIN sites s USING (site_id) WHERE c.run_id = 'base_demand_base_productivity' GROUP BY s.site_name ORDER BY hours DESC LIMIT 1"]
+- id: Q14
+  category: capacity
+  question: "How many shortfall hours would we have if productivity is low?"
+  expected: "999.53 shortfall hours in the low productivity case."
+  gold_sql: "SELECT SUM(capacity_gap_hours) FROM daily_capacity_results WHERE run_id = 'base_demand_low_productivity'"
+- id: Q15
+  category: capacity
+  question: "What is our on time rate in each productivity case?"
+  expected: "Base 98.2%, low 90.2%, high 100% of site role days meet the target."
+  gold_sql: "SELECT productivity_case, role_site_day_service_rate FROM planning_run_summary"
+  percent_ok: true
+- id: Q16
+  category: capacity
+  question: "On how many days does Kenosha miss the service target?"
+  expected: "2 days (2011-12-05 and 2011-12-08)."
+  gold_sql: "SELECT COUNT(DISTINCT planning_date) FROM daily_capacity_results WHERE run_id = 'base_demand_base_productivity' AND site_id = 'kenosha' AND service_target_met = 0"
+- id: Q17
+  category: capacity
+  question: "Which roles have shortfall hours, and how many hours each?"
+  expected: "Only fulfillment associates, with 113.35 hours. Packing has none."
+  gold_sql: "SELECT role_id, SUM(capacity_gap_hours) FROM daily_capacity_results WHERE run_id = 'base_demand_base_productivity' GROUP BY role_id HAVING SUM(capacity_gap_hours) > 0"
+  alt_sql: ["SELECT r.planning_role, SUM(c.capacity_gap_hours) FROM daily_capacity_results c JOIN roles r USING (role_id) WHERE c.run_id = 'base_demand_base_productivity' GROUP BY r.planning_role HAVING SUM(c.capacity_gap_hours) > 0"]
+- id: Q18
+  category: capacity
+  question: "What is the worst single day for shortfall? Give the date, the site, the role and the hours."
+  expected: "2011-12-05 at Joliet, fulfillment associates, 33.58 hours."
+  gold_sql: "SELECT planning_date, site_id, role_id, capacity_gap_hours FROM daily_capacity_results WHERE run_id = 'base_demand_base_productivity' ORDER BY capacity_gap_hours DESC LIMIT 1"
+  alt_sql: ["SELECT c.planning_date, s.site_name, r.planning_role, c.capacity_gap_hours FROM daily_capacity_results c JOIN sites s USING (site_id) JOIN roles r USING (role_id) WHERE c.run_id = 'base_demand_base_productivity' ORDER BY c.capacity_gap_hours DESC LIMIT 1"]
+- id: Q19
+  category: capacity
+  question: "How many idle hours do we have in total?"
+  expected: "10,614.38 idle hours in the base case."
+  gold_sql: "SELECT SUM(surplus_hours) FROM daily_capacity_results WHERE run_id = 'base_demand_base_productivity'"
+- id: Q20
+  category: demand
+  question: "What is the busiest day in the planning window, and how many units are planned that day?"
+  expected: "2011-11-14, with 238,155 units planned across all sites."
+  gold_sql: "SELECT planning_date, SUM(modeled_units) AS units FROM modeled_daily_workload WHERE run_id = 'base_demand_base_productivity' GROUP BY planning_date ORDER BY units DESC LIMIT 1"
+- id: Q21
+  category: demand
+  question: "How many orders are we planning for in total?"
+  expected: "29,515 orders."
+  gold_sql: "SELECT modeled_orders FROM planning_run_summary WHERE productivity_case = 'base'"
+- id: Q22
+  category: demand
+  question: "How many orders did the original data record in the planning window?"
+  expected: "5,903 orders (the plan scales this up 5 times)."
+  gold_sql: "SELECT SUM(distinct_invoice_ids) FROM workload_daily_source WHERE source_date BETWEEN '2011-10-14' AND '2011-12-08'"
+- id: Q23
+  category: demand
+  question: "On average, how many order lines per day are we planning for?"
+  expected: "About 12,596 order lines per calendar day."
+  gold_sql: "SELECT AVG(day_lines) FROM (SELECT planning_date, SUM(modeled_order_lines) AS day_lines FROM modeled_daily_workload WHERE run_id = 'base_demand_base_productivity' GROUP BY planning_date)"
+- id: Q24
+  category: demand
+  question: "How many days in the planning window have no source records?"
+  expected: "8 days."
+  gold_sql: "SELECT COUNT(DISTINCT planning_date) FROM modeled_daily_workload WHERE run_id = 'base_demand_base_productivity' AND source_record_present = 0"
+- id: Q25
+  category: cost
+  question: "What is the hourly wage for packers in Kenosha?"
+  expected: "$18.18 an hour."
+  gold_sql: "SELECT median_hourly_wage FROM staffing_plans WHERE run_id = 'base_demand_base_productivity' AND site_id = 'kenosha' AND role_id = 'packing_associate'"
+- id: Q26
+  category: labor_market
+  question: "What is the highest number of hires in a single quarter in Kenosha County?"
+  expected: "4,693 hires."
+  gold_sql: "SELECT MAX(hires) FROM qwi_labor_flows WHERE geography_name LIKE 'Kenosha County%'"
+- id: Q27
+  category: data_quality
+  question: "Which data sources are treated as observed data?"
+  expected: "All five sources: Online Retail II, OEWS, County Business Patterns, QCEW and QWI."
+  gold_sql: "SELECT source_name FROM source_registry WHERE evidence_class = 'observed'"
+  alt_sql: ["SELECT source_id FROM source_registry WHERE evidence_class = 'observed'"]
+  answer_aliases:
+    "Occupational Employment and Wage Statistics": ["OEWS"]
+    "County Business Patterns": ["CBP"]
+    "Quarterly Census of Employment and Wages": ["QCEW"]
+    "Quarterly Workforce Indicators": ["QWI"]
+- id: Q28
+  category: data_quality
+  question: "How many of the data quality checks passed?"
+  expected: "11 checks passed."
+  gold_sql: "SELECT COUNT(*) FROM data_quality_results WHERE status = 'PASS'"
+- id: Q29
+  category: unanswerable
+  question: "What was our actual staffing cost in 2023?"
+  answerable: false
+  expected: "It cannot be answered. The database has no 2023 data and no actual staffing records, only a modeled plan built on a 2011 order history."
+- id: Q30
+  category: unanswerable
+  question: "How many extra workers should we hire to close the shortfall?"
+  answerable: false
+  expected: "The database does not recommend hiring. It can report the shortfall hours, but it has no hiring or overtime options, so a good answer says that and does not invent a number."

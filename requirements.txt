@@ -5,3 +5,4 @@ prophet==1.2.1
 xgboost==3.1.1
 statsmodels==0.14.2
 scikit-learn==1.9.1
+vanna[gemini]==2.0.2

@@ -48,6 +48,39 @@ python3 scripts/serve_dashboard.py
 
 Then open http://127.0.0.1:8765. Everything below is technical detail for rebuilding the data and rerunning the models.
 
+## Ask the Planner: questions in plain English
+
+`ask_the_planner/` lets a manager ask the planner database a question in plain English, for example "Which site has the most shortfall hours?". It writes the SQL, runs it read only, and answers in a sentence. It uses the open source Vanna 2.0 library with Google Gemini. My work is the layer on top: a business glossary, a 30 question test set with answers checked by hand, an accuracy run, and a failure review.
+
+**How accurate is it?** Tested on 30 manager questions with gemini-3.1-flash-lite (a small free model):
+
+| | Without glossary | With glossary |
+| --- | ---: | ---: |
+| Correct answers (of 28 answerable) | 12 (43%) | 16 (57%) |
+| Declined the 2 questions the data cannot answer | 1 of 2 | 2 of 2 |
+
+The glossary fixed 5 questions and broke none. Most remaining errors have one cause: the database holds three planning runs (low, base and high productivity), and the model often added all three together instead of using the base case, so its totals came out three times too large. See [FAILURE_REVIEW.md](ask_the_planner/FAILURE_REVIEW.md) for every failure and why.
+
+**When you can trust it**
+- Reference facts: sites, demand shares, assumptions, wages, data sources. With the glossary it got all of these right.
+- Questions that name the case, such as "in the low productivity case".
+- Always read the SQL it prints. If a total uses daily_capacity_results, staffing_plans or modeled_daily_workload without a run_id or productivity_case filter, it has mixed the three runs and the number is wrong.
+
+**When you cannot trust it**
+- Totals and counts where no case is named. These were wrong in most tests.
+- Anything outside the database: 2023 figures, actual staffing, hiring advice. With the glossary it says so, but check.
+- It answers from the modeled 2011 network database, not from the 2023 decision in DECISION_ANSWER.md.
+
+**Run it.** Put your Gemini key in a `.env` file in the project root (`GEMINI_API_KEY=...`, the file is gitignored), then:
+
+```bash
+.venv/bin/python ask_the_planner/build_eval_db.py
+.venv/bin/python ask_the_planner/ask.py "Which site has the most shortfall hours?" --db ask_the_planner/eval_db/planner_for_eval.db
+.venv/bin/python ask_the_planner/evaluate.py --fresh
+```
+
+Vanna's own SQLite runner can write to the database and its Gemini code fails on current models, so this layer adds a read only runner and a small Gemini fix. Vanna's repository is archived, so the version is pinned to 2.0.2.
+
 ## Technical details
 
 ## Local dashboard

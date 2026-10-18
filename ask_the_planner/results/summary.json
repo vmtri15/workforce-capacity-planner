@@ -1,0 +1,87 @@
+{
+  "fake": false,
+  "models": [
+    "gemini-3.1-flash-lite"
+  ],
+  "answered": 60,
+  "of": 60,
+  "accuracy_answerable": {
+    "glossary": {
+      "correct": 16,
+      "of": 28,
+      "share": 0.571
+    },
+    "schema_only": {
+      "correct": 12,
+      "of": 28,
+      "share": 0.429
+    }
+  },
+  "sql_found_answerable": {
+    "glossary": 0.5,
+    "schema_only": 0.35714285714285715
+  },
+  "accuracy_by_category": {
+    "basics": {
+      "glossary": 1.0,
+      "schema_only": 1.0
+    },
+    "capacity": {
+      "glossary": 0.375,
+      "schema_only": 0.25
+    },
+    "cost": {
+      "glossary": 0.667,
+      "schema_only": 0.333
+    },
+    "data_quality": {
+      "glossary": 1.0,
+      "schema_only": 1.0
+    },
+    "demand": {
+      "glossary": 0.2,
+      "schema_only": 0.0
+    },
+    "labor_market": {
+      "glossary": 1.0,
+      "schema_only": 1.0
+    },
+    "staffing": {
+      "glossary": 0.5,
+      "schema_only": 0.25
+    }
+  },
+  "fixed_by_glossary": [
+    "Q08",
+    "Q17",
+    "Q24",
+    "Q25"
+  ],
+  "broken_by_glossary": [],
+  "unanswerable": [
+    {
+      "id": "Q29",
+      "condition": "schema_only",
+      "passed": true,
+      "answer": "The database does not contain actual staffing cost data for 2023; it only contains modeled planning data for a specific source window in 2011."
+    },
+    {
+      "id": "Q30",
+      "condition": "schema_only",
+      "passed": false,
+      "answer": "To close the current capacity shortfall, an estimated 139 additional workers would be required, based on the total capacity gap hours divided by the average paid hours per person across all planning runs."
+    },
+    {
+      "id": "Q29",
+      "condition": "glossary",
+      "passed": true,
+      "answer": "The database does not contain any data for 2023; it only contains planning data for a 56-day window in 2011."
+    },
+    {
+      "id": "Q30",
+      "condition": "glossary",
+      "passed": true,
+      "answer": "The database does not contain information about hiring recommendations, the cost of hiring, or the impact of adding staff on capacity. Therefore, I cannot calculate how many extra workers should be hired to close the shortfall."
+    }
+  ]
+}

@@ -8,3 +8,7 @@ data/*.db
 __pycache__/
 *.pyc
 workforce-capacity-planner/
+
+# Ask the Planner: evaluation copy of the database and scratch output from the SQL tool
+ask_the_planner/eval_db/
+ask_the_planner/.run_data/
