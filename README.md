@@ -251,19 +251,20 @@ Demand forecast and the cost of forecast error:
 python3 scripts/forecast_demand.py
 ```
 
-This forecasts daily units 4 weeks ahead (20 weekdays) with a rolling origin backtest of 25 forecast dates. It compares two simple baselines with Prophet, ARIMA, and XGBoost, using only past data at each origin. Monday to Friday only: 7,428 Sunday units are left out, and dates with no source records are treated as unknown, not zero. Results are written to `data/processed/demand_forecast/`.
+This forecasts daily units 4 weeks ahead (20 weekdays) with a rolling origin backtest of 25 forecast dates. It compares two simple baselines with Prophet, ARIMA, XGBoost and a Ridge regression, using only past data at each origin, and adds a P90 quantile forecast: the demand level that 90% of days should stay at or below. Monday to Friday only: 7,428 Sunday units are left out, and dates with no source records are treated as unknown, not zero. Results are written to `data/processed/demand_forecast/`.
 
 What the backtest found:
 
-- Daily demand is hard to predict. Every model has a daily WAPE (total error divided by total demand) between 60% and 64%, and the simple 20 day mean is within 3 points of the best model. ARIMA is best, but its forecast is close to a flat line. Its error on the 4 week total is about 21%.
+- Daily demand is hard to predict. Every model has a daily WAPE (total error divided by total demand) between 60% and 64%, and the simple 20 day mean is within 3 points of the best model. Ridge regression (63.3%) ties the others. ARIMA is best, but its forecast is close to a flat line. Its error on the 4 week total is about 21%.
 - With under one year of data there is no yearly seasonality, so no same week last year baseline exists.
 - Sizing headcount on the point forecast misses the 95% on time target in 60% of the 4 week windows (ARIMA), because a smooth forecast hides spikes and a level shift in August and September.
 - Adding a buffer helps. Sizing on ARIMA forecast times 1.5 gives 97% mean on time units, misses the target in 20% of windows, and costs about one extra worker on average. One worker is $3,520 per 4 weeks at the hypothetical wage in `config/staffing_cost_scenarios.json`.
 - The low and high band (10th and 90th percentile of actual divided by forecast) covered only 60% of days on the later origins, against an 80% target. Treat it as too narrow.
+- The P90 quantile forecast is better calibrated: 87.6% of actual days stayed at or below it, against a 90% target. Sizing headcount on P90 alone misses the target in only 8% of windows, against 20% for the forecast times 1.5, but it staffs about 2.8 workers more than hindsight would.
 
 Method check on 5 years of data. The 2023 data is under one year, so `python3 scripts/forecast_method_check.py` runs the same backtest on the Kaggle "Historical Product Demand" file (4 warehouses, 2012 to 2016, about 52 forecast windows each). This is a manufacturing product demand series, so it tests the method only and is not converted to footwear units. The file is not in the repo; download it from Kaggle into `data/raw/historical_product_demand/`. Results are in `data/processed/demand_forecast/method_check_product_demand_scores.csv`.
 
-- Models beat the simple baselines, but only a little. On all warehouses combined, daily WAPE is 26.5% to 27.1% for Prophet, ARIMA, and XGBoost, against 27.6% for the plain 20 day mean, 32.3% for same weekday last year, and 34.6% for same weekday last week.
+- Models beat the simple baselines, but only a little. Ridge regression is narrowly best: 42.8% daily WAPE averaged over the four warehouses, against 44.3% for Prophet. On all warehouses combined, daily WAPE is 26.1% for Ridge and 26.5% to 27.1% for Prophet, ARIMA, and XGBoost, against 27.6% for the plain 20 day mean, 32.3% for same weekday last year, and 34.6% for same weekday last week.
 - Single warehouses are much harder, at 26% to 66% depending on the warehouse. That is close to the 60% found on the 2023 footwear data, so the short 2023 history is not the only reason for the poor accuracy. Daily demand at one site is noisy, and combining many products smooths it.
 - Same weekday last year did worse than the 20 day mean, so yearly seasonality is weak in this data.
 
@@ -274,13 +275,14 @@ Forecast to staffing link. `python3 scripts/forecast_staffing_link.py` (run afte
 | Plan | Mean on time units | Windows below 95% | Mean cost per window |
 | --- | ---: | ---: | ---: |
 | Chosen on the forecast (ARIMA) | 96.3% | 24% | $41,691 |
+| Chosen on the P90 quantile forecast | 98.1% | 20% | $46,469 |
 | 6 workers, up to 2 overtime hours (fixed) | 98.4% | 24% | $42,026 |
 | 6 workers, overtime, up to 4 temps kept available (fixed) | 99.7% | 0% | $42,285 |
 | Chosen with hindsight on actual demand | 98.7% | 0% | $42,030 |
 | 10 workers, up to 2 overtime hours (fixed) | 100% | 0% | $69,485 |
 
 - The forecast always picked the cheapest plan, 6 workers with no overtime and no temps, because the forecast is smooth. When demand roughly doubled in July to September, that plan fell to 86% to 89% on time in 6 of 25 windows. Hindsight chose the same 6 workers plus temps.
-- A buffer of 1.5 on the forecast did not fix this.
+- A buffer of 1.5 on the forecast did not fix this. Neither did the P90 quantile forecast: it bought more permanent staff and cost about $4,400 more per window than hindsight, yet still missed the target in 20% of windows, because no forecast saw the July to September surge coming.
 - Keeping overtime and temp shifts available (6 workers, 2 overtime hours, up to 4 temps) reached 99.7%, never missed the target, and cost only about $255 more per window than hindsight. The 10 worker plan costs about $27,000 more per window.
 - So the forecast error costs service, not money: the surges it misses must be absorbed by flexible capacity. The standing headcount matters less than keeping that flexibility available. This uses one year of one site's data and 25 overlapping windows, so treat it as a strong hint, not proof.
 

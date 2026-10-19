@@ -98,6 +98,7 @@ FORECASTERS = {
     'ARIMA': fd.arima_forecast,
     'XGBoost': fd.xgboost_forecast,
     'XGBoostWithYearLag': xgboost_year,
+    'Ridge': fd.ridge_forecast,
 }
 
 

@@ -48,7 +48,8 @@ CALIBRATION_SHARE = 0.6
 LOW_Q, HIGH_Q = 0.10, 0.90
 RATE = 40             # units per productive hour, the base case in config/staffing_cost_scenarios.json
 SERVICE_DAYS = 2
-MODELS = ['SameWeekdayLastWeek', 'Mean20Days', 'Prophet', 'ARIMA', 'XGBoost']
+MODELS = ['SameWeekdayLastWeek', 'Mean20Days', 'Prophet', 'ARIMA', 'XGBoost', 'Ridge', 'QuantileP90']
+P90_MODEL = 'QuantileP90'  # a high case, not a point forecast: judged by coverage, never picked as best by WAPE
 BUFFERS = [1.0, 1.25, 1.5, 2.0]  # fixed in advance: headcount is sized on forecast * buffer
 
 
@@ -148,12 +149,73 @@ def xgboost_forecast(hist, future):
     return np.array(out)
 
 
+def ridge_forecast(hist, future):
+    """Regularized linear regression on the XGBoost lag features, with an indicator for each weekday."""
+    from sklearn.linear_model import Ridge
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
+    v = hist.to_numpy(dtype=float)
+    fill = float(np.nanmean(v))
+
+    def row(values, weekday):  # a linear model cannot take missing values, so they become the history mean
+        lags = [fill if np.isnan(x) else x for x in feature_row(values, weekday)[:4]]
+        return lags + [float(weekday == d) for d in range(5)]
+
+    weekdays = hist.index.dayofweek
+    rows, target = [], []
+    for i in range(20, len(v)):
+        if not np.isnan(v[i]):
+            rows.append(row(v[:i], weekdays[i]))
+            target.append(v[i])
+    if len(rows) < 10:
+        return mean_20_days(hist, future)
+    model = make_pipeline(StandardScaler(), Ridge(alpha=1.0)).fit(np.array(rows), np.array(target))
+    seen, out = list(v), []
+    for day in future:
+        p = max(0.0, float(model.predict(np.array([row(seen, day.weekday())]))[0]))
+        out.append(p)
+        seen.append(p)
+    return np.array(out)
+
+
+def quantile_p90_forecast(hist, future):
+    """Direct 90th percentile forecast: for each step ahead, the demand level 90% of days stay at or below.
+
+    Trained on every past origin and step ahead (1 to 20 weekdays), using only what was known at that origin:
+    the last recorded value and the mean of the last 5 and 20 weekdays, plus the step and the target weekday."""
+    from sklearn.ensemble import HistGradientBoostingRegressor
+    v = hist.to_numpy(dtype=float)
+    weekdays = hist.index.dayofweek
+
+    def known_at(i):
+        past = v[:i + 1]
+        recorded = past[~np.isnan(past)]
+        return [recorded[-1] if len(recorded) else np.nan, _nanmean(past[-5:]), _nanmean(past[-20:])]
+
+    rows, target = [], []
+    for t in range(19, len(v) - 1):
+        state = known_at(t)
+        for h in range(1, HORIZON + 1):
+            if t + h < len(v) and not np.isnan(v[t + h]):
+                rows.append([h, weekdays[t + h], *state])
+                target.append(v[t + h])
+    if len(rows) < 50:
+        return np.full(len(future), np.nanpercentile(v, 90))
+    model = HistGradientBoostingRegressor(loss='quantile', quantile=0.9, max_iter=200, learning_rate=0.05,
+                                          max_depth=3, random_state=0)
+    model.fit(np.array(rows), np.array(target))
+    state = known_at(len(v) - 1)
+    return np.clip(model.predict(np.array([[h, d.weekday(), *state] for h, d in enumerate(future, 1)])), 0, None)
+
+
 FORECASTERS = {
     'SameWeekdayLastWeek': same_weekday_last_week,
     'Mean20Days': mean_20_days,
     'Prophet': prophet_forecast,
     'ARIMA': arima_forecast,
     'XGBoost': xgboost_forecast,
+    'Ridge': ridge_forecast,
+    'QuantileP90': quantile_p90_forecast,
 }
 
 
@@ -252,7 +314,9 @@ def main():
 
     bt = backtest(series)
     scores = score(bt)
-    best = scores.loc[0, 'model']
+    best = scores.loc[scores['model'] != P90_MODEL, 'model'].iloc[0]
+    p90 = bt[bt['model'] == P90_MODEL].dropna(subset=['actual'])
+    p90_coverage = float((p90['actual'] <= p90['forecast']).mean())
 
     best_bt = bt[bt['model'] == best]
     origins = sorted(best_bt['origin'].unique())
@@ -266,7 +330,8 @@ def main():
     future = next_weekdays(series.index[-1].date(), HORIZON)
     latest_values = FORECASTERS[best](series, future)
     latest = pd.DataFrame({'date': future, 'forecast': latest_values,
-                           'low': latest_values * low_all, 'high': latest_values * high_all})
+                           'low': latest_values * low_all, 'high': latest_values * high_all,
+                           'p90': FORECASTERS[P90_MODEL](series, future)})
 
     detail, cost_summary = forecast_error_cost(bt, config, costs)
 
@@ -281,6 +346,7 @@ def main():
                   units=int(series.sum()), weekend_units_excluded=int(weekend_units)),
         backtest=dict(origins=len(origins), horizon_weekdays=HORIZON, min_train_weeks=MIN_TRAIN_WEEKS),
         best_model_by_wape=best,
+        p90=dict(share_of_days_at_or_below=round(p90_coverage, 3), target=0.9),
         band=dict(low_ratio=round(float(low), 3), high_ratio=round(float(high), 3),
                   nominal_coverage=HIGH_Q - LOW_Q, holdout_coverage=round(float(coverage), 3),
                   calibration_origins=split, holdout_origins=len(origins) - split),

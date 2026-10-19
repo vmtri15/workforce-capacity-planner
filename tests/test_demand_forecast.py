@@ -24,7 +24,7 @@ class ForecastLeakageTest(unittest.TestCase):
         pos = fd.origin_positions(series)[0]
         corrupted = series.copy()
         corrupted.iloc[pos + 1:] = 1e9
-        names = ['SameWeekdayLastWeek', 'Mean20Days', 'XGBoost']
+        names = ['SameWeekdayLastWeek', 'Mean20Days', 'XGBoost', 'Ridge', 'QuantileP90']
         _, clean = fd.forecast_at(series, pos, names)
         _, dirty = fd.forecast_at(corrupted, pos, names)
         for name in names:

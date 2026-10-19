@@ -33,8 +33,7 @@ from workforce_planner.service_scenarios import simulate
 
 OUT = ROOT / 'data/processed/demand_forecast'
 RATE, ABSENT, LEAD = 40, 0, 1
-MODELS = ['ARIMA', 'Mean20Days']
-BUFFERS = [1.0, 1.5]
+SOURCES = [('ARIMA', 1.0), ('ARIMA', 1.5), ('Mean20Days', 1.0), ('Mean20Days', 1.5), ('QuantileP90', 1.0)]  # (forecast, buffer)
 FIXED = {'fixed_6_workers_ot2': (0, 2, 0), 'fixed_10_workers_ot2': (4, 2, 0),  # extra workers, overtime hours, temps
          'fixed_6_workers_ot2_temps4': (0, 2, 4)}  # not in DECISION_ANSWER.md: 6 workers with overtime and temps kept available
 
@@ -85,11 +84,10 @@ def main():
         record('oracle', choose(actual))
         for name, plan in FIXED.items():
             record(name, plan)
-        for model in MODELS:
+        for model, buffer in SOURCES:
             m = known[known['model'] == model]
-            for buffer in BUFFERS:
-                predicted = {d: max(0, int(round(f * buffer))) for d, f in zip(m['date'], m['forecast'])}
-                record(f'{model} x{buffer}', choose(predicted))
+            predicted = {d: max(0, int(round(f * buffer))) for d, f in zip(m['date'], m['forecast'])}
+            record(f'{model} x{buffer}', choose(predicted))
     detail = pd.DataFrame(rows)
     oracle = detail[detail['source'] == 'oracle'].set_index('origin')['cost']
     detail['cost_vs_oracle'] = detail['cost'] - detail['origin'].map(oracle)

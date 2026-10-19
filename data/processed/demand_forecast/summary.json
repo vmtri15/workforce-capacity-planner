@@ -13,6 +13,10 @@
     "min_train_weeks": 12
   },
   "best_model_by_wape": "ARIMA",
+  "p90": {
+    "share_of_days_at_or_below": 0.876,
+    "target": 0.9
+  },
   "band": {
     "low_ratio": 0.253,
     "high_ratio": 1.768,
