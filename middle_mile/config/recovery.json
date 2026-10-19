@@ -1,0 +1,14 @@
+{
+  "evidence_status": "assumed_recovery_options_and_costs",
+  "currency": "hypothetical units",
+  "swap_trailer": {"cost": 300, "recovers_hours": 3},
+  "split_load": {"extra_truck_cost_per_km": 1.0, "extra_truck_minimum_cost": 150},
+  "untargeted_swap_delay_threshold_hours": 1.0,
+  "assumptions": [
+    "All costs are hypothetical units, not observed. They set the ranking between options and are easy to change here.",
+    "A trailer swap removes up to the stated hours of a truck's delay for a flat cost. It is applied to a truck whose delay is already known.",
+    "A split load sends the parcels that would slip on a separate extra truck that runs on time. The cost is the distance of the lane times the rate, with a minimum.",
+    "Recovery is evaluated for routine truck delays. Cancellations and hub closures are not included.",
+    "Truck capacity is not enforced, so the extra truck always has room."
+  ]
+}

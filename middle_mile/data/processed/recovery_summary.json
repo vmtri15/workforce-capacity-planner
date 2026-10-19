@@ -1,0 +1,164 @@
+{
+  "evidence_status": "assumed_recovery_options_and_costs",
+  "currency": "hypothetical units",
+  "schedules": {
+    "main": {
+      "departures": [
+        "06:00",
+        "18:00"
+      ],
+      "baseline": {
+        "parcels": 59230,
+        "parcels_slipped": 1538,
+        "share_slipped": 0.02597,
+        "mean_slip_days_when_slipped": 1.0,
+        "new_breaches": 26,
+        "share_new_breaches": 0.00044,
+        "already_late_made_later": 178
+      },
+      "trucks_delayed_over_threshold": 1895,
+      "at_risk_trucks": 581,
+      "policies": {
+        "do_nothing": {
+          "cost": 0.0,
+          "parcels_slipped": 1538,
+          "parcels_saved": 0,
+          "new_breaches": 26,
+          "new_breaches_avoided": 0,
+          "cost_per_parcel_saved": null
+        },
+        "swap_every_late_truck": {
+          "cost": 568500,
+          "parcels_slipped": 524,
+          "parcels_saved": 1014,
+          "new_breaches": 11,
+          "new_breaches_avoided": 15,
+          "cost_per_parcel_saved": 560.65
+        },
+        "split_at_risk_trucks": {
+          "cost": 299975.87,
+          "parcels_slipped": 8,
+          "parcels_saved": 1530,
+          "new_breaches": 1,
+          "new_breaches_avoided": 25,
+          "cost_per_parcel_saved": 196.06
+        },
+        "cheapest_option": {
+          "cost": 93335.77,
+          "parcels_slipped": 8,
+          "parcels_saved": 1530,
+          "new_breaches": 1,
+          "new_breaches_avoided": 25,
+          "cost_per_parcel_saved": 61.0
+        }
+      }
+    },
+    "earlier": {
+      "departures": [
+        "04:00",
+        "16:00"
+      ],
+      "baseline": {
+        "parcels": 59230,
+        "parcels_slipped": 3282,
+        "share_slipped": 0.05541,
+        "mean_slip_days_when_slipped": 1.0,
+        "new_breaches": 41,
+        "share_new_breaches": 0.00069,
+        "already_late_made_later": 297
+      },
+      "trucks_delayed_over_threshold": 1909,
+      "at_risk_trucks": 859,
+      "policies": {
+        "do_nothing": {
+          "cost": 0.0,
+          "parcels_slipped": 3282,
+          "parcels_saved": 0,
+          "new_breaches": 41,
+          "new_breaches_avoided": 0,
+          "cost_per_parcel_saved": null
+        },
+        "swap_every_late_truck": {
+          "cost": 572700,
+          "parcels_slipped": 1727,
+          "parcels_saved": 1555,
+          "new_breaches": 23,
+          "new_breaches_avoided": 18,
+          "cost_per_parcel_saved": 368.3
+        },
+        "split_at_risk_trucks": {
+          "cost": 377053.38,
+          "parcels_slipped": 4,
+          "parcels_saved": 3278,
+          "new_breaches": 0,
+          "new_breaches_avoided": 41,
+          "cost_per_parcel_saved": 115.03
+        },
+        "cheapest_option": {
+          "cost": 151798.92,
+          "parcels_slipped": 9,
+          "parcels_saved": 3273,
+          "new_breaches": 0,
+          "new_breaches_avoided": 41,
+          "cost_per_parcel_saved": 46.38
+        }
+      }
+    },
+    "later": {
+      "departures": [
+        "08:00",
+        "22:00"
+      ],
+      "baseline": {
+        "parcels": 59230,
+        "parcels_slipped": 1788,
+        "share_slipped": 0.03019,
+        "mean_slip_days_when_slipped": 1.0,
+        "new_breaches": 24,
+        "share_new_breaches": 0.00041,
+        "already_late_made_later": 152
+      },
+      "trucks_delayed_over_threshold": 1749,
+      "at_risk_trucks": 870,
+      "policies": {
+        "do_nothing": {
+          "cost": 0.0,
+          "parcels_slipped": 1788,
+          "parcels_saved": 0,
+          "new_breaches": 24,
+          "new_breaches_avoided": 0,
+          "cost_per_parcel_saved": null
+        },
+        "swap_every_late_truck": {
+          "cost": 524700,
+          "parcels_slipped": 994,
+          "parcels_saved": 794,
+          "new_breaches": 11,
+          "new_breaches_avoided": 13,
+          "cost_per_parcel_saved": 660.83
+        },
+        "split_at_risk_trucks": {
+          "cost": 106846.01,
+          "parcels_slipped": 18,
+          "parcels_saved": 1770,
+          "new_breaches": 0,
+          "new_breaches_avoided": 24,
+          "cost_per_parcel_saved": 60.36
+        },
+        "cheapest_option": {
+          "cost": 89842.77,
+          "parcels_slipped": 18,
+          "parcels_saved": 1770,
+          "new_breaches": 0,
+          "new_breaches_avoided": 24,
+          "cost_per_parcel_saved": 50.76
+        }
+      }
+    }
+  },
+  "lowest_cost_per_parcel_saved_by_schedule": {
+    "earlier": "cheapest_option",
+    "later": "cheapest_option",
+    "main": "cheapest_option"
+  }
+}

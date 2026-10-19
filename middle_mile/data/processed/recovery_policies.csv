@@ -1,0 +1,13 @@
+schedule,policy,cost,parcels_slipped,parcels_saved,new_breaches,new_breaches_avoided,cost_per_parcel_saved
+main,do_nothing,0.0,1538,0,26,0,
+main,swap_every_late_truck,568500.0,524,1014,11,15,560.65
+main,split_at_risk_trucks,299975.87,8,1530,1,25,196.06
+main,cheapest_option,93335.77,8,1530,1,25,61.0
+earlier,do_nothing,0.0,3282,0,41,0,
+earlier,swap_every_late_truck,572700.0,1727,1555,23,18,368.3
+earlier,split_at_risk_trucks,377053.38,4,3278,0,41,115.03
+earlier,cheapest_option,151798.92,9,3273,0,41,46.38
+later,do_nothing,0.0,1788,0,24,0,
+later,swap_every_late_truck,524700.0,994,794,11,13,660.83
+later,split_at_risk_trucks,106846.01,18,1770,0,24,60.36
+later,cheapest_option,89842.77,18,1770,0,24,50.76

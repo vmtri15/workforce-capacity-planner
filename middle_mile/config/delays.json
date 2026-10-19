@@ -1,0 +1,23 @@
+{
+  "evidence_status": "assumed_delay_model_on_real_olist_parcels",
+  "seed": 7,
+  "routine": {
+    "median_delay_hours": 0.5,
+    "sigma": 1.0,
+    "scale_by_real_lane_variability": true
+  },
+  "cancellation": {"lane_day_probability": 0.01},
+  "closure": {"days": 1},
+  "departure_sensitivity": {
+    "main": ["06:00", "18:00"],
+    "earlier": ["04:00", "16:00"],
+    "later": ["08:00", "22:00"]
+  },
+  "assumptions": [
+    "Every scheduled truck departure gets a random arrival delay: lognormal with the median and sigma above.",
+    "The delay is scaled for each lane by its real variability, the 90th percentile over the median of real transit days for parcels on that route, divided by the network average. The scaling is an assumption.",
+    "A cancellation removes every departure on a lane for one day. A hub closure holds the hub for whole days: nothing departs, and arrivals wait until it reopens.",
+    "Parcels that miss a connection or a cancelled truck wait for the next scheduled departure. Truck capacity is not enforced in the disruption runs.",
+    "A parcel that misses the destination cutoff slips by whole days, and its real delivery date moves by the same number of days."
+  ]
+}

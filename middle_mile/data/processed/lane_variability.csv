@@ -1,0 +1,11 @@
+lane,variability_scale
+CW>SP,0.929
+MG>SP,0.998
+NE>SP,0.859
+RJ>SP,1.085
+S>SP,0.931
+SP>CW,0.944
+SP>MG,0.99
+SP>NE,0.949
+SP>RJ,1.295
+SP>S,1.042

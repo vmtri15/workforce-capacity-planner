@@ -1,0 +1,7 @@
+hub,days_simulated,mean_parcels_slipped,p95_parcels_slipped,worst_day_parcels_slipped,mean_new_breaches,worst_day_new_breaches
+SP,660,68.04,193.05,426,0.94,14
+RJ,647,23.98,65.0,137,0.37,6
+S,655,27.75,77.3,169,0.32,5
+MG,639,21.86,57.0,139,0.26,6
+NE,638,15.03,39.15,66,0.24,4
+CW,630,6.33,20.0,30,0.07,2
