@@ -6,7 +6,7 @@ This repo is a three part series on fulfillment operations:
 
 1. **Forecast demand.** How much work is coming? (`scripts/forecast_demand.py`, see Technical details)
 2. **Plan capacity.** Do the sites have enough workers? (this page)
-3. **Protect parcels on the middle mile.** When trucks run late, which parcels are at risk and what is the cheapest fix? ([middle_mile/](middle_mile/README.md))
+3. **Protect parcels on the middle mile.** When trucks run late, which parcels are at risk and what is the cheapest fix? ([middle_mile/](middle_mile/README.md)) With the 6 worker plan, trucks cause 242 late parcels; with 10 workers, only 32, because understaffing leaves no time to absorb a late truck.
 
 ## The answer
 
