@@ -1,16 +1,21 @@
 """Serve the read-only planning dashboard on localhost."""
 import argparse
+import asyncio
 import csv
 import hashlib
 import json
 import os
 import sqlite3
+import sys
+import threading
 import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+ASK_DIR = ROOT / 'ask_the_planner'
+_ask = {'planner': None, 'lock': threading.Lock()}
 
 
 def read_csv(name):
@@ -95,6 +100,51 @@ def snapshot():
     return data
 
 
+def ask_database():
+    """The database Ask the Planner reads. The evaluation copy has the planning results; ASK_DB overrides."""
+    if os.environ.get('ASK_DB'):
+        return Path(os.environ['ASK_DB'])
+    copy = ASK_DIR / 'eval_db/planner_for_eval.db'
+    return copy if copy.exists() else ROOT / 'data/workforce_planner.db'
+
+
+def ask_status():
+    if str(ASK_DIR) not in sys.path:
+        sys.path.insert(0, str(ASK_DIR))
+    try:
+        from planner_agent import DEFAULT_MODEL, load_env_file
+    except ImportError:
+        return {'available': False, 'reason': 'Vanna is not installed here. Start the server with .venv/bin/python.'}
+    load_env_file()
+    if not (os.environ.get('GEMINI_API_KEY') or os.environ.get('GOOGLE_API_KEY')):
+        return {'available': False, 'reason': 'No Gemini key. Add GEMINI_API_KEY to the .env file.'}
+    database = ask_database()
+    if not database.exists():
+        return {'available': False, 'reason': f'{database.name} not found. Run ask_the_planner/build_eval_db.py.'}
+    return {'available': True, 'model': os.environ.get('GEMINI_MODEL', DEFAULT_MODEL), 'database': database.name}
+
+
+def run_question(question):
+    """Answer one plain English question, read only. Returns the answer and every SQL statement run."""
+    if not isinstance(question, str) or not 3 <= len(question.strip()) <= 500:
+        raise ValueError('Ask a question between 3 and 500 characters.')
+    status = ask_status()
+    if not status['available']:
+        raise RuntimeError(status['reason'])
+    from planner_agent import ask, build_planner
+    with _ask['lock']:  # one question at a time; the agent keeps a log of the SQL it runs
+        if _ask['planner'] is None:
+            _ask['planner'] = build_planner(ask_database(), use_glossary=True)
+        result = asyncio.run(ask(_ask['planner'], question.strip()))
+    queries = []
+    for q in result['queries']:
+        table = json.loads(q['result'].head(50).to_json(orient='split', index=False)) if q['result'] is not None else None
+        queries.append({'sql': q['sql'], 'error': q['error'], 'columns': table['columns'] if table else [],
+                        'rows': table['data'] if table else []})
+    return {'answer': result['answer'], 'error': result['error'], 'queries': queries,
+            'model': status['model'], 'database': status['database']}
+
+
 class Handler(BaseHTTPRequestHandler):
     def send_json(self, status, payload):
         body = json.dumps(payload).encode()
@@ -106,6 +156,9 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_POST(self):
+        if self.path.split('?')[0] == '/api/ask':
+            self.answer_question()
+            return
         if self.path.split('?')[0] != '/api/explain-recommendation':
             self.send_error(404)
             return
@@ -125,6 +178,23 @@ class Handler(BaseHTTPRequestHandler):
             return
         except (urllib.error.URLError, TimeoutError):
             self.send_json(502, {'error': 'OpenAI could not be reached. Try again later.'})
+            return
+        self.send_json(200, result)
+
+    def answer_question(self):
+        try:
+            length = int(self.headers.get('Content-Length', '0'))
+            if length < 1 or length > 4096:
+                raise ValueError('Request body must be between 1 byte and 4 KB.')
+            result = run_question(json.loads(self.rfile.read(length)).get('question'))
+        except (ValueError, json.JSONDecodeError, AttributeError) as error:
+            self.send_json(400, {'error': str(error)})
+            return
+        except RuntimeError as error:
+            self.send_json(503, {'error': str(error)})
+            return
+        except Exception as error:  # the model or API failed; report it instead of crashing the server
+            self.send_json(502, {'error': f'The question could not be answered: {type(error).__name__}.'})
             return
         self.send_json(200, result)
 
@@ -158,6 +228,9 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_error(503, 'Decision answer unavailable. Rebuild the decision artifact, then reload.')
                 return
             content_type = 'application/json'
+        elif path == '/api/ask-status':
+            self.send_json(200, ask_status())
+            return
         elif path == '/api/ai-status':
             self.send_json(200, {'available': bool(os.environ.get('OPENAI_API_KEY')),
                                  'model': os.environ.get('OPENAI_MODEL', 'gpt-5-mini')})

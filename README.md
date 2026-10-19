@@ -85,6 +85,8 @@ The glossary fixed 5 questions and broke none. Most remaining errors have one ca
 .venv/bin/python ask_the_planner/evaluate.py --fresh
 ```
 
+**In the dashboard.** Start the local site with the project's Python, `.venv/bin/python scripts/serve_dashboard.py`, and open http://127.0.0.1:8765. An "Ask the planner" page appears in the menu when the key and database are found. It shows the answer, the SQL it ran and the result table. The key stays on your machine, so this page is hidden on the public GitHub Pages site.
+
 Vanna's own SQLite runner can write to the database and its Gemini code fails on current models, so this layer adds a read only runner and a small Gemini fix. Vanna's repository is archived, so the version is pinned to 2.0.2.
 
 ## Technical details

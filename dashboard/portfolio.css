@@ -532,6 +532,73 @@ body:not(.legacy-active) #overview {
   color: #a44139;
 }
 
+.ask-panel {
+  display: grid;
+  gap: 18px;
+  margin: 20px 0;
+}
+
+.ask-form label {
+  display: block;
+  color: #627268;
+  font-size: 11px;
+  margin-bottom: 7px;
+}
+
+.ask-row {
+  display: flex;
+  gap: 12px;
+}
+
+.ask-row input {
+  flex: 1;
+  height: 39px;
+  border: 1px solid #d5ded8;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font: inherit;
+}
+
+.ask-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  color: #627268;
+  font-size: 12px;
+}
+
+.ask-examples button {
+  border: 1px solid #d5ded8;
+  border-radius: 999px;
+  background: white;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ask-answer {
+  font-size: 15px;
+  color: #1f3329;
+  margin: 0 0 12px;
+}
+
+#ask-output details {
+  margin-top: 10px;
+}
+
+#ask-output pre {
+  white-space: pre-wrap;
+  background: #f4f7f5;
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-size: 12px;
+}
+
+.ask-error {
+  color: #a44139;
+}
+
 @media (max-width: 900px) {
   .portfolio-grid,
   .builder-layout,

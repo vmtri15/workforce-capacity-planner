@@ -388,6 +388,52 @@ async function setupAiExplainer() {
   });
 }
 
+async function setupAskPlanner() {
+  let status;
+  try {
+    const response = await fetch('./api/ask-status');
+    if (!response.ok) return;
+    status = await response.json();
+  } catch (_) {
+    return;
+  }
+  if (!status.available) return;
+  document.getElementById('ask-nav').hidden = false;
+  document.getElementById('ask-source').textContent = `Model: ${status.model}. Database: ${status.database}, opened read only.`;
+  const form = document.getElementById('ask-form');
+  const input = document.getElementById('ask-question');
+  const button = document.getElementById('ask-submit');
+  const output = document.getElementById('ask-output');
+  const table = query => query.columns.length ? `<div class="table-wrap"><table><thead><tr>${query.columns.map(c => `<th>${portfolioEscape(c)}</th>`).join('')}</tr></thead><tbody>${query.rows.map(r => `<tr>${r.map(v => `<td>${portfolioEscape(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : '';
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const question = input.value.trim();
+    if (!question) return;
+    button.disabled = true;
+    button.textContent = 'Thinking...';
+    output.hidden = false;
+    output.classList.remove('error');
+    output.textContent = 'Writing and running the SQL...';
+    try {
+      const response = await fetch('./api/ask', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({question})});
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'The question could not be answered.');
+      const steps = result.queries.map((q, i) => `<details${i === result.queries.length - 1 ? ' open' : ''}><summary>SQL ${i + 1}${q.error ? ' (rejected)' : ''}</summary><pre>${portfolioEscape(q.sql)}</pre>${q.error ? `<p class="ask-error">${portfolioEscape(q.error)}</p>` : table(q)}</details>`).join('');
+      output.innerHTML = `<p class="ask-answer">${portfolioEscape(result.answer || result.error || 'No answer was returned.')}</p>${steps}`;
+    } catch (error) {
+      output.textContent = error.message;
+      output.classList.add('error');
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Ask';
+    }
+  });
+  document.querySelectorAll('[data-ask-example]').forEach(example => example.addEventListener('click', () => {
+    input.value = example.textContent;
+    form.requestSubmit();
+  }));
+}
+
 async function loadDecisionAnswer() {
   let response = await fetch('./api/decision-answer');
   if (!response.ok) response = await fetch('./data/decision_answer.json');
@@ -416,6 +462,7 @@ async function loadPortfolio() {
     await loadNetworkCapacity();
     await loadDecisionAnswer();
     await setupAiExplainer();
+    await setupAskPlanner();
     document.querySelectorAll('[data-go]').forEach(button => button.addEventListener('click', () => showView(button.dataset.go)));
   } catch (error) {
     const alert = document.getElementById('error');
