@@ -77,9 +77,10 @@ The best 10% of rescues save 37% of the parcels for 9% of the cost, so a small b
 
 ## Run it
 
-Download the Olist data from Kaggle ("Brazilian E-Commerce Public Dataset by Olist") and unzip it into `archive/`. The raw data is not included in this repo, and the licence is on the Kaggle page.
+Download the Olist data from Kaggle ("Brazilian E-Commerce Public Dataset by Olist") and unzip it into `middle_mile/archive/`. The raw data is not included in this repo, and the licence is on the Kaggle page. Run from the `middle_mile` folder:
 
 ```bash
+cd middle_mile
 pip install -r requirements.txt
 bash run_all.sh
 python3 -m unittest discover -s tests
@@ -89,7 +90,7 @@ Each simulation step takes a few minutes.
 
 ## Part of a series
 
-This is the third project in a series on fulfillment operations: forecast demand and plan warehouse capacity in the [Workforce Capacity Planner](https://github.com/vmtri15/workforce-capacity-planner), then protect parcels on the middle mile here.
+This is part three of the series in this repo: forecast demand and plan warehouse capacity in the [Workforce Capacity Planner](../README.md), then protect parcels on the middle mile here. For now it runs on the Olist network in Brazil. Connecting it to the planner's own sites and demand is the next step.
 
 ## Data credit
 

@@ -2,6 +2,12 @@
 
 **Do three warehouse sites have enough workers for the expected workload, and if not, what is the cheapest safe fix?**
 
+This repo is a three part series on fulfillment operations:
+
+1. **Forecast demand.** How much work is coming? (`scripts/forecast_demand.py`, see Technical details)
+2. **Plan capacity.** Do the sites have enough workers? (this page)
+3. **Protect parcels on the middle mile.** When trucks run late, which parcels are at risk and what is the cheapest fix? ([middle_mile/](middle_mile/README.md))
+
 ## The answer
 
 Each modeled site covers at least 95% of its workload on most days, but none removes every shortfall hour across the recorded 2023 workload. The analysis found two staffing options:
