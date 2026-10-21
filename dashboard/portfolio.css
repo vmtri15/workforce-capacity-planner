@@ -4,14 +4,14 @@ body:not(.legacy-active) #overview {
 
 .nav-divider {
   margin: 18px 13px 2px;
-  color: #9aa69f;
+  color: var(--faint);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1.3px;
 }
 
 .archive-link {
-  color: #718078;
+  color: var(--muted);
 }
 
 .portfolio-grid {
@@ -23,8 +23,8 @@ body:not(.legacy-active) #overview {
 .analysis-panel {
   min-width: 0;
   padding: 22px;
-  border: 1px solid #dce4df;
-  background: #fff;
+  border: 1px solid var(--line);
+  background: var(--surface);
 }
 
 .analysis-panel.wide {
@@ -39,14 +39,14 @@ body:not(.legacy-active) #overview {
   display: grid;
   grid-template-columns: 1.25fr repeat(3, minmax(0, 1fr));
   margin: -14px 0 26px;
-  border: 1px solid #dce4df;
-  background: #fff;
+  border: 1px solid var(--line);
+  background: var(--surface);
 }
 
 .executive-summary > div {
   min-width: 0;
   padding: 20px;
-  border-right: 1px solid #dce4df;
+  border-right: 1px solid var(--line);
 }
 
 .executive-summary > div:last-child {
@@ -66,7 +66,7 @@ body:not(.legacy-active) #overview {
 
 .executive-summary small {
   margin-bottom: 10px;
-  color: #25816b;
+  color: var(--brand);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -98,19 +98,19 @@ body:not(.legacy-active) #overview {
 .mix-track {
   height: 10px;
   overflow: hidden;
-  background: #e8eeea;
+  background: var(--line);
 }
 
 .mix-fill {
   height: 100%;
-  background: #25816b;
+  background: var(--brand);
 }
 
 .insight-panel {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background: #f0f3e9;
+  background: var(--notice-bg);
 }
 
 .insight-panel h2 {
@@ -124,8 +124,8 @@ body:not(.legacy-active) #overview {
 .insight-panel button {
   align-self: start;
   margin-top: 8px;
-  background: #146655;
-  color: #fff;
+  background: var(--brand);
+  color: var(--on-brand);
   border: 0;
 }
 
@@ -147,7 +147,7 @@ body:not(.legacy-active) #overview {
 .network-controls label {
   display: grid;
   gap: 7px;
-  color: #627268;
+  color: var(--muted);
   font-size: 11px;
 }
 
@@ -169,13 +169,13 @@ body:not(.legacy-active) #overview {
 .network-controls select {
   min-width: 190px;
   padding: 10px;
-  border: 1px solid #d5ded8;
+  border: 1px solid var(--line);
   border-radius: 4px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .network-controls span {
-  color: #738279;
+  color: var(--muted);
   font-size: 11px;
 }
 
@@ -191,7 +191,7 @@ body:not(.legacy-active) #overview {
   max-width: 280px;
   margin: 5px 0 0;
   white-space: normal;
-  color: #7a887f;
+  color: var(--muted);
   font-size: 10px;
   line-height: 1.4;
 }
@@ -201,30 +201,30 @@ body:not(.legacy-active) #overview {
   align-content: start;
   gap: 18px;
   padding: 22px;
-  border: 1px solid #dce4df;
-  background: #fff;
+  border: 1px solid var(--line);
+  background: var(--surface);
 }
 
 .scenario-controls label {
   display: grid;
   gap: 7px;
-  color: #627268;
+  color: var(--muted);
   font-size: 11px;
 }
 
 .scenario-controls select {
   width: 100%;
   padding: 10px;
-  border: 1px solid #d5ded8;
+  border: 1px solid var(--line);
   border-radius: 4px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .scenario-controls hr {
   width: 100%;
   margin: 0;
   border: 0;
-  border-top: 1px solid #dce4df;
+  border-top: 1px solid var(--line);
 }
 
 .scenario-metrics {
@@ -235,13 +235,13 @@ body:not(.legacy-active) #overview {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-bottom: 18px;
-  border: 1px solid #dce4df;
-  background: #f0f3e9;
+  border: 1px solid var(--line);
+  background: var(--notice-bg);
 }
 
 .comparison-summary div {
   padding: 16px 18px;
-  border-right: 1px solid #d5ddd0;
+  border-right: 1px solid var(--line);
 }
 
 .comparison-summary div:last-child {
@@ -255,7 +255,7 @@ body:not(.legacy-active) #overview {
 
 .comparison-summary small {
   margin-bottom: 7px;
-  color: #6f7d74;
+  color: var(--muted);
   font-size: 10px;
 }
 
@@ -283,7 +283,7 @@ body:not(.legacy-active) #overview {
 
 .comparison-label {
   margin: 0 0 8px;
-  color: #25816b;
+  color: var(--brand);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.2px;
@@ -299,14 +299,14 @@ body:not(.legacy-active) #overview {
 }
 
 .scenario-score strong {
-  color: #24312e;
+  color: var(--ink);
   font-size: 42px;
   font-weight: 500;
 }
 
 .scenario-score span {
   margin-top: 5px;
-  color: #738279;
+  color: var(--muted);
   font-size: 11px;
 }
 
@@ -314,12 +314,12 @@ body:not(.legacy-active) #overview {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
-  background: #dce4df;
+  background: var(--line);
 }
 
 .scenario-card-metrics div {
   padding: 13px;
-  background: #f7f9f8;
+  background: var(--canvas);
 }
 
 .scenario-card-metrics small,
@@ -329,7 +329,7 @@ body:not(.legacy-active) #overview {
 
 .scenario-card-metrics small {
   margin-bottom: 6px;
-  color: #738279;
+  color: var(--muted);
   font-size: 10px;
 }
 
@@ -355,12 +355,12 @@ body:not(.legacy-active) #overview {
 
 .methodology-grid article {
   padding: 22px;
-  border-top: 3px solid #25816b;
-  background: #fff;
+  border-top: 3px solid var(--brand);
+  background: var(--surface);
 }
 
 .methodology-grid span {
-  color: #25816b;
+  color: var(--brand);
   font-size: 11px;
   font-weight: 700;
 }
@@ -396,15 +396,15 @@ body:not(.legacy-active) #overview {
   display: inline-block;
   padding: 6px 9px;
   border-radius: 3px;
-  background: #e5f0e9;
-  color: #287450;
+  background: var(--brand-soft);
+  color: var(--brand);
   font-size: 10px;
   font-weight: 700;
 }
 
 .status-pill.fail {
-  background: #f9e7e6;
-  color: #a94b46;
+  background: var(--red-soft);
+  color: var(--red-ink);
 }
 
 .detail-grid {
@@ -416,7 +416,7 @@ body:not(.legacy-active) #overview {
 
 .detail-grid div {
   padding: 14px;
-  background: #f7f9f8;
+  background: var(--canvas);
 }
 
 .detail-grid small,
@@ -426,7 +426,7 @@ body:not(.legacy-active) #overview {
 
 .detail-grid small {
   margin-bottom: 6px;
-  color: #738279;
+  color: var(--muted);
 }
 
 .recommendation-hero {
@@ -456,14 +456,14 @@ body:not(.legacy-active) #overview {
 }
 
 .decision-matrix td strong {
-  color: #8a4f35;
+  color: var(--amber-ink);
   font-size: 11px;
 }
 
 .recommendation-grid article {
   padding: 24px;
-  border-top: 3px solid #25816b;
-  background: #fff;
+  border-top: 3px solid var(--brand);
+  background: var(--surface);
 }
 
 .recommendation-grid h3 {
@@ -478,7 +478,7 @@ body:not(.legacy-active) #overview {
 }
 
 .step {
-  color: #25816b;
+  color: var(--brand);
   font-weight: 700;
 }
 
@@ -506,30 +506,30 @@ body:not(.legacy-active) #overview {
 .ai-controls label {
   display: grid;
   gap: 7px;
-  color: #627268;
+  color: var(--muted);
   font-size: 11px;
 }
 
 .ai-controls select {
   min-width: 170px;
   height: 39px;
-  border: 1px solid #d5ded8;
+  border: 1px solid var(--line);
   border-radius: 4px;
-  background: white;
+  background: var(--surface);
   padding: 8px 10px;
 }
 
 .ai-output {
   grid-column: 1 / -1;
   white-space: pre-wrap;
-  color: #344a40;
+  color: var(--ink);
   line-height: 1.65;
-  border-top: 1px solid #dce4df;
+  border-top: 1px solid var(--line);
   padding-top: 18px;
 }
 
 .ai-output.error {
-  color: #a44139;
+  color: var(--red-ink);
 }
 
 .ask-panel {
@@ -540,7 +540,7 @@ body:not(.legacy-active) #overview {
 
 .ask-form label {
   display: block;
-  color: #627268;
+  color: var(--muted);
   font-size: 11px;
   margin-bottom: 7px;
 }
@@ -553,7 +553,7 @@ body:not(.legacy-active) #overview {
 .ask-row input {
   flex: 1;
   height: 39px;
-  border: 1px solid #d5ded8;
+  border: 1px solid var(--line);
   border-radius: 4px;
   padding: 8px 12px;
   font: inherit;
@@ -564,14 +564,14 @@ body:not(.legacy-active) #overview {
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-  color: #627268;
+  color: var(--muted);
   font-size: 12px;
 }
 
 .ask-examples button {
-  border: 1px solid #d5ded8;
+  border: 1px solid var(--line);
   border-radius: 999px;
-  background: white;
+  background: var(--surface);
   padding: 6px 12px;
   font-size: 12px;
   cursor: pointer;
@@ -579,7 +579,7 @@ body:not(.legacy-active) #overview {
 
 .ask-answer {
   font-size: 15px;
-  color: #1f3329;
+  color: var(--brand-dark);
   margin: 0 0 12px;
 }
 
@@ -589,14 +589,14 @@ body:not(.legacy-active) #overview {
 
 #ask-output pre {
   white-space: pre-wrap;
-  background: #f4f7f5;
+  background: var(--canvas);
   border-radius: 4px;
   padding: 10px 12px;
   font-size: 12px;
 }
 
 .ask-error {
-  color: #a44139;
+  color: var(--red-ink);
 }
 
 @media (max-width: 900px) {
@@ -624,7 +624,7 @@ body:not(.legacy-active) #overview {
 
   .executive-summary > div {
     border-right: 0;
-    border-bottom: 1px solid #dce4df;
+    border-bottom: 1px solid var(--line);
   }
 
   .executive-summary > div:last-child {
@@ -652,7 +652,7 @@ body:not(.legacy-active) #overview {
 
   .comparison-summary div {
     border-right: 0;
-    border-bottom: 1px solid #d5ddd0;
+    border-bottom: 1px solid var(--line);
   }
 
   .comparison-summary div:last-child {

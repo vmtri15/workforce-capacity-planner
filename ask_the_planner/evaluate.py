@@ -45,7 +45,7 @@ FATAL = re.compile(r'NOT_FOUND|API key|API_KEY|PERMISSION_DENIED|UNAUTHENTICATED
 NAME_ALIASES = {'joliet': ['Joliet'], 'ohare': ["O'Hare", 'Ohare'], 'kenosha': ['Kenosha'],
                 'Joliet/Elwood': ['Joliet'], "O'Hare area": ["O'Hare", 'Ohare'], 'Kenosha/Pleasant Prairie': ['Kenosha']}
 RATE_LIMIT = re.compile(r'429|RESOURCE_EXHAUSTED|quota|rate limit', re.I)
-BUSY = re.compile(r'503|UNAVAILABLE|high demand|overloaded', re.I)  # a temporary outage, not a wrong answer
+BUSY = re.compile(r'503|UNAVAILABLE|high demand|overloaded|timed out|timeout', re.I)  # a temporary outage, not a wrong answer
 
 
 def gold_frames(question, database):

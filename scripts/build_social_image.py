@@ -26,14 +26,14 @@ def main():
     affordable, resilient = decision['actions']['affordable_base_case'], decision['actions']['lowest_risk_tested']
 
     image = Image.new('RGB', (W, H))
-    draw = ImageDraw.Draw(image)
-    for y in range(H):  # the site's green gradient
-        t = y / H
-        draw.line([(0, y), (W, y)], fill=(int(15 + 3 * t), int(107 - 33 * t), int(87 - 26 * t)))
+    draw = ImageDraw.Draw(image, 'RGBA')
+    for x in range(W):  # the site's navy to teal hero gradient
+        t = x / W
+        draw.line([(x, 0), (x, H)], fill=(int(23 - 10 * t), int(50 + 41 * t), int(77 + 17 * t)))
     draw.rounded_rectangle([64, 60, 112, 108], 12, fill=(255, 255, 255))
-    draw.text((88, 84), 'W', font=font(28, True), fill=(15, 107, 87), anchor='mm')
+    draw.text((88, 84), 'W', font=font(28, True), fill=(23, 50, 77), anchor='mm')
     draw.text((128, 64), 'Workforce Capacity Planner', font=font(28, True), fill='white')
-    draw.text((128, 98), 'FULFILLMENT OPERATIONS ANALYTICS', font=font(15), fill=(167, 220, 203))
+    draw.text((128, 98), 'FULFILLMENT OPERATIONS ANALYTICS', font=font(15), fill=(127, 211, 204))
     draw.text((64, 170), 'How many warehouse workers do three', font=font(50, True), fill='white')
     draw.text((64, 230), 'Midwest sites need, and what does the', font=font(50, True), fill='white')
     draw.text((64, 290), 'choice cost once parcels hit the road?', font=font(50, True), fill='white')
@@ -43,11 +43,11 @@ def main():
              (f'{six["late_with_truck_delays"]:,} vs {ten["late_with_truck_delays"]}', 'late parcels, 6 vs 10 workers')]
     for i, (value, label) in enumerate(tiles):
         x = 64 + i * 364
-        draw.rounded_rectangle([x, 400, x + 340, 530], 16, fill=(32, 105, 90), outline=(70, 140, 124))
+        draw.rounded_rectangle([x, 400, x + 340, 530], 16, fill=(255, 255, 255, 22), outline=(255, 255, 255, 50))
         draw.text((x + 24, 420), value, font=font(44, True), fill='white')
-        draw.text((x + 24, 482), label, font=font(19), fill=(196, 227, 217))
+        draw.text((x + 24, 482), label, font=font(19), fill=(185, 205, 223))
     draw.text((64, 566), 'Forecast demand  ·  Plan capacity  ·  Ship parcels      Tri Vi  ·  github.com/vmtri15',
-              font=font(19), fill=(196, 227, 217))
+              font=font(19), fill=(185, 205, 223))
     image.save(OUTPUT, optimize=True)
     print(f'Wrote {OUTPUT.relative_to(ROOT)}')
 

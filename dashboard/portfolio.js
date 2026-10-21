@@ -1,4 +1,6 @@
 let portfolioData;
+// chart colors come from the CSS theme tokens, so canvases follow light and dark mode
+const themeColor = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 let networkCapacityData;
 let decisionAnswerData;
 
@@ -89,8 +91,8 @@ window.drawPortfolioDemand = function drawPortfolioDemand() {
   const bottom = height - 30;
   const maximum = Math.max(...days.map(day => day.large + day.small + day.zero)) * 1.08;
   context.font = '10px Arial';
-  context.fillStyle = '#7c8980';
-  context.strokeStyle = '#e2e8e4';
+  context.fillStyle = themeColor('--chart-text');
+  context.strokeStyle = themeColor('--chart-grid');
   for (let index = 0; index <= 4; index += 1) {
     const y = bottom - (bottom - top) * index / 4;
     context.beginPath();
@@ -105,13 +107,13 @@ window.drawPortfolioDemand = function drawPortfolioDemand() {
     const x = left + index * slot;
     const smallHeight = day.small / maximum * (bottom - top);
     const largeHeight = day.large / maximum * (bottom - top);
-    context.fillStyle = '#6b89b6';
+    context.fillStyle = themeColor('--chart-b');
     context.fillRect(x, bottom - smallHeight, barWidth, smallHeight);
-    context.fillStyle = '#25816b';
+    context.fillStyle = themeColor('--chart-a');
     context.fillRect(x, bottom - smallHeight - largeHeight, barWidth, largeHeight);
   });
   const tickStep = Math.max(1, Math.ceil(days.length / (width < 600 ? 4 : 8)));
-  context.fillStyle = '#7c8980';
+  context.fillStyle = themeColor('--chart-text');
   days.forEach((day, index) => {
     if (index % tickStep === 0) context.fillText(day.date.slice(5), left + index * slot - 10, height - 8);
   });
@@ -291,8 +293,8 @@ window.drawNetworkCapacity = function drawNetworkCapacity() {
   const x = index => left + (right - left) * index / Math.max(1, days.length - 1);
   const y = value => bottom - value / maximum * (bottom - top);
   context.font = '10px Arial';
-  context.fillStyle = '#7c8980';
-  context.strokeStyle = '#e2e8e4';
+  context.fillStyle = themeColor('--chart-text');
+  context.strokeStyle = themeColor('--chart-grid');
   for (let index = 0; index <= 4; index += 1) {
     const lineY = bottom - (bottom - top) * index / 4;
     context.beginPath();
@@ -301,7 +303,7 @@ window.drawNetworkCapacity = function drawNetworkCapacity() {
     context.stroke();
     context.fillText(portfolioNumber(maximum * index / 4), 0, lineY + 3);
   }
-  [['required_hours', '#25816b'], ['available_hours', '#6b89b6']].forEach(([key, color]) => {
+  [['required_hours', themeColor('--chart-a')], ['available_hours', themeColor('--chart-b')]].forEach(([key, color]) => {
     context.beginPath();
     days.forEach((day, index) => index ? context.lineTo(x(index), y(day[key])) : context.moveTo(x(index), y(day[key])));
     context.strokeStyle = color;
@@ -309,7 +311,7 @@ window.drawNetworkCapacity = function drawNetworkCapacity() {
     context.setLineDash(key === 'available_hours' ? [6, 4] : []);
     context.stroke();
   });
-  context.fillStyle = '#c95b521f';
+  context.fillStyle = themeColor('--chart-gap');
   days.forEach((day, index) => {
     if (day.required_hours > day.available_hours) {
       const nextX = index === days.length - 1 ? right : x(index + 1);

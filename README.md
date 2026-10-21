@@ -103,7 +103,8 @@ demand forecast (model leaderboard, next 20 days with the 80% range and P90, and
 what forecast error costs in staffing); network capacity and scenario comparison;
 the middle mile (late parcels by cause and the trucks to watch); plus Ask the
 planner, Tableau reporting and methodology. Each page has a URL (`#forecast`,
-`#middlemile`) and works on a phone.
+`#middlemile`), works on a phone, and has light and dark themes (it follows the
+visitor's system setting until they use the toggle).
 The link preview image is drawn by `scripts/build_social_image.py` from the saved
 results; rerun it after the numbers change. The older 2011 network model is retained in the codebase for
 reproducibility but is intentionally excluded from the portfolio navigation. The

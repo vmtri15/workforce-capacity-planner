@@ -41,7 +41,32 @@
     if (view === 'forecast') drawForecast();
   };
 
+  function isDark() {
+    const set = document.documentElement.dataset.theme;
+    return set ? set === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  function redrawCharts() {  // canvases read the theme tokens only when they draw
+    [window.drawPortfolioDemand, window.drawNetworkCapacity, drawForecast, typeof drawChart === 'function' ? drawChart : null]
+      .forEach(draw => { try { if (draw) draw(); } catch (_) { /* a chart whose data has not loaded yet */ } });
+  }
+
+  function setupTheme() {
+    const button = $('theme-toggle');
+    const label = () => button.setAttribute('aria-label', isDark() ? 'Switch to light mode' : 'Switch to dark mode');
+    label();
+    button.addEventListener('click', () => {
+      const next = isDark() ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch (_) { /* private mode: the choice lasts for this visit */ }
+      label();
+      redrawCharts();
+    });
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { label(); redrawCharts(); });
+  }
+
   function setupShell() {
+    setupTheme();
     $('menu-toggle').addEventListener('click', () => {
       const open = !document.body.classList.contains('menu-open');
       document.body.classList.toggle('menu-open', open);
@@ -160,23 +185,23 @@
     const max = Math.max(...forecastPoints.map(d => Math.max(d.actual || 0, d.high || 0, d.p90 || 0))) * 1.08;
     const x = i => left + (right - left) * i / (forecastPoints.length - 1);
     const y = v => bottom - v / max * (bottom - top);
-    ctx.font = '11px Inter, Arial'; ctx.fillStyle = '#6b7a73'; ctx.strokeStyle = '#e6ece9';
+    ctx.font = '11px Inter, Arial'; ctx.fillStyle = themeColor('--chart-text'); ctx.strokeStyle = themeColor('--chart-grid');
     for (let i = 0; i <= 4; i++) { const ly = bottom - (bottom - top) * i / 4; ctx.beginPath(); ctx.moveTo(left, ly); ctx.lineTo(right, ly); ctx.stroke(); ctx.fillText(num(max * i / 4), 0, ly + 4); }
     const first = forecastPoints.findIndex(d => d.forecast != null);
-    ctx.fillStyle = '#f3f6f5'; ctx.fillRect(x(first) - 4, top, right - x(first) + 4, bottom - top);
+    ctx.fillStyle = themeColor('--chart-shade'); ctx.fillRect(x(first) - 4, top, right - x(first) + 4, bottom - top);
     ctx.beginPath();
     forecastPoints.forEach((d, i) => { if (i >= first) (i === first ? ctx.moveTo : ctx.lineTo).call(ctx, x(i), y(d.high)); });
     for (let i = forecastPoints.length - 1; i >= first; i--) ctx.lineTo(x(i), y(forecastPoints[i].low));
-    ctx.closePath(); ctx.fillStyle = 'rgba(15,107,87,.14)'; ctx.fill();
+    ctx.closePath(); ctx.fillStyle = themeColor('--chart-band'); ctx.fill();
     const line = (key, color, dash, from = 0, to = forecastPoints.length) => {
       ctx.beginPath(); ctx.setLineDash(dash); ctx.strokeStyle = color; ctx.lineWidth = 2;
       for (let i = from; i < to; i++) (i === from ? ctx.moveTo : ctx.lineTo).call(ctx, x(i), y(forecastPoints[i][key]));
       ctx.stroke(); ctx.setLineDash([]);
     };
-    line('actual', '#24312e', [], 0, first);
-    line('forecast', '#0f6b57', [], first);
-    line('p90', '#c7841f', [5, 4], first);
-    ctx.fillStyle = '#6b7a73';
+    line('actual', themeColor('--chart-ink'), [], 0, first);
+    line('forecast', themeColor('--chart-a'), [], first);
+    line('p90', themeColor('--amber'), [5, 4], first);
+    ctx.fillStyle = themeColor('--chart-text');
     ctx.fillText('Forecast →', x(first) + 6, top + 14);
     const step = Math.max(1, Math.ceil(forecastPoints.length / (width < 600 ? 4 : 8)));
     forecastPoints.forEach((d, i) => { if (i % step === 0) ctx.fillText(d.date.slice(5), x(i) - 12, height - 8); });
@@ -227,12 +252,12 @@
     });
     const X = n => n.x, Y = n => n.y;
     const maxOrders = Math.max(...[...lanes.values()].map(l => l.orders)), maxLate = Math.max(1, ...[...lanes.values()].map(l => l.late));
-    const color = late => late === 0 ? '#b8c6c0' : late / maxLate > .5 ? '#c0472f' : '#d99a2b';
+    const color = late => late === 0 ? 'var(--lane-idle)' : late / maxLate > .5 ? 'var(--red)' : 'var(--amber)';
     const name = id => nodes[id].name;
     const lines = [...lanes.values()].sort((a, b) => a.late - b.late).map(l => {
       const a = nodes[l.from], b = nodes[l.to];
       const mid = (X(a) + X(b)) / 2;
-      return `<path class="lane" data-key="${esc(l.key)}" d="M${X(a)},${Y(a).toFixed(1)} C${mid},${Y(a).toFixed(1)} ${mid},${Y(b).toFixed(1)} ${X(b)},${Y(b).toFixed(1)}" fill="none" stroke="${color(l.late)}" stroke-width="${(2 + 14 * l.orders / maxOrders).toFixed(1)}" tabindex="0"><title>${esc(name(l.from))} to ${esc(name(l.to))}</title></path>`;
+      return `<path class="lane" data-key="${esc(l.key)}" d="M${X(a)},${Y(a).toFixed(1)} C${mid},${Y(a).toFixed(1)} ${mid},${Y(b).toFixed(1)} ${X(b)},${Y(b).toFixed(1)}" fill="none" style="stroke:${color(l.late)}" stroke-width="${(2 + 14 * l.orders / maxOrders).toFixed(1)}" tabindex="0"><title>${esc(name(l.from))} to ${esc(name(l.to))}</title></path>`;
     }).join('');
     const marker = n => n.kind === 'site' ? `<rect x="${X(n) - 8}" y="${Y(n) - 8}" width="16" height="16" rx="4" class="node site"/>`
       : n.kind === 'sort' ? `<circle cx="${X(n)}" cy="${Y(n)}" r="9" class="node sort"/>` : `<circle cx="${X(n)}" cy="${Y(n)}" r="7" class="node station"/>`;

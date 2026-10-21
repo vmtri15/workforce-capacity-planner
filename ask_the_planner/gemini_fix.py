@@ -8,9 +8,12 @@ This subclass keeps everything else from Vanna and only replaces how the convers
 """
 import asyncio
 import json
+import os
 import time
 import uuid
 
+from google import genai
+from google.genai import types
 from vanna.core.tool import ToolCall
 from vanna.integrations.google import GeminiLlmService
 
@@ -20,6 +23,9 @@ class FixedGeminiLlmService(GeminiLlmService):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Vanna's client has no time limit, and during a Gemini outage a call can hang for good
+        key = kwargs.get('api_key') or os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
+        self._client = genai.Client(api_key=key, http_options=types.HttpOptions(timeout=120_000))
         self._calls = {}  # tool call id -> (function name, thought signature)
         self._last_call = 0.0
 
