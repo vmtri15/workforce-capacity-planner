@@ -115,9 +115,41 @@
     ];
     $('home-journey').innerHTML = steps.map(([n, title, view, text]) => `<button type="button" class="journey-step" data-go="${view}"><span class="step-number">${n}</span><h3>${title}</h3><p>${esc(text)}</p><span class="step-link">Explore →</span></button>`).join('<span class="journey-arrow" aria-hidden="true">→</span>');
     $('home-journey').querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => showView(b.dataset.go)));
+    renderImpact();
     $('home-plan').addEventListener('planchange', event => renderPlan(event.detail));
     countUp($('home-kpis'));
     renderPlan('six');
+  }
+
+  function renderImpact() {
+    const safe = linkRow('fixed_10_workers_ot2'), flexible = linkRow(RECOMMENDED_SOURCE), perfect = linkRow('oracle');
+    const six = decision.middle_mile_check.affordable_6_workers, ten = decision.middle_mile_check.safe_10_workers;
+    const affordable = decision.actions.affordable_base_case;
+    const saved = safe.mean_total_cost - flexible.mean_total_cost;
+    const perfectGain = flexible.mean_total_cost - perfect.mean_total_cost;
+    const truckFixed = six.late_with_truck_delays - six.late_after_truck_recovery;
+    const perTruckParcel = six.truck_recovery_cost / truckFixed;
+    const perHireParcel = (ten.labor_cost - six.labor_cost) / (six.late_with_truck_delays - ten.late_with_truck_delays);
+    const warehouseShare = six.late_without_truck_delays / six.late_with_truck_delays;
+    const round = (value, step) => Math.round(value / step) * step;
+    const cards = [
+      ['save', money(round(saved, 100)), 'saved every 4 weeks',
+       `Keep 6 workers and have temps on call for busy days, instead of hiring 4 more permanent workers. On real 2023 demand the lean plan still shipped ${pct(flexible.mean_on_time_share)} of orders on time, against ${pct(safe.mean_on_time_share)} for the bigger team.`,
+       `That is ${pct(saved / safe.mean_total_cost, 0)} cheaper, or roughly ${money(round(saved * 13, 10000))} a year.`],
+      ['forecast', money(round(Math.max(perfectGain, 0), 10)), 'extra saving from a perfect forecast, per 4 weeks',
+       `Even knowing next month's orders in advance would barely change the bill. Daily orders swing too much to predict well, so money spent on better forecasting tools would not pay back.`,
+       'Spend on flexibility (temps, overtime) instead.'],
+      ['truck', `${Math.round(perHireParcel / perTruckParcel)}x`, 'cheaper to fix a late truck than to hire',
+       `Fixing a risky truck costs about ${money(perTruckParcel)} per parcel saved; hiring more workers costs about ${money(perHireParcel)}. But ${pct(warehouseShare, 0)} of late parcels already leave the warehouse late, and no truck fix can save those.`,
+       'Fix staffing first, then the riskiest trucks.'],
+      ['watch', `${affordable.stress_cases_passed} of ${affordable.stress_cases_tested}`, 'tough weeks the lean plan survives',
+       'The lean plan works in a normal week but fails when workers are slower than usual or two people are out. Those are the two warning signs to watch.',
+       'When you see them, call in temps right away.'],
+    ];
+    const icons = {save: '<path d="M12 3v18M17 7.5c0-1.9-2.2-3-5-3s-5 1.1-5 3 2.2 2.8 5 3.4 5 1.5 5 3.6-2.2 3-5 3-5-1.1-5-3"/>',
+      forecast: '<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>', truck: '<path d="M1 6h13v10H1zM14 10h4l3 3v3h-7"/><circle cx="5" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
+      watch: '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h0"/>'};
+    $('home-impact').innerHTML = cards.map(([kind, value, label, text, action]) => `<article class="impact-card ${kind}"><span class="impact-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons[kind]}</svg></span><strong>${value}</strong><small>${label}</small><p>${esc(text)}</p><p class="impact-action">${esc(action)}</p></article>`).join('');
   }
 
   function renderPlan(plan) {
@@ -299,7 +331,7 @@
     const ask = story.ask;
     const acc = ask.accuracy;
     const line = name => acc[name] ? `${acc[name].correct} of ${acc[name].of}` : null;
-    $('ask-accuracy').innerHTML = `<strong>Tested accuracy:</strong> ${acc.guided ? `${line('guided')} test questions answered correctly with base case guidance (${pct(acc.guided.share, 0)}), up from ${line('glossary')} with the glossary alone and ${line('schema_only')} with the schema only.` : `${line('glossary')} test questions answered correctly with the business glossary (${pct(acc.glossary.share, 0)}).`}`;
+    $('ask-accuracy').innerHTML = `<strong>Tested accuracy:</strong> ${acc.guided ? `${line('guided')} test questions answered correctly with base case guidance (${pct(acc.guided.share, 0)}), up from ${line('glossary')} with the glossary alone and ${line('schema_only')} with the schema only, on ${esc(ask.model)}.` : `${line('glossary')} test questions answered correctly with the business glossary (${pct(acc.glossary.share, 0)}).`}`;
     if (window.askLive) return;
     $('ask-question').disabled = true;
     $('ask-submit').disabled = true;

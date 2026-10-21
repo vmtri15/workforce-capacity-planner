@@ -123,6 +123,7 @@ async def main():
     parser.add_argument('--fresh', action='store_true')
     parser.add_argument('--rescore', action='store_true', help='score the saved answers again, no API calls')
     parser.add_argument('--model')
+    parser.add_argument('--out', help='results subfolder, e.g. the model name, so runs on another model stay separate')
     parser.add_argument('--fake', action='store_true', help='answer with the gold SQL, no API calls: checks the runner and scoring')
     args = parser.parse_args()
     database = Path(args.db)
@@ -136,6 +137,8 @@ async def main():
     global RESULTS
     if args.fake:
         RESULTS = HERE / '.run_data/fake_results'  # a dry run never overwrites the real results
+    elif args.out:
+        RESULTS = HERE / 'results' / args.out
     RESULTS.mkdir(parents=True, exist_ok=True)
     transcript = RESULTS / 'transcript.jsonl'
     if args.fresh and transcript.exists():

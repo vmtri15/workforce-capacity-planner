@@ -19,6 +19,17 @@ Each modeled site covers at least 95% of its workload on most days, but none rem
 
 Choose the 6 worker plan when productivity is near 40 units per productive hour and attendance is stable. Choose the 10 worker plan when low productivity or two worker absence is possible. See [DECISION_ANSWER.md](DECISION_ANSWER.md) for the site by site answer.
 
+## What this means for the business
+
+In plain English. Dollar amounts use the model's assumed wages, so they are planning estimates, not money already saved.
+
+| Takeaway | The number | What to do |
+| --- | --- | --- |
+| Temps on call beat permanent hiring | About **$27,200 saved every 4 weeks** (39% cheaper, roughly $350,000 a year). On real 2023 demand the lean plan still shipped 99.7% of orders on time, against 100% for 4 extra permanent workers. | Keep 6 workers, with overtime and temps on call for busy days. |
+| A better forecast is not worth buying | A perfect forecast would save only about **$260 every 4 weeks**. Daily orders swing too much to predict well (the best model still misses a day by 60%). | Spend on flexibility, not forecasting tools. |
+| Fix staffing before trucks | Fixing a risky truck costs about **$30 per late parcel saved**; hiring costs about $176. But **74% of late parcels** already leave the warehouse late. | Staff the warehouse first, then fix the riskiest trucks. |
+| Know the two warning signs | The lean plan survives only **12 of 36 tough weeks**. It fails when workers are slower than usual or two people are out. | When either shows up, call in temps right away. |
+
 ## See it
 
 - [Live site](https://vmtri15.github.io/workforce-capacity-planner/)
@@ -58,22 +69,22 @@ Then open http://127.0.0.1:8765. Everything below is technical detail for rebuil
 
 `ask_the_planner/` lets a manager ask the planner database a question in plain English, for example "Which site has the most shortfall hours?". It writes the SQL, runs it read only, and answers in a sentence. It uses the open source Vanna 2.0 library with Google Gemini. My work is the layer on top: a business glossary, a 30 question test set with answers checked by hand, an accuracy run, and a failure review.
 
-**How accurate is it?** Tested on 30 manager questions with gemini-3.1-flash-lite (a small free model):
+**How accurate is it?** Tested on 30 manager questions, 28 the database can answer and 2 it cannot, on two small free models:
 
-| | Without glossary | With glossary |
-| --- | ---: | ---: |
-| Correct answers (of 28 answerable) | 12 (43%) | 16 (57%) |
-| Declined the 2 questions the data cannot answer | 1 of 2 | 2 of 2 |
+| Correct answers (of 28) | Schema only | + Business glossary | + Base case guidance |
+| --- | ---: | ---: | ---: |
+| gemini-3.5-flash-lite (latest run) | 15 (54%) | 23 (82%) | **27 (96%)** |
+| gemini-3.1-flash-lite (first run) | 12 (43%) | 16 (57%) | not run (model offline) |
 
-The glossary fixed 5 questions and broke none. Most remaining errors have one cause: the database holds three planning runs (low, base and high productivity), and the model often added all three together instead of using the base case, so its totals came out three times too large. See [FAILURE_REVIEW.md](ask_the_planner/FAILURE_REVIEW.md) for every failure and why.
+"Base case guidance" is the fix the first run's failure review proposed: database views that hold only the base case, the base case rule moved into the main instructions, and three worked examples (none of them test questions). Each step fixed questions and broke none. The first run's main error was adding up the three planning runs (low, base and high productivity), which makes totals three times too large; the guidance removed it. The one remaining miss counts orders over two years of source data instead of the 56 day planning window. With the glossary, the model declined both unanswerable questions. See [FAILURE_REVIEW.md](ask_the_planner/FAILURE_REVIEW.md) for every failure.
 
 **When you can trust it**
-- Reference facts: sites, demand shares, assumptions, wages, data sources. With the glossary it got all of these right.
+- Reference facts, staffing, cost, capacity and planned demand: with base case guidance it answered all of these correctly in testing.
 - Questions that name the case, such as "in the low productivity case".
-- Always read the SQL it prints. If a total uses daily_capacity_results, staffing_plans or modeled_daily_workload without a run_id or productivity_case filter, it has mixed the three runs and the number is wrong.
+- Always read the SQL it prints. A total should use a base_case_ view or filter on run_id or productivity_case; if it does neither, it has mixed the three runs and the number is wrong.
 
 **When you cannot trust it**
-- Totals and counts where no case is named. These were wrong in most tests.
+- Questions about the original source data over a time window: the one remaining miss counted two years instead of the planning window.
 - Anything outside the database: 2023 figures, actual staffing, hiring advice. With the glossary it says so, but check.
 - It answers from the modeled 2011 network database, not from the 2023 decision in DECISION_ANSWER.md.
 
@@ -82,8 +93,10 @@ The glossary fixed 5 questions and broke none. Most remaining errors have one ca
 ```bash
 .venv/bin/python ask_the_planner/build_eval_db.py
 .venv/bin/python ask_the_planner/ask.py "Which site has the most shortfall hours?" --db ask_the_planner/eval_db/planner_for_eval.db
-.venv/bin/python ask_the_planner/evaluate.py --fresh
+.venv/bin/python ask_the_planner/evaluate.py --model gemini-3.5-flash-lite --out gemini-3.5-flash-lite
 ```
+
+`--out` keeps each model's results in its own folder under `ask_the_planner/results/`. A run pauses when the model is overloaded and resumes where it stopped.
 
 **In the dashboard.** Start the local site with the project's Python, `.venv/bin/python scripts/serve_dashboard.py`, and open http://127.0.0.1:8765. The "Ask the planner" page takes live questions when the key and database are found, and shows the answer, the SQL it ran and the result table. The key stays on your machine, so on the public GitHub Pages site the same page shows saved answers from the evaluation instead.
 

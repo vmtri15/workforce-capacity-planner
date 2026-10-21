@@ -1,0 +1,225 @@
+id,category,answerable,condition,passed,reason,sql_found,last_sql_match,needs_review,queries_run,final_sql,question,expected,answer,error,model,at
+Q01,basics,True,glossary,True,match,True,True,False,1,"SELECT site_name, allocation_share FROM sites ORDER BY allocation_share DESC LIMIT 1;","Which site carries the largest share of demand, and what is that share?","Joliet/Elwood, with 43% of demand.",The site carrying the largest share of demand is Joliet/Elwood with an allocation share of 0.43 (or 43%).,,gemini-3.5-flash-lite,2026-10-21T20:21:38+00:00
+Q02,basics,True,glossary,True,match,True,True,False,1,"SELECT site_name, allocation_share FROM sites;",What share of demand does each site get?,"Joliet/Elwood 43%, O'Hare area 42%, Kenosha/Pleasant Prairie 15%.","The Joliet/Elwood site gets 43% of the demand, the O'Hare area site gets 42%, and the Kenosha/Pleasant Prairie site gets 15%.",,gemini-3.5-flash-lite,2026-10-21T20:28:28+00:00
+Q03,basics,True,glossary,True,match,True,True,False,1,SELECT numeric_value FROM scenario_assumptions WHERE assumption_key = 'service_target',What service target are we planning to?,95% of each day's workload.,We are planning to a service target of 95% (or 0.95).,,gemini-3.5-flash-lite,2026-10-21T20:28:38+00:00
+Q04,basics,True,glossary,True,match,False,False,False,2,SELECT calendar_days FROM planning_run_summary LIMIT 1;,"What dates does the planning window cover, and how many calendar days is that?","2011-10-14 to 2011-12-08, which is 56 calendar days.","The planning window covers October 14, 2011 to December 8, 2011, which is 56 calendar days.",,gemini-3.5-flash-lite,2026-10-21T20:28:53+00:00
+Q05,basics,True,glossary,True,match,True,True,False,2,SELECT (SELECT numeric_value FROM scenario_assumptions WHERE assumption_key = 'paid_hours_per_shift') * (SELECT numeric_value FROM scenario_assumptions WHERE assumption_key = 'productive_time_factor') AS productive_hours_per_shift,How many productive hours does one worker deliver in a shift?,6.8 productive hours (8 paid hours times 0.85).,"One worker delivers 6.8 productive hours in a shift, based on an 8-hour shift multiplied by a 0.85 productive time factor.",,gemini-3.5-flash-lite,2026-10-21T20:29:08+00:00
+Q06,staffing,True,glossary,True,match,True,True,False,1,"SELECT s.site_name, SUM(sp.scheduled_headcount) AS total_headcount
+FROM staffing_plans sp
+JOIN sites s ON sp.site_id = s.site_id
+WHERE sp.run_id = 'base_demand_base_productivity'
+GROUP BY s.site_id, s.site_name;",How many workers do we have at each site?,"Joliet 28, O'Hare 28, Kenosha 13.","Joliet/Elwood and O'Hare area each have 28 workers, while Kenosha/Pleasant Prairie has 13 workers.",,gemini-3.5-flash-lite,2026-10-21T20:29:18+00:00
+Q07,staffing,True,glossary,True,match,True,True,False,1,SELECT SUM(scheduled_headcount) FROM staffing_plans WHERE run_id = 'base_demand_base_productivity',How many workers do we have in total?,69 workers across the three sites.,We have a total of 69 scheduled workers across all roles and sites.,,gemini-3.5-flash-lite,2026-10-21T20:29:28+00:00
+Q08,staffing,True,glossary,True,match,True,True,False,1,"SELECT s.scheduled_headcount 
+FROM staffing_plans s 
+JOIN sites ON s.site_id = sites.site_id 
+WHERE sites.site_name LIKE '%O''Hare%' AND s.role_id = 'fulfillment_associate' AND s.run_id = 'base_demand_base_productivity'",How many fulfillment associates does the O'Hare site have?,23 fulfillment associates.,The O'Hare site has 23 fulfillment associates scheduled in the base staffing plan.,,gemini-3.5-flash-lite,2026-10-21T20:29:38+00:00
+Q09,staffing,True,glossary,True,match,True,True,False,1,"
+SELECT r.planning_role, s.median_hourly_wage
+FROM staffing_plans s
+JOIN sites st ON s.site_id = st.site_id
+JOIN roles r ON s.role_id = r.role_id
+WHERE st.site_name LIKE '%Joliet%'
+ORDER BY s.median_hourly_wage DESC
+LIMIT 1;
+","Which role is paid the most per hour at Joliet, and what is the rate?","The warehouse supervisor, at $32.85 an hour.","At Joliet, the warehouse supervisor is paid the most per hour at a rate of $32.85.",,gemini-3.5-flash-lite,2026-10-21T20:29:48+00:00
+Q10,cost,True,glossary,True,match,True,True,False,1,"
+SELECT s.site_name, 
+       SUM(sp.scheduled_headcount * sp.paid_hours_per_person * sp.median_hourly_wage) AS daily_staffing_cost
+FROM staffing_plans sp
+JOIN sites s ON sp.site_id = s.site_id
+WHERE sp.run_id = 'base_demand_base_productivity'
+GROUP BY s.site_id, s.site_name
+ORDER BY daily_staffing_cost DESC;
+",What does our staffing cost per day at each site?,"Joliet $4,387.92, O'Hare $4,387.92, Kenosha $2,449.12 per day.","The daily staffing cost is $4,387.92 at the Joliet/Elwood site, $4,387.92 at the O'Hare area site, and $2,449.12 at the Kenosha/Pleasant Prairie site.",,gemini-3.5-flash-lite,2026-10-21T20:29:58+00:00
+Q11,cost,True,glossary,True,match,True,True,False,1,SELECT all_role_scheduled_wage_cost FROM planning_run_summary WHERE run_id = 'base_demand_base_productivity',What is the total staffing cost over the whole planning window?,"$628,597.76 for all roles over the 56 days.","The total staffing cost over the 56-day planning window for all roles and sites in the base case is $628,597.76.",,gemini-3.5-flash-lite,2026-10-21T20:30:08+00:00
+Q12,capacity,True,glossary,True,match,True,True,False,1,SELECT SUM(total_gap_hours) FROM planning_run_summary WHERE productivity_case = 'base';,How many shortfall hours do we have in total?,113.35 shortfall hours in the base case.,"In the base case planning run, we have a total of 113.35 shortfall hours across all sites and days.",,gemini-3.5-flash-lite,2026-10-21T20:30:18+00:00
+Q13,capacity,True,glossary,True,match,True,True,False,1,"SELECT s.site_name, SUM(d.capacity_gap_hours) AS total_shortfall_hours
+FROM daily_capacity_results d
+JOIN sites s ON d.site_id = s.site_id
+JOIN planning_runs r ON d.run_id = r.run_id
+WHERE r.productivity_case = 'base'
+GROUP BY s.site_id, s.site_name
+ORDER BY total_shortfall_hours DESC
+LIMIT 1;","Which site has the most shortfall hours, and how many?","Joliet, with 51.73 shortfall hours.","The Joliet/Elwood site has the most shortfall hours in the base case, with a total of approximately 51.73 hours.",,gemini-3.5-flash-lite,2026-10-21T20:30:28+00:00
+Q14,capacity,True,glossary,True,match,True,True,False,1,SELECT SUM(capacity_gap_hours) FROM daily_capacity_results JOIN planning_runs USING (run_id) WHERE productivity_case = 'low';,How many shortfall hours would we have if productivity is low?,999.53 shortfall hours in the low productivity case.,"Under the low productivity scenario, we would have about 999.5 shortfall hours.",,gemini-3.5-flash-lite,2026-10-21T20:30:38+00:00
+Q15,capacity,True,glossary,True,match,True,True,False,1,"SELECT r.productivity_case, r.role_site_day_service_rate FROM planning_run_summary r JOIN planning_runs p ON r.run_id = p.run_id ORDER BY CASE p.productivity_case WHEN 'low' THEN 1 WHEN 'base' THEN 2 WHEN 'high' THEN 3 END",What is our on time rate in each productivity case?,"Base 98.2%, low 90.2%, high 100% of site role days meet the target.","The on-time service rate (share of site-role-days meeting the service target) is approximately 90.18% in the low productivity case, 98.21% in the base case, and 100% in the high productivity case.",,gemini-3.5-flash-lite,2026-10-21T20:30:48+00:00
+Q16,capacity,True,glossary,True,match,True,True,False,1,"
+SELECT COUNT(DISTINCT d.planning_date) AS days_missed
+FROM daily_capacity_results d
+JOIN sites s ON d.site_id = s.site_id
+WHERE s.site_id = 'kenosha'
+  AND d.run_id = 'base_demand_base_productivity'
+  AND d.service_target_met = 0
+",On how many days does Kenosha miss the service target?,2 days (2011-12-05 and 2011-12-08).,"In the base case, Kenosha misses the service target on 2 days across the planning window.",,gemini-3.5-flash-lite,2026-10-21T20:30:58+00:00
+Q17,capacity,True,glossary,True,match,True,True,False,1,"SELECT r.role_id, SUM(d.capacity_gap_hours) AS total_shortfall_hours
+FROM daily_capacity_results d
+JOIN roles r ON d.role_id = r.role_id
+WHERE d.run_id = 'base_demand_base_productivity'
+GROUP BY r.role_id
+HAVING total_shortfall_hours > 0
+ORDER BY total_shortfall_hours DESC;","Which roles have shortfall hours, and how many hours each?","Only fulfillment associates, with 113.35 hours. Packing has none.","In the base planning run, only the fulfillment_associate role has shortfall hours, totaling 113.35 hours across all sites and days. Packing associates had zero shortfall hours.",,gemini-3.5-flash-lite,2026-10-21T20:31:08+00:00
+Q18,capacity,True,glossary,True,match,True,True,False,1,"
+SELECT d.planning_date, s.site_name, r.planning_role, d.capacity_gap_hours
+FROM daily_capacity_results d
+JOIN sites s USING (site_id)
+JOIN roles r USING (role_id)
+WHERE d.run_id = 'base_demand_base_productivity'
+ORDER BY d.capacity_gap_hours DESC
+LIMIT 1;
+","What is the worst single day for shortfall? Give the date, the site, the role and the hours.","2011-12-05 at Joliet, fulfillment associates, 33.58 hours.","On 2011-12-05 at the Joliet/Elwood site, the fulfillment associate role experienced the worst single day for shortfall with approximately 33.58 capacity gap hours.",,gemini-3.5-flash-lite,2026-10-21T20:31:18+00:00
+Q19,capacity,True,glossary,False,the answer does not state 10614.4,False,False,False,1,SELECT SUM(surplus_hours) FROM daily_capacity_results;,How many idle hours do we have in total?,"10,614.38 idle hours in the base case.","We have a total of 32,499.22 idle hours across all planning runs and sites in the database.",,gemini-3.5-flash-lite,2026-10-21T20:31:28+00:00
+Q20,demand,True,glossary,False,the answer does not state 238155,False,False,False,1,"SELECT planning_date, SUM(modeled_units) AS total_units
+FROM modeled_daily_workload
+GROUP BY planning_date
+ORDER BY total_units DESC
+LIMIT 1;","What is the busiest day in the planning window, and how many units are planned that day?","2011-11-14, with 238,155 units planned across all sites.","The busiest day in the planning window was November 14, 2011, with 714,465 units planned across all sites.",,gemini-3.5-flash-lite,2026-10-21T20:31:38+00:00
+Q21,demand,True,glossary,False,the answer does not state 29515,False,False,False,1,SELECT SUM(modeled_orders) FROM modeled_daily_workload;,How many orders are we planning for in total?,"29,515 orders.","We are planning for a total of 88,545 orders across all planning days and sites in the base run.",,gemini-3.5-flash-lite,2026-10-21T20:31:48+00:00
+Q22,demand,True,glossary,False,the answer does not state 5903,False,False,False,1,"
+SELECT SUM(w.distinct_invoice_ids) AS total_orders
+FROM workload_daily_source w
+JOIN modeled_daily_workload m ON w.source_date = m.source_date
+WHERE m.run_id = 'base_demand_base_productivity'
+GROUP BY m.run_id;
+",How many orders did the original data record in the planning window?,"5,903 orders (the plan scales this up 5 times).","The original data recorded 17,709 orders across the days present in the planning window.",,gemini-3.5-flash-lite,2026-10-21T20:31:58+00:00
+Q23,demand,True,glossary,False,the answer does not state 12596.4,False,False,False,1,"SELECT AVG(modeled_order_lines) FROM (SELECT planning_date, SUM(modeled_order_lines) AS modeled_order_lines FROM modeled_daily_workload GROUP BY planning_date);","On average, how many order lines per day are we planning for?","About 12,596 order lines per calendar day.","On average, we are planning for approximately 37,789 order lines per day across all sites over the 56-day planning window.",,gemini-3.5-flash-lite,2026-10-21T20:32:08+00:00
+Q24,demand,True,glossary,True,match,True,True,False,2,SELECT COUNT(DISTINCT planning_date) FROM modeled_daily_workload WHERE run_id = 'base_demand_base_productivity' AND source_record_present = 0,How many days in the planning window have no source records?,8 days.,There are 8 days in the planning window that have no source records.,,gemini-3.5-flash-lite,2026-10-21T20:32:23+00:00
+Q25,cost,True,glossary,True,match,True,True,False,3,"
+SELECT s.median_hourly_wage
+FROM staffing_plans s
+JOIN sites st ON s.site_id = st.site_id
+JOIN roles r ON s.role_id = r.role_id
+WHERE st.site_id = 'kenosha'
+  AND r.role_id = 'packing_associate'
+  AND s.run_id = 'base_demand_base_productivity'
+",What is the hourly wage for packers in Kenosha?,$18.18 an hour.,The median hourly wage for packing associates in Kenosha is $18.18 per hour.,,gemini-3.5-flash-lite,2026-10-21T20:32:43+00:00
+Q26,labor_market,True,glossary,True,match,True,True,False,1,SELECT MAX(hires) FROM qwi_labor_flows WHERE geography_name LIKE '%Kenosha%' AND hires IS NOT NULL;,What is the highest number of hires in a single quarter in Kenosha County?,"4,693 hires.","The highest number of hires in a single quarter in Kenosha County was 4,693.",,gemini-3.5-flash-lite,2026-10-21T20:32:53+00:00
+Q27,data_quality,True,glossary,True,match,True,True,False,1,SELECT source_name FROM source_registry WHERE evidence_class = 'observed';,Which data sources are treated as observed data?,"All five sources: Online Retail II, OEWS, County Business Patterns, QCEW and QWI.","The data sources treated as observed data are Online Retail II, Occupational Employment and Wage Statistics, County Business Patterns, Quarterly Census of Employment and Wages, and Quarterly Workforce Indicators.",,gemini-3.5-flash-lite,2026-10-21T20:33:03+00:00
+Q28,data_quality,True,glossary,True,match,True,True,False,2,SELECT COUNT(*) FROM data_quality_results;,How many of the data quality checks passed?,11 checks passed.,All 11 of the data quality checks passed.,,gemini-3.5-flash-lite,2026-10-21T20:33:18+00:00
+Q29,unanswerable,False,glossary,True,said it cannot answer,,,True,1,SELECT sqlite_version();,What was our actual staffing cost in 2023?,"It cannot be answered. The database has no 2023 data and no actual staffing records, only a modeled plan built on a 2011 order history.",The database does not contain any 2023 data or actual staffing records; it only covers a planning window in late 2011 with modeled staffing plans and benchmark wages.,,gemini-3.5-flash-lite,2026-10-21T20:33:28+00:00
+Q30,unanswerable,False,glossary,True,said it cannot answer,,,True,1,SELECT * FROM data_quality_results LIMIT 1;,How many extra workers should we hire to close the shortfall?,"The database does not recommend hiring. It can report the shortfall hours, but it has no hiring or overtime options, so a good answer says that and does not invent a number.","The database has no hiring recommendations or data on recruitment/hiring, so it cannot answer how many workers should be hired to close the shortfall.",,gemini-3.5-flash-lite,2026-10-21T20:33:38+00:00
+Q01,basics,True,guided,True,match,True,True,False,1,"SELECT site_name, allocation_share FROM sites ORDER BY allocation_share DESC LIMIT 1","Which site carries the largest share of demand, and what is that share?","Joliet/Elwood, with 43% of demand.","The site that carries the largest share of demand is Joliet/Elwood, with an allocation share of 43%.",,gemini-3.5-flash-lite,2026-10-21T20:21:44+00:00
+Q02,basics,True,guided,True,match,True,True,False,1,"SELECT site_id, allocation_share FROM sites",What share of demand does each site get?,"Joliet/Elwood 43%, O'Hare area 42%, Kenosha/Pleasant Prairie 15%.","Joliet gets 43% of the demand, O'Hare gets 42%, and Kenosha gets 15%.",,gemini-3.5-flash-lite,2026-10-21T20:33:44+00:00
+Q03,basics,True,guided,True,match,True,True,False,1,"SELECT numeric_value, unit FROM scenario_assumptions WHERE assumption_key = 'service_target'",What service target are we planning to?,95% of each day's workload.,We are planning to a service target of 0.95 (or 95%) of the daily workload.,,gemini-3.5-flash-lite,2026-10-21T20:33:54+00:00
+Q04,basics,True,guided,True,match,True,True,False,1,"SELECT source_window_start, source_window_end, calendar_days FROM planning_run_summary JOIN planning_runs USING (run_id) LIMIT 1","What dates does the planning window cover, and how many calendar days is that?","2011-10-14 to 2011-12-08, which is 56 calendar days.","The planning window covers October 14, 2011 to December 8, 2011, which is a total of 56 calendar days.",,gemini-3.5-flash-lite,2026-10-21T20:34:04+00:00
+Q05,basics,True,guided,True,match,True,True,False,2,SELECT (SELECT numeric_value FROM scenario_assumptions WHERE assumption_key = 'paid_hours_per_shift') * (SELECT numeric_value FROM scenario_assumptions WHERE assumption_key = 'productive_time_factor') AS productive_hours_per_shift,How many productive hours does one worker deliver in a shift?,6.8 productive hours (8 paid hours times 0.85).,"One worker delivers 6.8 productive hours in a shift, based on an 8-hour shift and an 85% productive time factor.",,gemini-3.5-flash-lite,2026-10-21T20:34:19+00:00
+Q06,staffing,True,guided,True,match,True,True,False,1,"SELECT s.site_name, SUM(p.scheduled_headcount) AS total_workers FROM base_case_staffing p JOIN sites s ON p.site_id = s.site_id GROUP BY s.site_name",How many workers do we have at each site?,"Joliet 28, O'Hare 28, Kenosha 13.","The scheduled headcount across all roles is 28 workers at Joliet/Elwood, 13 workers at Kenosha/Pleasant Prairie, and 28 workers at the O'Hare area.",,gemini-3.5-flash-lite,2026-10-21T20:34:29+00:00
+Q07,staffing,True,guided,True,match,True,True,False,1,SELECT SUM(scheduled_headcount) FROM base_case_staffing,How many workers do we have in total?,69 workers across the three sites.,There are 69 workers scheduled in total across all roles and sites.,,gemini-3.5-flash-lite,2026-10-21T20:34:39+00:00
+Q08,staffing,True,guided,True,match,True,True,False,1,SELECT scheduled_headcount FROM base_case_staffing WHERE site_id = 'ohare' AND role_id = 'fulfillment_associate',How many fulfillment associates does the O'Hare site have?,23 fulfillment associates.,The O'Hare site has 23 scheduled fulfillment associates in the base case.,,gemini-3.5-flash-lite,2026-10-21T20:34:50+00:00
+Q09,staffing,True,guided,True,match,True,True,False,1,"SELECT s.role_id, s.median_hourly_wage FROM base_case_staffing s JOIN sites st ON s.site_id = st.site_id WHERE st.site_id = 'joliet' ORDER BY s.median_hourly_wage DESC LIMIT 1","Which role is paid the most per hour at Joliet, and what is the rate?","The warehouse supervisor, at $32.85 an hour.","At Joliet, the warehouse supervisor is paid the most per hour at a median rate of $32.85.",,gemini-3.5-flash-lite,2026-10-21T20:34:59+00:00
+Q10,cost,True,guided,True,match,True,True,False,1,"
+SELECT 
+    s.site_name, 
+    SUM(p.scheduled_headcount * p.paid_hours_per_person * p.median_hourly_wage) AS daily_cost
+FROM base_case_staffing p
+JOIN sites s ON p.site_id = s.site_id
+GROUP BY s.site_id, s.site_name
+ORDER BY daily_cost DESC
+",What does our staffing cost per day at each site?,"Joliet $4,387.92, O'Hare $4,387.92, Kenosha $2,449.12 per day.","The daily staffing cost is $4,387.92 at Joliet/Elwood, $4,387.92 at the O'Hare area, and $2,449.12 at Kenosha/Pleasant Prairie.",,gemini-3.5-flash-lite,2026-10-21T20:35:09+00:00
+Q11,cost,True,guided,True,match,True,True,False,1,SELECT all_role_scheduled_wage_cost FROM base_case_summary,What is the total staffing cost over the whole planning window?,"$628,597.76 for all roles over the 56 days.","The total staffing cost over the whole planning window for all roles is $628,597.76.",,gemini-3.5-flash-lite,2026-10-21T20:35:19+00:00
+Q12,capacity,True,guided,True,match,True,True,False,1,SELECT SUM(total_gap_hours) FROM base_case_summary,How many shortfall hours do we have in total?,113.35 shortfall hours in the base case.,"In total, there are 113.35 shortfall hours across the base case planning window.",,gemini-3.5-flash-lite,2026-10-21T20:35:29+00:00
+Q13,capacity,True,guided,True,match,True,True,False,1,"SELECT s.site_name, SUM(c.capacity_gap_hours) AS total_gap_hours FROM base_case_capacity c JOIN sites s ON c.site_id = s.site_id GROUP BY s.site_name ORDER BY total_gap_hours DESC LIMIT 1","Which site has the most shortfall hours, and how many?","Joliet, with 51.73 shortfall hours.","The Joliet/Elwood site has the most shortfall hours in the base case, with a total of 51.73 hours.",,gemini-3.5-flash-lite,2026-10-21T20:35:40+00:00
+Q14,capacity,True,guided,True,match,True,True,False,1,SELECT SUM(capacity_gap_hours) FROM daily_capacity_results WHERE run_id LIKE '%low_productivity%',How many shortfall hours would we have if productivity is low?,999.53 shortfall hours in the low productivity case.,"If productivity is low, there would be approximately 1,000 shortfall hours (999.5 hours) across the planning window.",,gemini-3.5-flash-lite,2026-10-21T20:35:50+00:00
+Q15,capacity,True,guided,True,match,True,True,False,2,"SELECT planning_runs.productivity_case, planning_run_summary.role_site_day_service_rate FROM planning_run_summary JOIN planning_runs ON planning_run_summary.run_id = planning_runs.run_id",What is our on time rate in each productivity case?,"Base 98.2%, low 90.2%, high 100% of site role days meet the target.","In the base case, the on-time rate is 98.2%, in the high productivity case it is 100.0%, and in the low productivity case it is 90.2%.",,gemini-3.5-flash-lite,2026-10-21T20:36:04+00:00
+Q16,capacity,True,guided,True,match,True,True,False,1,"
+SELECT COUNT(DISTINCT planning_date) 
+FROM base_case_capacity 
+WHERE site_id = 'kenosha' AND service_target_met = 0
+",On how many days does Kenosha miss the service target?,2 days (2011-12-05 and 2011-12-08).,Kenosha misses the service target on 2 days in the base case.,,gemini-3.5-flash-lite,2026-10-21T20:36:14+00:00
+Q17,capacity,True,guided,True,match,True,True,False,1,"SELECT role_id, SUM(capacity_gap_hours) AS total_gap_hours FROM base_case_capacity GROUP BY role_id HAVING SUM(capacity_gap_hours) > 0 ORDER BY total_gap_hours DESC","Which roles have shortfall hours, and how many hours each?","Only fulfillment associates, with 113.35 hours. Packing has none.","The fulfillment associate role is the only one with shortfall hours, totaling 113.35 hours over the planning window in the base case.",,gemini-3.5-flash-lite,2026-10-21T20:36:24+00:00
+Q18,capacity,True,guided,True,match,True,True,False,1,"SELECT planning_date, site_id, role_id, capacity_gap_hours FROM base_case_capacity ORDER BY capacity_gap_hours DESC LIMIT 1","What is the worst single day for shortfall? Give the date, the site, the role and the hours.","2011-12-05 at Joliet, fulfillment associates, 33.58 hours.","The worst single day for shortfall was on December 5, 2011, at the Joliet site for fulfillment associates, with a capacity gap of 33.58 hours.",,gemini-3.5-flash-lite,2026-10-21T20:36:34+00:00
+Q19,capacity,True,guided,True,match,True,True,False,1,SELECT SUM(surplus_hours) FROM base_case_capacity,How many idle hours do we have in total?,"10,614.38 idle hours in the base case.","In the base case, we have a total of 10,614.38 idle (surplus) hours across all sites and roles over the planning window.",,gemini-3.5-flash-lite,2026-10-21T20:36:44+00:00
+Q20,demand,True,guided,True,match,True,True,False,1,"SELECT planning_date, SUM(modeled_units) AS total_units FROM base_case_workload GROUP BY planning_date ORDER BY total_units DESC LIMIT 1","What is the busiest day in the planning window, and how many units are planned that day?","2011-11-14, with 238,155 units planned across all sites.","The busiest day in the planning window was November 14, 2011, with 238,155 units planned.",,gemini-3.5-flash-lite,2026-10-21T20:36:54+00:00
+Q21,demand,True,guided,True,match,True,True,False,1,SELECT SUM(modeled_orders) FROM base_case_workload,How many orders are we planning for in total?,"29,515 orders.","We are planning for a total of 29,515 orders across the base planning window.",,gemini-3.5-flash-lite,2026-10-21T20:37:04+00:00
+Q22,demand,True,guided,False,the answer does not state 5903,False,False,False,1,SELECT SUM(distinct_invoice_ids) FROM workload_daily_source,How many orders did the original data record in the planning window?,"5,903 orders (the plan scales this up 5 times).","The original data recorded 53,628 orders (distinct invoice IDs) across the planning window.",,gemini-3.5-flash-lite,2026-10-21T20:37:14+00:00
+Q23,demand,True,guided,True,match,True,True,False,1,"SELECT AVG(modeled_order_lines) FROM (SELECT planning_date, SUM(modeled_order_lines) AS modeled_order_lines FROM base_case_workload GROUP BY planning_date)","On average, how many order lines per day are we planning for?","About 12,596 order lines per calendar day.","We are planning for an average of 12,596.4 order lines per day across the planning window.",,gemini-3.5-flash-lite,2026-10-21T20:37:24+00:00
+Q24,demand,True,guided,True,match,True,True,False,2,SELECT COUNT(DISTINCT planning_date) FROM modeled_daily_workload WHERE run_id = 'base_demand_base_productivity' AND source_record_present = 0,How many days in the planning window have no source records?,8 days.,There are 8 days in the planning window that have no source records.,,gemini-3.5-flash-lite,2026-10-21T20:37:39+00:00
+Q25,cost,True,guided,True,match,True,True,False,1,"
+SELECT s.median_hourly_wage 
+FROM base_case_staffing s
+JOIN sites st ON s.site_id = st.site_id
+JOIN roles r ON s.role_id = r.role_id
+WHERE st.site_id = 'kenosha' AND r.role_id = 'packing_associate'
+",What is the hourly wage for packers in Kenosha?,$18.18 an hour.,The median hourly wage for packers in Kenosha is $18.18.,,gemini-3.5-flash-lite,2026-10-21T20:37:49+00:00
+Q26,labor_market,True,guided,True,match,True,True,False,1,SELECT MAX(hires) FROM qwi_labor_flows WHERE geography_name LIKE '%Kenosha%',What is the highest number of hires in a single quarter in Kenosha County?,"4,693 hires.","The highest number of hires in a single quarter in Kenosha County was 4,693.",,gemini-3.5-flash-lite,2026-10-21T20:37:59+00:00
+Q27,data_quality,True,guided,True,match,True,True,False,1,SELECT source_name FROM source_registry WHERE evidence_class = 'observed',Which data sources are treated as observed data?,"All five sources: Online Retail II, OEWS, County Business Patterns, QCEW and QWI.","There are 5 data sources treated as observed data: the Online Retail II dataset, Occupational Employment and Wage Statistics (OEWS), County Business Patterns (CBP), Quarterly Census of Employment and Wages (QCEW), and Quarterly Workforce Indicators (QWI).",,gemini-3.5-flash-lite,2026-10-21T20:38:09+00:00
+Q28,data_quality,True,guided,True,match,True,True,False,1,SELECT COUNT(*) FROM data_quality_results WHERE status = 'PASS',How many of the data quality checks passed?,11 checks passed.,All 11 data quality checks passed.,,gemini-3.5-flash-lite,2026-10-21T20:38:19+00:00
+Q29,unanswerable,False,guided,True,said it cannot answer,,,True,1,SELECT sqlite_version();,What was our actual staffing cost in 2023?,"It cannot be answered. The database has no 2023 data and no actual staffing records, only a modeled plan built on a 2011 order history.",The database has no 2023 data and cannot answer questions about actual staffing costs in that year.,,gemini-3.5-flash-lite,2026-10-21T20:38:29+00:00
+Q30,unanswerable,False,guided,True,said it cannot answer,,,True,1,SELECT * FROM data_quality_results WHERE check_name LIKE '%hire%' OR detail LIKE '%hire%',How many extra workers should we hire to close the shortfall?,"The database does not recommend hiring. It can report the shortfall hours, but it has no hiring or overtime options, so a good answer says that and does not invent a number.",The database has no hiring recommendations or actual staffing records to answer how many workers to hire.,,gemini-3.5-flash-lite,2026-10-21T20:38:39+00:00
+Q01,basics,True,schema_only,True,match,True,True,False,1,"
+SELECT s.site_name, s.allocation_share
+FROM sites s
+ORDER BY s.allocation_share DESC
+LIMIT 1;
+","Which site carries the largest share of demand, and what is that share?","Joliet/Elwood, with 43% of demand.","The site with the largest share of demand is Joliet/Elwood, carrying an allocation share of 0.43 (or 43%).",,gemini-3.5-flash-lite,2026-10-21T20:21:32+00:00
+Q02,basics,True,schema_only,True,match,True,True,False,1,"SELECT site_name, allocation_share FROM sites;",What share of demand does each site get?,"Joliet/Elwood 43%, O'Hare area 42%, Kenosha/Pleasant Prairie 15%.","The Joliet/Elwood site receives 43% of the demand, the O'Hare area site receives 42%, and the Kenosha/Pleasant Prairie site receives 15%.",,gemini-3.5-flash-lite,2026-10-21T20:22:06+00:00
+Q03,basics,True,schema_only,True,match,True,True,False,1,SELECT DISTINCT service_target FROM planning_runs,What service target are we planning to?,95% of each day's workload.,We are planning to a service target of 0.95 (or 95%).,,gemini-3.5-flash-lite,2026-10-21T20:22:15+00:00
+Q04,basics,True,schema_only,True,match,False,False,False,1,"SELECT source_window_start, source_window_end, (julianday(source_window_end) - julianday(source_window_start) + 1) AS calendar_days FROM planning_runs;","What dates does the planning window cover, and how many calendar days is that?","2011-10-14 to 2011-12-08, which is 56 calendar days.","The planning window covers from October 14, 2011 to December 8, 2011, which is a total of 56 calendar days.",,gemini-3.5-flash-lite,2026-10-21T20:22:25+00:00
+Q05,basics,True,schema_only,False,the answer does not state 6.8,True,False,False,6,"SELECT assumption_key, numeric_value, unit FROM scenario_assumptions WHERE assumption_key LIKE '%productive%' OR assumption_key LIKE '%break%' OR assumption_key LIKE '%lunch%';",How many productive hours does one worker deliver in a shift?,6.8 productive hours (8 paid hours times 0.85).,Tool limit reached after 6 executions. Task may be incomplete.,,gemini-3.5-flash-lite,2026-10-21T20:22:55+00:00
+Q06,staffing,True,schema_only,False,the answer does not state 28,False,False,False,1,"SELECT s.site_name, SUM(sp.scheduled_headcount) AS total_headcount
+FROM staffing_plans sp
+JOIN sites s ON sp.site_id = s.site_id
+GROUP BY s.site_name;",How many workers do we have at each site?,"Joliet 28, O'Hare 28, Kenosha 13.","Across the planning runs, the total scheduled headcount is 84 workers at Joliet/Elwood, 39 workers at Kenosha/Pleasant Prairie, and 84 workers at the O'Hare area site.",,gemini-3.5-flash-lite,2026-10-21T20:23:05+00:00
+Q07,staffing,True,schema_only,True,match,True,False,False,3,"SELECT run_id, SUM(scheduled_headcount) FROM staffing_plans GROUP BY run_id;",How many workers do we have in total?,69 workers across the three sites.,There are 69 scheduled workers per planning run across the sites and roles in the staffing plans.,,gemini-3.5-flash-lite,2026-10-21T20:23:25+00:00
+Q08,staffing,True,schema_only,True,match,False,False,False,3,"SELECT s.run_id, st.site_name, s.scheduled_headcount FROM staffing_plans s JOIN sites st ON s.site_id = st.site_id JOIN roles r ON s.role_id = r.role_id WHERE st.site_name LIKE '%O''Hare%' AND r.planning_role LIKE '%fulfillment%'",How many fulfillment associates does the O'Hare site have?,23 fulfillment associates.,The O'Hare site has 23 scheduled fulfillment associates across planning runs.,,gemini-3.5-flash-lite,2026-10-21T20:23:45+00:00
+Q09,staffing,True,schema_only,True,match,True,True,False,1,"
+SELECT r.planning_role, s.median_hourly_wage
+FROM staffing_plans s
+JOIN sites st ON s.site_id = st.site_id
+JOIN roles r ON s.role_id = r.role_id
+WHERE st.site_name LIKE '%Joliet%'
+ORDER BY s.median_hourly_wage DESC
+LIMIT 1;
+","Which role is paid the most per hour at Joliet, and what is the rate?","The warehouse supervisor, at $32.85 an hour.","The warehouse supervisor role is paid the most per hour at Joliet, with a median hourly wage of $32.85.",,gemini-3.5-flash-lite,2026-10-21T20:23:55+00:00
+Q10,cost,True,schema_only,True,match,True,True,False,1,"SELECT s.site_name, SUM(sp.scheduled_headcount * sp.paid_hours_per_person * sp.median_hourly_wage) AS daily_staffing_cost
+FROM staffing_plans sp
+JOIN sites s ON sp.site_id = s.site_id
+JOIN planning_runs r ON sp.run_id = r.run_id
+WHERE r.run_id = (SELECT run_id FROM planning_runs ORDER BY created_at DESC LIMIT 1)
+GROUP BY s.site_id, s.site_name;",What does our staffing cost per day at each site?,"Joliet $4,387.92, O'Hare $4,387.92, Kenosha $2,449.12 per day.","For the most recent planning run, the daily staffing cost is $4,387.92 at Joliet/Elwood, $2,449.12 at Kenosha/Pleasant Prairie, and $4,387.92 at the O'Hare area.",,gemini-3.5-flash-lite,2026-10-21T20:24:05+00:00
+Q11,cost,True,schema_only,True,match,False,False,False,2,"SELECT scenario_name, all_role_scheduled_wage_cost FROM planning_run_summary JOIN planning_runs USING (run_id)",What is the total staffing cost over the whole planning window?,"$628,597.76 for all roles over the 56 days.","The total scheduled staffing cost over the planning window is $628,597.76 across all planning runs.",,gemini-3.5-flash-lite,2026-10-21T20:24:20+00:00
+Q12,capacity,True,schema_only,False,the answer does not state 113.35,False,False,False,1,SELECT SUM(total_gap_hours) FROM planning_run_summary,How many shortfall hours do we have in total?,113.35 shortfall hours in the base case.,"The total capacity gap (shortfall hours) across all planning runs is 1,112.88 hours.",,gemini-3.5-flash-lite,2026-10-21T20:24:30+00:00
+Q13,capacity,True,schema_only,False,the answer does not state 51.7333,False,False,False,1,"SELECT s.site_name, SUM(d.capacity_gap_hours) AS total_shortfall_hours
+FROM daily_capacity_results d
+JOIN sites s ON d.site_id = s.site_id
+GROUP BY s.site_name
+ORDER BY total_shortfall_hours DESC
+LIMIT 1;","Which site has the most shortfall hours, and how many?","Joliet, with 51.73 shortfall hours.","The site with the most shortfall hours is Joliet/Elwood, with approximately 505.33 hours of capacity gap across all planning runs and dates.",,gemini-3.5-flash-lite,2026-10-21T20:24:40+00:00
+Q14,capacity,True,schema_only,True,match,True,True,False,1,"SELECT SUM(c.total_gap_hours) FROM planning_run_summary s JOIN planning_runs r ON s.run_id = r.run_id JOIN (SELECT run_id, SUM(capacity_gap_hours) AS total_gap_hours FROM daily_capacity_results GROUP BY run_id) c ON s.run_id = c.run_id WHERE r.productivity_case = 'low'",How many shortfall hours would we have if productivity is low?,999.53 shortfall hours in the low productivity case.,"Under low productivity, the total shortfall (capacity gap) hours across planning runs would be approximately 1,000 hours.",,gemini-3.5-flash-lite,2026-10-21T20:24:50+00:00
+Q15,capacity,True,schema_only,True,match,True,True,False,1,"SELECT r.productivity_case, AVG(c.service_target_met) AS on_time_rate
+FROM planning_runs r
+JOIN daily_capacity_results c USING (run_id)
+GROUP BY r.productivity_case;",What is our on time rate in each productivity case?,"Base 98.2%, low 90.2%, high 100% of site role days meet the target.","The on-time service target achievement rate is 98.2% for the base productivity case, 100.0% for the high case, and 90.2% for the low case.",,gemini-3.5-flash-lite,2026-10-21T20:25:00+00:00
+Q16,capacity,True,schema_only,False,the answer does not state 2,False,False,False,1,"
+SELECT COUNT(*) 
+FROM daily_capacity_results d
+JOIN sites s ON d.site_id = s.site_id
+WHERE s.site_name LIKE '%Kenosha%' AND d.service_target_met = 0;
+",On how many days does Kenosha miss the service target?,2 days (2011-12-05 and 2011-12-08).,Kenosha misses the service target on 13 days across the planning runs.,,gemini-3.5-flash-lite,2026-10-21T20:25:10+00:00
+Q17,capacity,True,schema_only,False,the answer does not state 113.35,False,False,False,1,"SELECT r.planning_role, SUM(d.capacity_gap_hours) AS shortfall_hours
+FROM daily_capacity_results d
+JOIN roles r ON d.role_id = r.role_id
+GROUP BY r.planning_role
+HAVING SUM(d.capacity_gap_hours) > 0
+ORDER BY shortfall_hours DESC;","Which roles have shortfall hours, and how many hours each?","Only fulfillment associates, with 113.35 hours. Packing has none.","The fulfillment associate role has shortfall hours, totaling approximately 1,112.88 hours across all planning runs and sites.",,gemini-3.5-flash-lite,2026-10-21T20:25:21+00:00
+Q18,capacity,True,schema_only,False,the answer does not state 33.5833,False,False,False,1,"SELECT planning_date, site_id, role_id, capacity_gap_hours 
+FROM daily_capacity_results 
+ORDER BY capacity_gap_hours DESC 
+LIMIT 1","What is the worst single day for shortfall? Give the date, the site, the role and the hours.","2011-12-05 at Joliet, fulfillment associates, 33.58 hours.","The worst single day for shortfall occurred on 2011-12-05 at the joliet site for the fulfillment_associate role, with a capacity gap of 96.91 hours.",,gemini-3.5-flash-lite,2026-10-21T20:25:30+00:00
+Q19,capacity,True,schema_only,False,the answer does not state 10614.4,False,False,False,1,SELECT SUM(surplus_hours) FROM daily_capacity_results,How many idle hours do we have in total?,"10,614.38 idle hours in the base case.","There are a total of 32,499.22 idle (surplus) hours across all planning runs, sites, and roles.",,gemini-3.5-flash-lite,2026-10-21T20:25:40+00:00
+Q20,demand,True,schema_only,False,the answer does not state 238155,False,False,False,1,"SELECT planning_date, SUM(modeled_units) AS total_units FROM modeled_daily_workload GROUP BY planning_date ORDER BY total_units DESC LIMIT 1","What is the busiest day in the planning window, and how many units are planned that day?","2011-11-14, with 238,155 units planned across all sites.","The busiest day in the planning window was November 14, 2011, with 714,465 units planned.",,gemini-3.5-flash-lite,2026-10-21T20:25:56+00:00
+Q21,demand,True,schema_only,False,the answer does not state 29515,False,False,False,1,SELECT SUM(modeled_orders) FROM modeled_daily_workload;,How many orders are we planning for in total?,"29,515 orders.","We are planning for a total of 88,545 orders across all modeled planning runs and dates.",,gemini-3.5-flash-lite,2026-10-21T20:26:02+00:00
+Q22,demand,True,schema_only,False,the answer does not state 5903,False,False,False,6,SELECT SUM(distinct_invoice_ids) FROM workload_daily_source;,How many orders did the original data record in the planning window?,"5,903 orders (the plan scales this up 5 times).",Tool limit reached after 6 executions. Task may be incomplete.,,gemini-3.5-flash-lite,2026-10-21T20:26:32+00:00
+Q23,demand,True,schema_only,False,the answer does not state 12596.4,False,False,False,1,SELECT AVG(modeled_order_lines) FROM modeled_daily_workload;,"On average, how many order lines per day are we planning for?","About 12,596 order lines per calendar day.","On average, we are planning for approximately 4,199 order lines per day across all planning runs and sites.",,gemini-3.5-flash-lite,2026-10-21T20:26:42+00:00
+Q24,demand,True,schema_only,False,the answer does not state 8,False,False,False,1,SELECT SUM(source_record_present = 0) FROM modeled_daily_workload;,How many days in the planning window have no source records?,8 days.,There are 72 days in the planning window that have no source records present across all modeled daily workload entries.,,gemini-3.5-flash-lite,2026-10-21T20:26:52+00:00
+Q25,cost,True,schema_only,True,match,True,True,False,1,"
+SELECT w.median_hourly_wage, w.benchmark_area, r.planning_role
+FROM wage_benchmarks w
+JOIN roles r ON w.role_id = r.role_id
+WHERE w.benchmark_area LIKE '%Kenosha%' AND r.planning_role LIKE '%pack%'
+",What is the hourly wage for packers in Kenosha?,$18.18 an hour.,"The median hourly wage for packing associates in Kenosha, WI is $18.18.",,gemini-3.5-flash-lite,2026-10-21T20:27:02+00:00
+Q26,labor_market,True,schema_only,True,match,True,True,False,1,SELECT hires FROM qwi_labor_flows WHERE geography_name LIKE '%Kenosha%' ORDER BY hires DESC LIMIT 1,What is the highest number of hires in a single quarter in Kenosha County?,"4,693 hires.","The highest number of hires in a single quarter in Kenosha County was 4,693.",,gemini-3.5-flash-lite,2026-10-21T20:27:12+00:00
+Q27,data_quality,True,schema_only,True,match,True,True,False,1,SELECT source_name FROM source_registry WHERE evidence_class = 'observed';,Which data sources are treated as observed data?,"All five sources: Online Retail II, OEWS, County Business Patterns, QCEW and QWI.","There are 5 data sources treated as observed data: Online Retail II, Occupational Employment and Wage Statistics, County Business Patterns, Quarterly Census of Employment and Wages, and Quarterly Workforce Indicators.",,gemini-3.5-flash-lite,2026-10-21T20:27:22+00:00
+Q28,data_quality,True,schema_only,True,match,True,True,False,1,SELECT COUNT(*) FROM data_quality_results WHERE status = 'PASS';,How many of the data quality checks passed?,11 checks passed.,11 of the data quality checks passed.,,gemini-3.5-flash-lite,2026-10-21T20:27:32+00:00
+Q29,unanswerable,False,schema_only,False,did not clearly decline,,,True,4,SELECT * FROM workload_daily_source ORDER BY source_date LIMIT 5;,What was our actual staffing cost in 2023?,"It cannot be answered. The database has no 2023 data and no actual staffing records, only a modeled plan built on a 2011 order history.",The database contains modeled capacity planning scenarios and simulated workload data rather than actual historical financial records for 2023.,,gemini-3.5-flash-lite,2026-10-21T20:27:57+00:00
+Q30,unanswerable,False,schema_only,False,did not clearly decline,,,True,4,SELECT * FROM planning_run_summary,How many extra workers should we hire to close the shortfall?,"The database does not recommend hiring. It can report the shortfall hours, but it has no hiring or overtime options, so a good answer says that and does not invent a number.","The database contains multiple planning runs with different productivity scenarios. Under the base productivity case, there is a shortfall of approximately 113.3 hours of capacity, which increases to about 999.5 hours under the low productivity case and is eliminated (0 hours) under the high productivity case.",,gemini-3.5-flash-lite,2026-10-21T20:28:22+00:00

@@ -1,6 +1,41 @@
 # Ask the Planner: failure review
 
-## The run
+## Latest run: the fixes, on gemini-3.5-flash-lite
+
+The first run (below) ended with three proposed fixes. The first two were built as a third condition, "guided":
+base case views in the evaluation database (`base_case_staffing`, `base_case_capacity`, `base_case_workload`,
+`base_case_summary`), the base case rule moved into the main instructions, and three worked examples that are
+not test questions. The older conditions see the same database without those views, so each condition is scored
+on the schema it was given.
+
+The first run's model, gemini-3.1-flash-lite, was unavailable for hours (503, "high demand"), so all three
+conditions were run again on gemini-3.5-flash-lite, the newer small model. One run per question, temperature 0,
+90 answers, no API errors. Results are in `results/gemini-3.5-flash-lite/`.
+
+| | Schema only | + Glossary | + Guidance |
+| --- | ---: | ---: | ---: |
+| Correct answers (of 28) | 15 (54%) | 23 (82%) | 27 (96%) |
+| The right numbers appeared in a query it ran | 46% | 79% | 96% |
+| Declined the 2 questions it cannot answer | 0 of 2 | 2 of 2 | 2 of 2 |
+
+- The glossary fixed 8 questions (Q05, Q06, Q12, Q13, Q16, Q17, Q18, Q24) and broke none.
+- The guidance fixed 4 more (Q19, Q20, Q21, Q23) and broke none. All four were the old error: adding up the
+  three planning runs. With the glossary alone, Q21 even said "in the base run" while giving 88,545 orders,
+  three times the right 29,515. With the guidance it answered 29,515.
+- **The one remaining miss, Q22:** "How many orders did the original data record in the planning window?" It
+  summed the whole source table (53,628, about two years) instead of the 56 day window (5,903), even though the
+  instructions name the window. This is the same error as in the first run. A fix to measure next: a
+  `planning_window_source` view, like the base case views.
+- **One rule to read by eye:** with the schema only, the Q29 answer ("the database contains modeled planning
+  scenarios ... rather than actual historical financial records for 2023") is in effect a refusal, but the
+  decline rule did not match its wording. Counted strictly as written, it stays a miss.
+
+Read with the limits below: one run of one small model, 28 questions on one database. A one question difference
+is not meaningful, but 15 to 23 to 27 is a large and consistent step, and no question got worse at either step.
+
+## First run: gemini-3.1-flash-lite
+
+### The run
 
 - Model: gemini-3.1-flash-lite on the Gemini API free tier, temperature 0, one run per question.
 - Questions: 30 written the way a manager would ask them. 28 can be answered from the database and 2 cannot.
@@ -17,11 +52,11 @@ The glossary fixed 5 questions (Q08, Q17, Q24, Q25 and the refusal Q30) and brok
 
 By type of question, with the glossary: basics 5 of 5, data sources and quality 2 of 2, labor market 1 of 1, cost 2 of 3, staffing 2 of 4, capacity 3 of 8, demand 1 of 5.
 
-## How a failure was decided
+### How a failure was decided
 
 A question counts as correct when the final answer a manager reads states the right values. Rounding, percent instead of a share, plurals, short site names ("O'Hare") and common abbreviations ("OEWS") are accepted. Every gold answer was checked a second way in plain Python (`verify_gold.py`). Every failure below was confirmed by reading the answer and the SQL in `results/transcript.jsonl`. None of them is a scoring mistake.
 
-## What went wrong
+### What went wrong
 
 | Cause | Without glossary | With glossary |
 | --- | ---: | ---: |
@@ -54,15 +89,15 @@ These are the answers with the glossary. Without it the same questions failed th
 
 **4. The wrong time window** (with glossary, Q22). Asked how many orders the original data recorded in the planning window, it summed the whole source table, about two years, and answered 53,628 instead of 5,903.
 
-## What would fix the main error
+### What would fix the main error
 
-Not done yet. Each one should be measured with the same 30 questions:
+Fixes 1 and 2 were built and measured in the latest run above (27 of 28 correct). Fix 3 was not tested as a separate step:
 
 1. Add a database view for the base case, so the simplest query is already the right one.
 2. Move the base case rule from the glossary into the main instructions, and add two or three worked example questions with their SQL.
 3. Try a larger model. This run used a small free model, and larger models usually follow instructions better.
 
-## Limits of this evaluation
+### Limits of this evaluation
 
 - One run of one small model. Answers can change from run to run, so a difference of one question is not meaningful. Each question is worth about 3.6 points.
 - 28 answerable questions on one database. The results describe this database and this question set, not text to SQL in general.

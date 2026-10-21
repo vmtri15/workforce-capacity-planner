@@ -1,0 +1,123 @@
+{
+  "fake": false,
+  "models": [
+    "gemini-3.5-flash-lite"
+  ],
+  "answered": 90,
+  "of": 90,
+  "accuracy_answerable": {
+    "glossary": {
+      "correct": 23,
+      "of": 28,
+      "share": 0.821
+    },
+    "guided": {
+      "correct": 27,
+      "of": 28,
+      "share": 0.964
+    },
+    "schema_only": {
+      "correct": 15,
+      "of": 28,
+      "share": 0.536
+    }
+  },
+  "sql_found_answerable": {
+    "glossary": 0.7857142857142857,
+    "guided": 0.9642857142857143,
+    "schema_only": 0.4642857142857143
+  },
+  "accuracy_by_category": {
+    "basics": {
+      "glossary": 1.0,
+      "guided": 1.0,
+      "schema_only": 0.8
+    },
+    "capacity": {
+      "glossary": 0.875,
+      "guided": 1.0,
+      "schema_only": 0.25
+    },
+    "cost": {
+      "glossary": 1.0,
+      "guided": 1.0,
+      "schema_only": 1.0
+    },
+    "data_quality": {
+      "glossary": 1.0,
+      "guided": 1.0,
+      "schema_only": 1.0
+    },
+    "demand": {
+      "glossary": 0.2,
+      "guided": 0.8,
+      "schema_only": 0.0
+    },
+    "labor_market": {
+      "glossary": 1.0,
+      "guided": 1.0,
+      "schema_only": 1.0
+    },
+    "staffing": {
+      "glossary": 1.0,
+      "guided": 1.0,
+      "schema_only": 0.75
+    }
+  },
+  "fixed_by_glossary": [
+    "Q05",
+    "Q06",
+    "Q12",
+    "Q13",
+    "Q16",
+    "Q17",
+    "Q18",
+    "Q24"
+  ],
+  "broken_by_glossary": [],
+  "fixed_by_guidance": [
+    "Q19",
+    "Q20",
+    "Q21",
+    "Q23"
+  ],
+  "broken_by_guidance": [],
+  "unanswerable": [
+    {
+      "id": "Q29",
+      "condition": "schema_only",
+      "passed": false,
+      "answer": "The database contains modeled capacity planning scenarios and simulated workload data rather than actual historical financial records for 2023."
+    },
+    {
+      "id": "Q30",
+      "condition": "schema_only",
+      "passed": false,
+      "answer": "The database contains multiple planning runs with different productivity scenarios. Under the base productivity case, there is a shortfall of approximately 113.3 hours of capacity, which increases to about 999.5 hours under the low productivity case and is eliminated (0 hours) under the high productivity case."
+    },
+    {
+      "id": "Q29",
+      "condition": "glossary",
+      "passed": true,
+      "answer": "The database does not contain any 2023 data or actual staffing records; it only covers a planning window in late 2011 with modeled staffing plans and benchmark wages."
+    },
+    {
+      "id": "Q30",
+      "condition": "glossary",
+      "passed": true,
+      "answer": "The database has no hiring recommendations or data on recruitment/hiring, so it cannot answer how many workers should be hired to close the shortfall."
+    },
+    {
+      "id": "Q29",
+      "condition": "guided",
+      "passed": true,
+      "answer": "The database has no 2023 data and cannot answer questions about actual staffing costs in that year."
+    },
+    {
+      "id": "Q30",
+      "condition": "guided",
+      "passed": true,
+      "answer": "The database has no hiring recommendations or actual staffing records to answer how many workers to hire."
+    }
+  ]
+}

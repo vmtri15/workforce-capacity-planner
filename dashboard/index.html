@@ -14,6 +14,11 @@
     </div>
     <div class="hero-kpis" id="home-kpis"></div>
   </div>
+  <section class="impact" aria-labelledby="impact-title">
+    <div class="impact-head"><h2 class="block-title" id="impact-title">What this means for the business</h2>
+      <p>Four takeaways in plain English. Dollar amounts come from the model's assumed wages, so read them as planning estimates, not money already saved.</p></div>
+    <div class="impact-grid" id="home-impact"></div>
+  </section>
   <h2 class="block-title">How the analysis fits together</h2>
   <div class="journey" id="home-journey"></div>
   <h2 class="block-title">How it works</h2>
@@ -157,7 +162,7 @@
     <div id="ask-output" class="ai-output" aria-live="polite" hidden></div>
     <p id="ask-source" class="footnote"></p><div id="ask-saved" class="ask-saved" hidden></div>
   </section>
-  <section class="analysis-panel"><h2>Before you trust an answer</h2><div class="guardrails"><p id="ask-accuracy"><strong>Tested accuracy:</strong> 16 of 28 test questions answered correctly with the business glossary (57%).</p><p><strong>Most common mistake:</strong> adding the low, base and high productivity runs together. If a total has no run_id or productivity_case filter in its SQL, it is about three times too large.</p><p><strong>Scope:</strong> answers come from the modeled 2011 network database, not the 2023 decision answer. It cannot answer questions about actual staffing or hiring.</p></div></section>
+  <section class="analysis-panel"><h2>Before you trust an answer</h2><div class="guardrails"><p id="ask-accuracy"><strong>Tested accuracy:</strong> 16 of 28 test questions answered correctly with the business glossary (57%).</p><p><strong>Most common mistake:</strong> adding the low, base and high productivity runs together, so a total comes out three times too large. The base case guidance fixed this in testing, but check that the SQL uses a base_case_ view or filters on run_id.</p><p><strong>Scope:</strong> answers come from the modeled 2011 network database, not the 2023 decision answer. It cannot answer questions about actual staffing or hiring.</p></div></section>
 </section>
 <section id="tableau" hidden>
   <div class="published-intro">
