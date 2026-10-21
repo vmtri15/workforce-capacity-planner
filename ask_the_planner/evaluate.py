@@ -1,7 +1,8 @@
 """Score Ask the Planner on the 30 test questions, before and after adding the business glossary.
 
-Both conditions get the same model, instructions and schema. "schema_only" has no glossary, "glossary"
-adds glossary.md. For each answerable question the last SQL result the model ran successfully is
+schema_only and glossary get the same model, instructions and schema; glossary adds glossary.md.
+guided adds the fixes from FAILURE_REVIEW.md on top: base case views, the base case rule in the main
+instructions, and worked examples (prompt.py). For each answerable question the last SQL result the model ran successfully is
 compared with the hand checked answer (scoring.py). The two unanswerable questions are scored by a
 simple rule (did the answer say the data cannot answer it) and flagged for a human to read.
 
@@ -36,7 +37,7 @@ from scoring import answer_mentions, frames_match
 
 EVAL_DB = HERE / 'eval_db/planner_for_eval.db'
 RESULTS = HERE / 'results'
-CONDITIONS = {'schema_only': False, 'glossary': True}
+CONDITIONS = {'schema_only': (False, False), 'glossary': (True, False), 'guided': (True, True)}  # (glossary, guided)
 DECLINE = re.compile(r"cannot|can't|can not|not available|no data|does not (contain|have|include)|doesn't (contain|have|include)"
                      r"|unable|not possible|isn't (available|possible)|no information|not in the database|no (2023|hiring)", re.I)
 FATAL = re.compile(r'NOT_FOUND|API key|API_KEY|PERMISSION_DENIED|UNAUTHENTICATED', re.I)
@@ -44,6 +45,7 @@ FATAL = re.compile(r'NOT_FOUND|API key|API_KEY|PERMISSION_DENIED|UNAUTHENTICATED
 NAME_ALIASES = {'joliet': ['Joliet'], 'ohare': ["O'Hare", 'Ohare'], 'kenosha': ['Kenosha'],
                 'Joliet/Elwood': ['Joliet'], "O'Hare area": ["O'Hare", 'Ohare'], 'Kenosha/Pleasant Prairie': ['Kenosha']}
 RATE_LIMIT = re.compile(r'429|RESOURCE_EXHAUSTED|quota|rate limit', re.I)
+BUSY = re.compile(r'503|UNAVAILABLE|high demand|overloaded', re.I)  # a temporary outage, not a wrong answer
 
 
 def gold_frames(question, database):
@@ -86,6 +88,12 @@ async def run_one(planner, question, retries=8):
         error = result['error'] or ''  # only the error text: query results can contain numbers like 429
         if FATAL.search(error):
             sys.exit('Stopping: the Gemini API refused the request (wrong model name or key).\n' + error[:600])
+        if BUSY.search(error) and not RATE_LIMIT.search(error):
+            if attempt >= 3:  # a long outage is not a wrong answer: stop, and a later run resumes here
+                raise QuotaStop('the model is overloaded (503). Run the same command later: finished questions are kept.')
+            print(f'    model busy, waiting {30 * (attempt + 1)}s', flush=True)
+            time.sleep(30 * (attempt + 1))
+            continue
         if not RATE_LIMIT.search(error):
             return result
         if re.search(r'prepay|prepaid|credits? (are |were )?depleted', error, re.I):
@@ -139,7 +147,7 @@ async def main():
     done = {(r['id'], r['condition']) for r in read_transcript(transcript)}
     stopped = None
     try:
-        for condition, use_glossary in CONDITIONS.items():
+        for condition, (use_glossary, guided) in CONDITIONS.items():
             planner = None
             for q in questions:
                 if (q['id'], condition) in done:
@@ -147,10 +155,10 @@ async def main():
                 print(f"{condition:12} {q['id']} {q['question']}", flush=True)
                 if args.fake:
                     from scripted_llm import ScriptedLlm
-                    planner = build_planner(database, use_glossary=use_glossary,
+                    planner = build_planner(database, use_glossary=use_glossary, guided=guided,
                                             llm=ScriptedLlm(q.get('gold_sql') or 'SELECT 1', q.get('expected', '')))
                 elif planner is None:
-                    planner = build_planner(database, use_glossary=use_glossary, model=args.model)
+                    planner = build_planner(database, use_glossary=use_glossary, guided=guided, model=args.model)
                     planner.agent.llm_service.min_interval = args.min_interval
                 result = await run_one(planner, q['question'])
                 s = score(q, result['answer'], good_frames(result['queries']), result['error'], database)
@@ -189,6 +197,14 @@ def read_transcript(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
 
 
+def changed(pivot, before, after, now_passes):
+    """Questions that pass in one condition and fail in the other."""
+    if before not in pivot or after not in pivot:
+        return []
+    both = pivot[[before, after]].dropna()
+    return sorted(both.index[(both[after] == now_passes) & (both[before] == (not now_passes))].tolist())
+
+
 def write_summary(transcript, questions, fake):
     ids = {q['id'] for q in questions}
     records = {}
@@ -202,18 +218,19 @@ def write_summary(transcript, questions, fake):
     answerable = table[table['answerable']]
     by_condition = answerable.groupby('condition')['passed'].agg(['sum', 'count'])
     pivot = answerable.pivot(index='id', columns='condition', values='passed')
-    both = pivot.dropna()
     summary = dict(
         fake=fake, models=sorted(table['model'].unique().tolist()), answered=len(table), of=len(questions) * len(CONDITIONS),
         accuracy_answerable={c: dict(correct=int(r['sum']), of=int(r['count']), share=round(r['sum'] / r['count'], 3))
                              for c, r in by_condition.iterrows()},
         sql_found_answerable=answerable.groupby('condition')['sql_found'].mean().round(3).to_dict(),
         accuracy_by_category={c: g.groupby('condition')['passed'].mean().round(3).to_dict() for c, g in answerable.groupby('category')},
-        fixed_by_glossary=sorted(both.index[(both.get('glossary') == True) & (both.get('schema_only') == False)].tolist()) if len(both.columns) == 2 else [],
-        broken_by_glossary=sorted(both.index[(both.get('glossary') == False) & (both.get('schema_only') == True)].tolist()) if len(both.columns) == 2 else [],
+        fixed_by_glossary=changed(pivot, 'schema_only', 'glossary', True),
+        broken_by_glossary=changed(pivot, 'schema_only', 'glossary', False),
+        fixed_by_guidance=changed(pivot, 'glossary', 'guided', True),
+        broken_by_guidance=changed(pivot, 'glossary', 'guided', False),
         unanswerable=table[~table['answerable']][['id', 'condition', 'passed', 'answer']].to_dict('records'))
     (RESULTS / 'summary.json').write_text(json.dumps(summary, indent=2, default=str) + '\n')
-    print(json.dumps({k: summary[k] for k in ('answered', 'of', 'accuracy_answerable', 'sql_found_answerable', 'fixed_by_glossary', 'broken_by_glossary')}, indent=2))
+    print(json.dumps({k: summary[k] for k in ('answered', 'of', 'accuracy_answerable', 'sql_found_answerable', 'fixed_by_glossary', 'fixed_by_guidance', 'broken_by_guidance')}, indent=2))
 
 
 if __name__ == '__main__':

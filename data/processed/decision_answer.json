@@ -67,6 +67,36 @@
     },
     "decision_rule": "Choose the affordable action only when productivity is near 40 units per productive hour and attendance is stable. Escalate to the stress-resistant action when low productivity or two-worker absence is plausible."
   },
+  "middle_mile_check": {
+    "affordable_6_workers": {
+      "plan": "affordable_6_workers",
+      "labor_cost": 242253.0,
+      "on_time_unit_share_in_warehouse": 0.9759,
+      "orders": 32634,
+      "unfinished_orders": 0,
+      "late_without_truck_delays": 677,
+      "late_with_truck_delays": 919,
+      "late_caused_by_trucks": 242,
+      "at_risk_trucks": 30,
+      "late_after_truck_recovery": 678,
+      "truck_recovery_cost": 7327.46
+    },
+    "safe_10_workers": {
+      "plan": "safe_10_workers",
+      "labor_cost": 398222.0,
+      "on_time_unit_share_in_warehouse": 1.0,
+      "orders": 32634,
+      "unfinished_orders": 0,
+      "late_without_truck_delays": 0,
+      "late_with_truck_delays": 32,
+      "late_caused_by_trucks": 32,
+      "at_risk_trucks": 7,
+      "late_after_truck_recovery": 0,
+      "truck_recovery_cost": 1513.67
+    },
+    "finding": "Trucks add late parcels on top of the warehouse, and the 6 worker plan exposes more of them. Recovering the at-risk trucks costs far less than the labor gap between the plans, but it only removes the truck-caused lateness; the warehouse backlog stays.",
+    "evidence_status": "Real planner orders and staffing plans on an assumed Midwest network, truck schedule and delays; full-year replay, so labor costs are not comparable to the later-period costs above."
+  },
   "frozen_policy_validation": {
     "base": {
       "policy": "extra0_ot0_temps0",

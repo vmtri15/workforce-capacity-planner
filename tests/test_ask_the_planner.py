@@ -101,6 +101,21 @@ class AgentTest(unittest.TestCase):
         shutil.rmtree(ROOT / 'ask_the_planner/.run_data', ignore_errors=True)
 
 
+    def test_guided_adds_the_base_case_rule_and_views(self):
+        with tempfile.TemporaryDirectory() as folder:
+            db = make_db(folder)
+            with sqlite3.connect(db) as c:
+                c.execute("CREATE VIEW base_case_sites AS SELECT * FROM sites")
+            llm = ScriptedLlm('SELECT 1', 'Answer.')
+            asyncio.run(ask(build_planner(db, use_glossary=True, llm=llm, guided=True), 'question'))
+            _, glossary_only = self.run_agent(db, True, 'SELECT 1')
+            guided, plain = llm.system_prompts[0], glossary_only.system_prompts[0]
+            self.assertIn('base_case_sites', guided)
+            self.assertNotIn('base_case_sites', plain)  # the older conditions see the schema they were scored on
+            self.assertIn('Never add up rows across runs', guided)
+        shutil.rmtree(ROOT / 'ask_the_planner/.run_data', ignore_errors=True)
+
+
 class FailingLlm(ScriptedLlm):
     async def send_request(self, request):
         raise RuntimeError('400 INVALID_ARGUMENT from the model')

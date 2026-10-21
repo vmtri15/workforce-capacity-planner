@@ -398,7 +398,7 @@ async function setupAskPlanner() {
     return;
   }
   if (!status.available) return;
-  document.getElementById('ask-nav').hidden = false;
+  window.askLive = true;
   document.getElementById('ask-source').textContent = `Model: ${status.model}. Database: ${status.database}, opened read only.`;
   const form = document.getElementById('ask-form');
   const input = document.getElementById('ask-question');
@@ -468,6 +468,8 @@ async function loadPortfolio() {
     const alert = document.getElementById('error');
     alert.hidden = false;
     alert.textContent = error.message;
+  } finally {
+    window.portfolioDone = true;  // platform.js waits for this
   }
 }
 

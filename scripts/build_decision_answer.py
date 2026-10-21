@@ -12,6 +12,7 @@ VALIDATION = ROOT / "data/processed/recommendation_validation/summary.json"
 REPLACEMENTS = ROOT / "data/processed/recommendation_validation/exploratory_replacement_cases.csv"
 QWI = ROOT / "data/processed/qwi_2021q1_latest_naics493.csv"
 SOTO = ROOT / "data/processed/soto_pinedo_profile.json"
+MIDDLE_MILE = ROOT / "middle_mile/connected/results/summary.json"
 JSON_OUTPUT = ROOT / "data/processed/decision_answer.json"
 MARKDOWN_OUTPUT = ROOT / "DECISION_ANSWER.md"
 
@@ -75,6 +76,22 @@ def qwi_context() -> dict:
     }
 
 
+def middle_mile_check() -> dict | None:
+    """Part 3b: what each staffing plan means once parcels ride the (assumed) truck network."""
+    if not MIDDLE_MILE.exists():
+        return None
+    plans = {row["plan"]: row for row in json.loads(MIDDLE_MILE.read_text(encoding="utf-8"))["plans"]}
+    return {
+        "affordable_6_workers": plans["affordable_6_workers"],
+        "safe_10_workers": plans["safe_10_workers"],
+        "finding": "Trucks add late parcels on top of the warehouse, and the 6 worker plan exposes more of them. "
+                   "Recovering the at-risk trucks costs far less than the labor gap between the plans, "
+                   "but it only removes the truck-caused lateness; the warehouse backlog stays.",
+        "evidence_status": "Real planner orders and staffing plans on an assumed Midwest network, truck schedule and delays; "
+                           "full-year replay, so labor costs are not comparable to the later-period costs above.",
+    }
+
+
 def build() -> dict:
     network = json.loads(NETWORK.read_text(encoding="utf-8"))
     validation = json.loads(VALIDATION.read_text(encoding="utf-8"))
@@ -107,6 +124,7 @@ def build() -> dict:
             "lowest_risk_tested": resilient,
             "decision_rule": "Choose the affordable action only when productivity is near 40 units per productive hour and attendance is stable. Escalate to the stress-resistant action when low productivity or two-worker absence is plausible.",
         },
+        "middle_mile_check": middle_mile_check(),
         "frozen_policy_validation": validation["evaluation"],
         "labor_market_context": qwi_context(),
         "external_benchmark": {
@@ -123,6 +141,29 @@ def build() -> dict:
             "Therefore the result is a conditional planning answer, not proof of actual staffing sufficiency or guaranteed savings.",
         ],
     }
+
+
+def middle_mile_markdown(check: dict | None) -> str:
+    if check is None:
+        return ""
+    rows = "\n".join(
+        f'| {label} | ${plan["labor_cost"]:,.0f} | {plan["late_without_truck_delays"]:,} | '
+        f'{plan["late_with_truck_delays"]:,} | {plan["late_caused_by_trucks"]:,} | {plan["at_risk_trucks"]} | '
+        f'${plan["truck_recovery_cost"]:,.0f} | {plan["late_after_truck_recovery"]:,} |'
+        for label, plan in (("6 workers, up to 2 OT hours", check["affordable_6_workers"]),
+                            ("10 workers, up to 2 OT hours", check["safe_10_workers"])))
+    return f'''
+## Middle Mile Check
+
+Each plan's finished orders were sent through a truck network to the customer ({check["affordable_6_workers"]["orders"]:,} orders, 2023).
+
+| Plan | Labor cost | Late, warehouse only | Late, with truck delays | Caused by trucks | At-risk trucks | Truck recovery cost | Late after recovery |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+{rows}
+
+- **Finding:** {check["finding"]}
+- **Evidence:** {check["evidence_status"]}
+'''
 
 
 def markdown(result: dict) -> str:
@@ -152,7 +193,7 @@ def markdown(result: dict) -> str:
 - **Affordable base case:** {affordable["scheduled_workers"]} workers with up to {affordable["overtime_limit_hours"]} overtime hours. It reaches {100 * affordable["base_on_time_share"]:.1f}% on-time units in the later-period base case at a modeled cost of ${affordable["base_modeled_cost"]:,.0f}, but passes only {affordable["stress_cases_passed"]}/{affordable["stress_cases_tested"]} listed stress cases.
 - **Lowest-risk tested action:** {resilient["scheduled_workers"]} workers with up to {resilient["overtime_limit_hours"]} overtime hours. It passes {resilient["stress_cases_passed"]}/{resilient["stress_cases_tested"]} later-period stress cases; the worst service result is {100 * resilient["worst_on_time_share"]:.1f}% and the maximum modeled cost is ${resilient["worst_modeled_cost"]:,.0f}.
 - **Decision rule:** {result["actions"]["decision_rule"]}
-
+{middle_mile_markdown(result["middle_mile_check"])}
 ## Evidence Boundary
 
 ''' + "\n".join(f"- {item}" for item in result["evidence_boundary"]) + "\n"

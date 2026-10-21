@@ -12,6 +12,11 @@ class DecisionAnswerTests(unittest.TestCase):
         self.assertEqual(result["actions"]["lowest_risk_tested"]["scheduled_workers"], 10)
         self.assertEqual(result["actions"]["lowest_risk_tested"]["stress_cases_passed"], 36)
 
+    def test_middle_mile_check_compares_both_plans(self):
+        check = build()["middle_mile_check"]
+        self.assertGreater(check["affordable_6_workers"]["late_caused_by_trucks"],
+                           check["safe_10_workers"]["late_caused_by_trucks"])
+
     def test_qwi_uses_latest_complete_quarter(self):
         context = build()["labor_market_context"]
         self.assertEqual(context["latest_api_quarter"], "2025-Q4")

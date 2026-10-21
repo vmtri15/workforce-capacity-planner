@@ -20,6 +20,18 @@ Under the modeled staffing plan, every site covers at least 95% of workload on m
 - **Lowest-risk tested action:** 10 workers with up to 2 overtime hours. It passes 36/36 later-period stress cases; the worst service result is 96.1% and the maximum modeled cost is $176,616.
 - **Decision rule:** Choose the affordable action only when productivity is near 40 units per productive hour and attendance is stable. Escalate to the stress-resistant action when low productivity or two-worker absence is plausible.
 
+## Middle Mile Check
+
+Each plan's finished orders were sent through a truck network to the customer (32,634 orders, 2023).
+
+| Plan | Labor cost | Late, warehouse only | Late, with truck delays | Caused by trucks | At-risk trucks | Truck recovery cost | Late after recovery |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 6 workers, up to 2 OT hours | $242,253 | 677 | 919 | 242 | 30 | $7,327 | 678 |
+| 10 workers, up to 2 OT hours | $398,222 | 0 | 32 | 32 | 7 | $1,514 | 0 |
+
+- **Finding:** Trucks add late parcels on top of the warehouse, and the 6 worker plan exposes more of them. Recovering the at-risk trucks costs far less than the labor gap between the plans, but it only removes the truck-caused lateness; the warehouse backlog stays.
+- **Evidence:** Real planner orders and staffing plans on an assumed Midwest network, truck schedule and delays; full-year replay, so labor costs are not comparable to the later-period costs above.
+
 ## Evidence Boundary
 
 - Observed: retained 2023 order dates, units, and order mix.

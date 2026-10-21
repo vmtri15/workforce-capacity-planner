@@ -1,10 +1,123 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workforce | Capacity Planner</title><meta name="description" content="An evidence-aware workforce capacity planning prototype for exploring warehouse demand, staffing cost, and service risk."><link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./published.css"><link rel="stylesheet" href="./portfolio.css"></head>
-<body><header><div class="brand"><span class="mark">W</span><div>Workforce<span class="subbrand">CAPACITY PLANNER</span></div></div><span class="environment">Research prototype</span></header>
-<div class="shell"><aside><p class="eyebrow">WORKSPACE</p><nav aria-label="Main navigation"><button data-view="portfolio" class="active">Demand overview</button><button data-view="network">Network capacity</button><button data-view="builder">Scenario comparison</button><button data-view="recommendations">Recommendations</button><button data-view="methodology">Methodology</button><button data-view="tableau">Published dashboards</button><button data-view="ask" id="ask-nav" data-local-only hidden>Ask the planner</button><span class="nav-divider" data-local-only>ARCHIVE</span><button data-view="overview" class="archive-link" data-local-only>Archived 2011 model</button></nav><div class="aside-bottom"><span class="dot"></span> Portfolio prototype<p>Observed 2023 demand<br>Transparent scenarios</p></div></aside>
-<main><div class="page-heading"><div><p class="eyebrow">DECISION SUPPORT</p><h1 id="title">Demand overview</h1><p id="subtitle">Observed warehouse demand and workload concentration.</p></div><button id="export" class="primary" hidden>Export daily CSV</button></div>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Workforce Capacity Planner</title><link rel="icon" href="./favicon.svg" type="image/svg+xml"><meta name="theme-color" content="#0f6b57"><meta property="og:type" content="website"><meta property="og:title" content="Workforce Capacity Planner"><meta property="og:description" content="Forecast demand, plan warehouse staffing and see the cost on the trucks: a fulfillment operations analytics project by Tri Vi."><meta property="og:url" content="https://vmtri15.github.io/workforce-capacity-planner/"><meta property="og:image" content="https://vmtri15.github.io/workforce-capacity-planner/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://vmtri15.github.io/workforce-capacity-planner/og-image.png"><meta name="description" content="An evidence-aware workforce capacity planning prototype for exploring warehouse demand, staffing cost, and service risk."><link rel="stylesheet" href="./style.css"><link rel="stylesheet" href="./published.css"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"><link rel="stylesheet" href="./portfolio.css"><link rel="stylesheet" href="./platform.css"></head>
+<body><header class="topbar"><button type="button" id="menu-toggle" class="icon-button" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><a class="brand" href="#home" data-go="home"><span class="mark">W</span><span>Workforce<span class="subbrand">CAPACITY PLANNER</span></span></a><span class="series">Fulfillment Operations Analytics</span><div class="topbar-actions"><button type="button" class="ask-cta" data-go="ask"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>Ask the planner</span></button><a class="icon-link" href="https://github.com/vmtri15/workforce-capacity-planner" target="_blank" rel="noopener noreferrer">Code on GitHub</a></div></header>
+<div class="shell"><aside id="sidebar"><nav aria-label="Main navigation"><p class="nav-group">OVERVIEW</p><button data-view="home" class="active"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></button><button data-view="recommendations"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg><span>Recommendations</span></button><p class="nav-group"><b>1</b> FORECAST DEMAND</p><button data-view="portfolio"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Demand overview</span></button><button data-view="forecast"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg><span>Demand forecast</span></button><p class="nav-group"><b>2</b> PLAN CAPACITY</p><button data-view="network"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Network capacity</span></button><button data-view="builder"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Scenario comparison</span></button><p class="nav-group"><b>3</b> SHIP PARCELS</p><button data-view="middlemile"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M1 6h13v10H1zM14 10h4l3 3v3h-7"/><circle cx="5" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg><span>Middle mile</span></button><p class="nav-group">TOOLS</p><button data-view="ask" id="ask-nav"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><span>Ask the planner</span></button><button data-view="tableau"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg><span>Tableau dashboards</span></button><button data-view="methodology"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6a2 2 0 0 1 2 2v14a2 2 0 0 0-2-2H4zM20 4h-6a2 2 0 0 0-2 2v14a2 2 0 0 1 2-2h6z"/></svg><span>Methodology</span></button><button data-view="about"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>About this project</span></button><p class="nav-group" data-local-only>ARCHIVE</p><button data-view="overview" class="archive-link" data-local-only><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v4H3zM5 8v12h14V8M10 12h4"/></svg><span>Archived 2011 model</span></button></nav><div class="aside-bottom"><span class="dot"></span> Portfolio project<p>Real 2023 orders · Modeled staffing<br>Every assumption is labeled</p></div></aside><div class="scrim" id="scrim" hidden></div>
+<main><div class="page-heading"><div><p class="eyebrow" id="crumb">OVERVIEW</p><h1 id="title">Welcome</h1><p id="subtitle">Forecast demand, plan warehouse capacity, and see what it means for the trucks.</p></div><button id="export" class="primary" hidden>Export daily CSV</button></div>
 <div id="context-notice" class="notice" hidden>Historical 2011 demand &middot; Modeled staffing &middot; Uncalibrated productivity</div><div id="error" role="alert" hidden></div><div id="loading" role="status">Loading planning data...</div>
-<section id="portfolio">
+<section id="home">
+  <div class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">THE DECISION</p>
+      <h2>How many warehouse workers do three Midwest sites need, and what does the choice cost once parcels hit the road?</h2>
+      <p id="home-answer">Loading the answer...</p>
+      <div class="hero-actions"><button type="button" class="primary" data-go="recommendations">See the recommendation</button><button type="button" class="ghost" data-go="builder">Try your own scenario</button></div>
+    </div>
+    <div class="hero-kpis" id="home-kpis"></div>
+  </div>
+  <h2 class="block-title">How the analysis fits together</h2>
+  <div class="journey" id="home-journey"></div>
+  <h2 class="block-title">How it works</h2>
+  <div class="pipeline">
+    <div class="stage"><span class="stage-kind">DATA</span><h3>2023 orders</h3><p>32,634 real orders, cleaned and checked in SQLite</p><div class="tags"><i>SQL</i><i>Python</i></div></div>
+    <div class="stage"><span class="stage-kind">FORECAST</span><h3>Daily demand</h3><p>7 models scored on 25 past dates, with a P90 high case</p><div class="tags"><i>ARIMA</i><i>Prophet</i><i>XGBoost</i></div></div>
+    <div class="stage"><span class="stage-kind">PLAN</span><h3>Staffing</h3><p>Service simulation, 36 stress tests and a CP-SAT optimizer</p><div class="tags"><i>Simulation</i><i>OR-Tools</i></div></div>
+    <div class="stage"><span class="stage-kind">SHIP</span><h3>Middle mile</h3><p>Every parcel routed by truck, with random delays and recovery options</p><div class="tags"><i>Monte Carlo</i><i>Routing</i></div></div>
+    <div class="stage decision"><span class="stage-kind">DECIDE</span><h3>Recommendation</h3><p>The cheapest plan that holds up, and when to switch</p><div class="tags"><i>Tableau</i><i>AI SQL assistant</i></div></div>
+  </div>
+  <section class="analysis-panel plan-picker">
+    <div class="section-heading"><div><h2>Pick a staffing plan and follow it through</h2><p>The same choice, seen in the warehouse, under stress and on the trucks.</p></div>
+      <div class="segmented" role="radiogroup" aria-label="Staffing plan" id="home-plan">
+        <button type="button" role="radio" aria-checked="true" data-plan="six">6 workers + overtime</button>
+        <button type="button" role="radio" aria-checked="false" data-plan="ten">10 workers + overtime</button>
+      </div></div>
+    <div class="plan-results" id="home-plan-results" aria-live="polite"></div>
+    <p class="footnote">Costs are modeled with hypothetical wages. Each row uses its own period, so compare a row across the two plans, not down the column.</p>
+  </section>
+  <footer class="site-footer"><span>Built by <button type="button" class="text-link" data-go="about">Tri Vi</button> as a portfolio project for business, supply chain and operations analyst roles.</span><a href="https://www.linkedin.com/in/triminhvi" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="https://github.com/vmtri15/workforce-capacity-planner" target="_blank" rel="noopener noreferrer">GitHub</a></footer>
+</section>
+<section id="forecast" hidden>
+  <div id="forecast-metrics" class="metrics"></div>
+  <div class="portfolio-grid">
+    <section class="analysis-panel wide">
+      <div class="section-heading"><div><h2>Next 20 working days</h2><p>Recent demand, the forecast, its 80% range and the P90 high case</p></div>
+        <div class="legend"><span><i class="ink"></i>Actual</span><span><i class="teal"></i>Forecast</span><span><i class="band"></i>80% range</span><span><i class="amber"></i>P90</span></div></div>
+      <canvas id="forecast-chart" role="img" aria-label="Recent daily units and the 20 day forecast"></canvas>
+      <p id="forecast-chart-detail" class="chart-detail">Move across the chart to read a day.</p>
+    </section>
+    <section class="analysis-panel">
+      <div class="section-heading"><div><h2>Which model forecasts best?</h2><p>Error on 25 past forecast dates, never seeing the future <span class="tip" tabindex="0" data-tip="WAPE: total absolute error divided by total actual units. Lower is better.">?</span></p></div></div>
+      <div id="forecast-leaderboard" class="leaderboard"></div>
+    </section>
+    <section class="analysis-panel insight-panel">
+      <p class="eyebrow">WHAT THIS MEANS</p>
+      <h2>Flexible capacity beats a better forecast</h2>
+      <p id="forecast-takeaway"></p>
+      <button data-go="builder">Compare staffing options</button>
+    </section>
+    <section class="analysis-panel wide">
+      <div class="section-heading"><div><h2>Does a better forecast save money?</h2><p>Staffing plans chosen from each forecast, replayed on what really happened</p></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Plan chosen from</th><th>On time</th><th>Missed target</th><th>Cost per 4 weeks</th></tr></thead><tbody id="forecast-link"></tbody></table></div>
+    </section>
+  </div>
+</section>
+<section id="middlemile" hidden>
+  <div class="network-controls">
+    <div class="segmented" role="radiogroup" aria-label="Staffing plan" id="mm-plan">
+      <button type="button" role="radio" aria-checked="true" data-plan="affordable_6_workers">6 workers + overtime</button>
+      <button type="button" role="radio" aria-checked="false" data-plan="safe_10_workers">10 workers + overtime</button>
+    </div>
+    <div class="network-actions"><span>Real 2023 orders and staffing plans · Assumed truck network and delays</span></div>
+  </div>
+  <div id="mm-metrics" class="metrics"></div>
+  <div class="portfolio-grid">
+    <section class="analysis-panel wide">
+      <div class="section-heading"><div><h2>The network</h2><p>3 warehouses feed 2 sort centers and 6 delivery stations, listed north to south. Thicker lanes carry more orders; amber and red lanes have trucks that made parcels late.</p></div>
+        <div class="legend"><span><i class="map-key site"></i>Warehouse</span><span><i class="map-key sort"></i>Sort center</span><span><i class="map-key station"></i>Delivery station</span></div></div>
+      <div class="map-wrap"><svg id="mm-map" viewBox="0 0 900 520" role="img" aria-label="Map of the Midwest network with lanes colored by late parcels"></svg></div>
+      <p id="mm-map-detail" class="chart-detail">Hover or tap a lane to see its volume and the late parcels its trucks caused.</p>
+    </section>
+    <section class="analysis-panel wide">
+      <div class="section-heading"><div><h2>Where late parcels come from</h2><p>Every 2023 order, finished by the warehouse plan, then driven site to sort center to delivery station</p></div>
+        <div class="legend"><span><i class="teal"></i>Late from the warehouse</span><span><i class="amber"></i>Late from truck delays</span></div></div>
+      <div id="mm-bars" class="compare-bars"></div>
+    </section>
+    <section class="analysis-panel wide">
+      <div class="section-heading"><div><h2>Trucks to watch</h2><p>The departures that make the most parcels late, and the cheapest fix <span class="tip" tabindex="0" data-tip="Split: send a second truck for part of the load. Swap: move parcels to another departure. Costs are hypothetical.">?</span></p></div><span id="mm-truck-count"></span></div>
+      <div class="table-wrap"><table><thead><tr><th>Lane</th><th>Departure</th><th>Delay</th><th>Parcels on board</th><th>Made late</th><th>Best fix</th><th>Fix cost</th></tr></thead><tbody id="mm-trucks"></tbody></table></div>
+    </section>
+    <section class="analysis-panel insight-panel wide">
+      <p class="eyebrow">WHAT THIS MEANS</p>
+      <h2>Fix the warehouse first, then the trucks</h2>
+      <p id="mm-takeaway"></p>
+    </section>
+  </div>
+</section>
+<section id="about" hidden>
+  <div class="about-hero analysis-panel">
+    <div class="avatar" aria-hidden="true">TV</div>
+    <div><p class="eyebrow">BUILT BY</p><h2>Tri Vi</h2><p>Purdue University · Looking for business, supply chain and operations analyst roles</p>
+      <div class="hero-actions"><a class="button-link" href="https://www.linkedin.com/in/triminhvi" target="_blank" rel="noopener noreferrer">LinkedIn</a><a class="button-link secondary" href="https://github.com/vmtri15" target="_blank" rel="noopener noreferrer">GitHub</a></div></div>
+  </div>
+  <div class="about-grid">
+    <section class="analysis-panel"><h2>The question</h2><p>A fulfillment network with three Midwest sites has to decide how many workers to schedule. Too few and orders ship late; too many and labor is wasted. This project answers how many, what it costs, and what happens to the parcels once they leave the building.</p></section>
+    <section class="analysis-panel"><h2>What I did</h2><ul class="did-list">
+      <li>Cleaned and validated real 2023 order data in SQL and Python</li>
+      <li>Backtested 7 forecasting models without letting them see the future</li>
+      <li>Built a staffing simulation and stress-tested plans across 36 cases</li>
+      <li>Optimized schedules with a CP-SAT solver (Google OR-Tools)</li>
+      <li>Simulated the truck network to see which delays hurt customers</li>
+      <li>Added an AI assistant that answers questions in SQL, and measured its accuracy</li>
+    </ul></section>
+    <section class="analysis-panel"><h2>What I would tell a manager</h2><p>Six workers with overtime and temps on call is the cheapest plan that holds service. Ten workers only pays off if low productivity or absences are likely. A better forecast will not save much, because daily demand is too noisy; flexible capacity does.</p><button type="button" data-go="recommendations">Read the full recommendation</button></section>
+    <section class="analysis-panel"><h2>Honest limits</h2><p>Orders are real; wages, productivity, the truck network and delays are modeled. Every page labels which is which, and the results are a planning answer, not proof of real savings.</p><button type="button" data-go="methodology">See the methodology</button></section>
+  </div>
+  <section class="analysis-panel"><h2>The three part series</h2><div class="series-links">
+    <a href="https://github.com/vmtri15/Walmart_Forecasting" target="_blank" rel="noopener noreferrer"><b>Part 1</b> Walmart sales forecasting<span>45 stores, Prophet vs ARIMA vs XGBoost, markdown effects</span></a>
+    <a href="https://github.com/vmtri15/workforce-capacity-planner" target="_blank" rel="noopener noreferrer"><b>Part 2</b> Workforce capacity planner<span>This site: forecast, staffing simulation and optimizer</span></a>
+    <a href="https://github.com/vmtri15/workforce-capacity-planner/tree/main/middle_mile" target="_blank" rel="noopener noreferrer"><b>Part 3</b> Middle mile parcel impact<span>Trucks, cutoffs and late parcels, connected to the staffing plan</span></a>
+  </div></section>
+</section>
+<section id="portfolio" hidden>
   <div id="portfolio-metrics" class="metrics portfolio-metrics"></div>
   <section class="executive-summary"><div><p class="eyebrow">EXECUTIVE SUMMARY</p><h2>Unit mix, not order count alone, drives the capacity decision</h2></div><div><small>KEY FINDING</small><strong>21.1% of orders generate 79.9% of observed units</strong></div><div><small>DECISION</small><strong>Stress-test staffing against unit demand before adding coverage</strong></div><div><small>LIMITATION</small><strong>Staffing, site allocation, productivity, and costs remain modeled</strong></div></section>
   <div class="portfolio-grid">
@@ -46,9 +159,9 @@
     <form id="ask-form" class="ask-form"><label for="ask-question">Question</label><div class="ask-row"><input id="ask-question" maxlength="500" placeholder="Which site has the most shortfall hours in the base case?" autocomplete="off"><button type="submit" id="ask-submit" class="primary">Ask</button></div></form>
     <div class="ask-examples"><span>Try:</span><button type="button" data-ask-example>Which site carries the largest share of demand?</button><button type="button" data-ask-example>What is our on time rate in each productivity case?</button><button type="button" data-ask-example>How many shortfall hours would we have if productivity is low?</button></div>
     <div id="ask-output" class="ai-output" aria-live="polite" hidden></div>
-    <p id="ask-source" class="footnote"></p>
+    <p id="ask-source" class="footnote"></p><div id="ask-saved" class="ask-saved" hidden></div>
   </section>
-  <section class="analysis-panel"><h2>Before you trust an answer</h2><div class="guardrails"><p><strong>Tested accuracy:</strong> 16 of 28 test questions answered correctly with the business glossary (57%).</p><p><strong>Most common mistake:</strong> adding the low, base and high productivity runs together. If a total has no run_id or productivity_case filter in its SQL, it is about three times too large.</p><p><strong>Scope:</strong> answers come from the modeled 2011 network database, not the 2023 decision answer. It cannot answer questions about actual staffing or hiring.</p></div></section>
+  <section class="analysis-panel"><h2>Before you trust an answer</h2><div class="guardrails"><p id="ask-accuracy"><strong>Tested accuracy:</strong> 16 of 28 test questions answered correctly with the business glossary (57%).</p><p><strong>Most common mistake:</strong> adding the low, base and high productivity runs together. If a total has no run_id or productivity_case filter in its SQL, it is about three times too large.</p><p><strong>Scope:</strong> answers come from the modeled 2011 network database, not the 2023 decision answer. It cannot answer questions about actual staffing or hiring.</p></div></section>
 </section>
 <section id="tableau" hidden>
   <div class="published-intro">
@@ -60,4 +173,4 @@
   <p class="footnote">The published analysis does not claim observed schedules or calibrated headcount requirements. Missing source dates are not confirmed zero-demand days.</p>
 </section>
 <section id="evidence" hidden><h2>Evidence register</h2><div id="sources"></div><h2>Model assumptions</h2><p class="scope">The revised package-plus-unit packing diagnostic is not integrated into these capacity or optimization results. Recruiting pipelines, dated absences, and backlog are not represented.</p><div class="table-wrap"><table><thead><tr><th>Assumption</th><th>Value</th><th>Evidence class</th><th>Basis</th></tr></thead><tbody id="assumptions"></tbody></table></div><h2>Saved quality checks</h2><div id="quality"></div></section>
-</main></div><script src="./portfolio.js"></script><script src="./app.js"></script></body></html>
+</main></div><script src="./portfolio.js"></script><script src="./app.js"></script><script src="./platform.js"></script></body></html>

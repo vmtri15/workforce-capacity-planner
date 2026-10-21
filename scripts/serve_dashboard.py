@@ -134,7 +134,7 @@ def run_question(question):
     from planner_agent import ask, build_planner
     with _ask['lock']:  # one question at a time; the agent keeps a log of the SQL it runs
         if _ask['planner'] is None:
-            _ask['planner'] = build_planner(ask_database(), use_glossary=True)
+            _ask['planner'] = build_planner(ask_database(), use_glossary=True, guided=True)
         result = asyncio.run(ask(_ask['planner'], question.strip()))
     queries = []
     for q in result['queries']:
@@ -235,12 +235,20 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(200, {'available': bool(os.environ.get('OPENAI_API_KEY')),
                                  'model': os.environ.get('OPENAI_MODEL', 'gpt-5-mini')})
             return
-        elif path in ('/', '/app.js', '/portfolio.js', '/style.css', '/published.css', '/portfolio.css'):
+        elif path == '/data/story.json':
+            try:
+                body = (ROOT / 'dashboard/data/story.json').read_bytes()
+            except OSError:
+                self.send_error(503, 'Story data unavailable. Run scripts/build_static_dashboard.py, then reload.')
+                return
+            content_type = 'application/json'
+        elif path in ('/favicon.svg', '/og-image.png'):
+            body = (ROOT / 'dashboard' / path[1:]).read_bytes()
+            content_type = 'image/svg+xml' if path.endswith('.svg') else 'image/png'
+        elif path in ('/', '/app.js', '/portfolio.js', '/platform.js', '/style.css', '/published.css', '/portfolio.css', '/platform.css'):
             name = 'index.html' if path == '/' else path[1:]
             body = (ROOT / 'dashboard' / name).read_bytes()
-            content_type = {'index.html': 'text/html', 'app.js': 'text/javascript',
-                            'portfolio.js': 'text/javascript', 'style.css': 'text/css',
-                            'published.css': 'text/css', 'portfolio.css': 'text/css'}[name]
+            content_type = 'text/html' if name == 'index.html' else 'text/javascript' if name.endswith('.js') else 'text/css'
         else:
             self.send_error(404)
             return
@@ -256,6 +264,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--port', type=int, default=8765)
     args = parser.parse_args()
+    ThreadingHTTPServer.request_queue_size = 64  # the page loads ~15 files at once; the default of 5 resets connections
+    ThreadingHTTPServer.daemon_threads = True
     server = ThreadingHTTPServer(('127.0.0.1', args.port), Handler)
     print(f'Dashboard: http://127.0.0.1:{args.port}', flush=True)
     server.serve_forever()

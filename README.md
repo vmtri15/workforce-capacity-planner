@@ -85,7 +85,7 @@ The glossary fixed 5 questions and broke none. Most remaining errors have one ca
 .venv/bin/python ask_the_planner/evaluate.py --fresh
 ```
 
-**In the dashboard.** Start the local site with the project's Python, `.venv/bin/python scripts/serve_dashboard.py`, and open http://127.0.0.1:8765. An "Ask the planner" page appears in the menu when the key and database are found. It shows the answer, the SQL it ran and the result table. The key stays on your machine, so this page is hidden on the public GitHub Pages site.
+**In the dashboard.** Start the local site with the project's Python, `.venv/bin/python scripts/serve_dashboard.py`, and open http://127.0.0.1:8765. The "Ask the planner" page takes live questions when the key and database are found, and shows the answer, the SQL it ran and the result table. The key stays on your machine, so on the public GitHub Pages site the same page shows saved answers from the evaluation instead.
 
 Vanna's own SQLite runner can write to the database and its Gemini code fails on current models, so this layer adds a read only runner and a small Gemini fix. Vanna's repository is archived, so the version is pinned to 2.0.2.
 
@@ -96,9 +96,16 @@ Vanna's own SQLite runner can write to the database and its Gemini code fails on
 Run `python3 scripts/serve_dashboard.py` and open http://127.0.0.1:8765.
 Use `--port 8766` if the default port is occupied. No additional runtime packages
 are required. The default product experience uses the observed 2023 demand
-export and precomputed staffing cases. It provides a demand overview, interactive
-scenario comparison, validated recommendations, methodology, and embedded
-Tableau reporting. The older 2011 network model is retained in the codebase for
+export and precomputed staffing cases. The menu follows the three part series:
+a home page with the answer and a plan picker that follows one staffing choice
+through the warehouse, the stress tests and the trucks; the demand overview and
+demand forecast (model leaderboard, next 20 days with the 80% range and P90, and
+what forecast error costs in staffing); network capacity and scenario comparison;
+the middle mile (late parcels by cause and the trucks to watch); plus Ask the
+planner, Tableau reporting and methodology. Each page has a URL (`#forecast`,
+`#middlemile`) and works on a phone.
+The link preview image is drawn by `scripts/build_social_image.py` from the saved
+results; rerun it after the numbers change. The older 2011 network model is retained in the codebase for
 reproducibility but is intentionally excluded from the portfolio navigation. The
 app does not run new optimizations.
 The server binds to localhost and only serves the dashboard assets and data API.

@@ -57,7 +57,7 @@ def gemini_service(model=None):
     return FixedGeminiLlmService(model=model or os.getenv('GEMINI_MODEL', DEFAULT_MODEL), temperature=0.0)
 
 
-def build_planner(database_path=DEFAULT_DB, use_glossary=True, llm=None, model=None) -> Planner:
+def build_planner(database_path=DEFAULT_DB, use_glossary=True, llm=None, model=None, guided=False) -> Planner:
     runner = ReadOnlySqlRunner(database_path)
     registry = ToolRegistry()
     # results saved by the SQL tool go to a gitignored scratch folder
@@ -69,7 +69,7 @@ def build_planner(database_path=DEFAULT_DB, use_glossary=True, llm=None, model=N
         user_resolver=LocalUserResolver(),
         agent_memory=DemoAgentMemory(),
         config=AgentConfig(stream_responses=False, temperature=0.0, max_tool_iterations=6),
-        system_prompt_builder=PlannerPromptBuilder(database_path, use_glossary),
+        system_prompt_builder=PlannerPromptBuilder(database_path, use_glossary, guided),
     )
     return Planner(agent=agent, runner=runner)
 
