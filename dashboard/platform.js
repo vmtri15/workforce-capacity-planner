@@ -255,7 +255,8 @@
     $('mm-bars').innerHTML = mm.summary.plans.map(row => `<div class="compare-row${row.plan === plan ? ' selected' : ''}"><span>${label[row.plan]}</span><div class="stack"><i class="teal" style="width:${(100 * row.late_without_truck_delays / most).toFixed(1)}%" title="Warehouse: ${num(row.late_without_truck_delays)}"></i><i class="amber" style="width:${(100 * row.late_caused_by_trucks / most).toFixed(1)}%" title="Trucks: ${num(row.late_caused_by_trucks)}"></i></div><strong>${num(row.late_with_truck_delays)}</strong></div>`).join('');
     const trucks = mm.at_risk_trucks.filter(row => row.plan === plan);
     $('mm-truck-count').textContent = `${trucks.length} trucks`;
-    const lane = value => value.replace('>', ' → ').replaceAll('_sc', ' sort center').replace(/(^|→ )(\w)/g, (m, a, b) => a + b.toUpperCase());
+    const net = mm.network, place = id => { const n = net.sites[id] || net.sort_centers[id] || net.stations[id]; return placeName(id, n.name.replace(/ \(.*\)/, '')); };
+    const lane = value => value.split('>').map(place).join(' → ');
     $('mm-trucks').innerHTML = trucks.slice(0, 12).map(row => `<tr><td>${esc(lane(row.lane))}</td><td>${esc(row.departure.slice(0, 16))}</td><td>${Number(row.delay_hours).toFixed(1)} h</td><td>${num(row.parcels_on_board)}</td><td><strong>${num(row.late_parcels_caused)}</strong></td><td><i class="pill">${esc(row.best_option)}</i></td><td>${money(row.cost)}</td></tr>`).join('');
     renderMap(plan);
     const six = plans.affordable_6_workers, ten = plans.safe_10_workers;
@@ -277,7 +278,7 @@
     mm.at_risk_trucks.filter(row => row.plan === plan).forEach(row => { if (lanes.has(row.lane)) lanes.get(row.lane).late += Number(row.late_parcels_caused); });
     const all = Object.values(nodes), H = 520;
     // a schematic, not a to-scale map: the Chicago area sites sit too close together to read at true scale
-    const columns = {site: 190, sort: 450, station: 700};
+    const columns = {site: 240, sort: 470, station: 700};
     Object.keys(columns).forEach(kind => {
       const group = all.filter(n => n.kind === kind).sort((a, b) => b.lat - a.lat);
       group.forEach((n, i) => { n.x = columns[kind]; n.y = H * (i + 1) / (group.length + 1); });
@@ -285,7 +286,7 @@
     const X = n => n.x, Y = n => n.y;
     const maxOrders = Math.max(...[...lanes.values()].map(l => l.orders)), maxLate = Math.max(1, ...[...lanes.values()].map(l => l.late));
     const color = late => late === 0 ? 'var(--lane-idle)' : late / maxLate > .5 ? 'var(--red)' : 'var(--amber)';
-    const name = id => nodes[id].name;
+    const name = id => placeName(id, nodes[id].name.replace(/ \(.*\)/, ''));
     const lines = [...lanes.values()].sort((a, b) => a.late - b.late).map(l => {
       const a = nodes[l.from], b = nodes[l.to];
       const mid = (X(a) + X(b)) / 2;
@@ -293,9 +294,9 @@
     }).join('');
     const marker = n => n.kind === 'site' ? `<rect x="${X(n) - 8}" y="${Y(n) - 8}" width="16" height="16" rx="4" class="node site"/>`
       : n.kind === 'sort' ? `<circle cx="${X(n)}" cy="${Y(n)}" r="9" class="node sort"/>` : `<circle cx="${X(n)}" cy="${Y(n)}" r="7" class="node station"/>`;
-    const label = n => n.kind === 'sort' ? `<text x="${X(n)}" y="${Y(n) - 16}" text-anchor="middle" class="node-label sort">${esc(n.name.replace(/ \(.*\)/, ''))}</text>`
-      : `<text x="${X(n) + (n.kind === 'site' ? -16 : 16)}" y="${Y(n) + 5}" text-anchor="${n.kind === 'site' ? 'end' : 'start'}" class="node-label ${n.kind}">${esc(n.name)}</text>`;
-    const heads = [['WAREHOUSES', 190], ['SORT CENTERS', 450], ['DELIVERY STATIONS', 700]].map(([t, x]) => `<text x="${x}" y="28" text-anchor="middle" class="map-head">${t}</text>`).join('');
+    const label = n => n.kind === 'sort' ? `<text x="${X(n)}" y="${Y(n) - 16}" text-anchor="middle" class="node-label sort">${esc(name(n.id))}</text>`
+      : `<text x="${X(n) + (n.kind === 'site' ? -16 : 16)}" y="${Y(n) + 5}" text-anchor="${n.kind === 'site' ? 'end' : 'start'}" class="node-label ${n.kind}">${esc(name(n.id))}</text>`;
+    const heads = [['WAREHOUSES', 170], ['SORT CENTERS', 470], ['DELIVERY STATIONS', 760]].map(([t, x]) => `<text x="${x}" y="28" text-anchor="middle" class="map-head">${t}</text>`).join('');
     const labels = heads + all.map(n => `<g>${marker(n)}${label(n)}</g>`).join('');
     $('mm-map').innerHTML = `<g>${lines}</g><g>${labels}</g>`;
     const show = key => {

@@ -1,5 +1,11 @@
 let portfolioData;
 // chart colors come from the CSS theme tokens, so canvases follow light and dark mode
+// State for every place, and the county for each modeled warehouse site (the counties used for the Census QWI data)
+const PLACES = {joliet: ['IL', 'Will County'], ohare: ['IL', 'Cook and DuPage counties'], kenosha: ['WI', 'Kenosha County'],
+  chicago_sc: ['IL'], milwaukee_sc: ['WI'], chicago: ['IL'], detroit: ['MI'], minneapolis: ['MN'], st_louis: ['MO'],
+  indianapolis: ['IN'], milwaukee: ['WI']};
+const placeName = (id, name) => PLACES[id] ? `${name}, ${PLACES[id][0]}` : name;
+const placeCounty = id => PLACES[id]?.[1] ? `${PLACES[id][1]}, ${PLACES[id][0]}` : '';
 const themeColor = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 let networkCapacityData;
 let decisionAnswerData;
@@ -269,7 +275,7 @@ function renderNetworkCapacity() {
     ['Recorded-period wages', portfolioMoney(summary.recorded_period_wage_cost), 'Modeled direct scheduled wages'],
   ].map(item => `<div class="metric"><small>${item[0]}</small><strong>${item[1]}</strong><p>${item[2]}</p></div>`).join('');
   document.getElementById('network-period').textContent = `${networkCapacityData.metadata.source_window_start} to ${networkCapacityData.metadata.source_window_end} · ${networkCapacityData.metadata.recorded_dates} recorded dates`;
-  document.getElementById('network-sites').innerHTML = selected.site_summary.filter(row => site === 'all' || row.site_id === site).map(row => `<tr><td>${portfolioEscape(row.site_name)}<p>${portfolioEscape(networkCapacityData.sites.find(item => item.site_id === row.site_id).allocation_basis)}</p></td><td>${portfolioNumber(row.scheduled_headcount)}</td><td>${portfolioNumber(row.required_hours, 1)}</td><td>${portfolioNumber(row.gap_hours, 1)}</td><td>${(100 * row.target_met_share).toFixed(1)}%</td><td>${portfolioMoney(row.recorded_period_wage_cost)}</td></tr>`).join('');
+  document.getElementById('network-sites').innerHTML = selected.site_summary.filter(row => site === 'all' || row.site_id === site).map(row => `<tr><td>${portfolioEscape(placeName(row.site_id, row.site_name))}<p>${portfolioEscape(placeCounty(row.site_id))} · ${portfolioEscape(networkCapacityData.sites.find(item => item.site_id === row.site_id).allocation_basis)}</p></td><td>${portfolioNumber(row.scheduled_headcount)}</td><td>${portfolioNumber(row.required_hours, 1)}</td><td>${portfolioNumber(row.gap_hours, 1)}</td><td>${(100 * row.target_met_share).toFixed(1)}%</td><td>${portfolioMoney(row.recorded_period_wage_cost)}</td></tr>`).join('');
   window.drawNetworkCapacity();
 }
 
@@ -327,7 +333,7 @@ window.drawNetworkCapacity = function drawNetworkCapacity() {
 
 function setupNetworkCapacity() {
   document.getElementById('network-case').addEventListener('change', renderNetworkCapacity);
-  document.getElementById('network-site').insertAdjacentHTML('beforeend', networkCapacityData.sites.map(site => `<option value="${portfolioEscape(site.site_id)}">${portfolioEscape(site.site_name)}</option>`).join(''));
+  document.getElementById('network-site').insertAdjacentHTML('beforeend', networkCapacityData.sites.map(site => `<option value="${portfolioEscape(site.site_id)}">${portfolioEscape(placeName(site.site_id, site.site_name))}</option>`).join(''));
   document.getElementById('network-site').addEventListener('change', renderNetworkCapacity);
   const canvas = document.getElementById('network-chart');
   canvas.addEventListener('mousemove', event => {
@@ -345,7 +351,7 @@ function setupNetworkCapacity() {
 function renderDecisionAnswer() {
   if (!decisionAnswerData) return;
   document.getElementById('decision-answer').textContent = decisionAnswerData.answer;
-  document.getElementById('decision-sites').innerHTML = decisionAnswerData.site_results.map(site => `<tr><td>${portfolioEscape(site.site_name)}</td><td><strong>${portfolioEscape(site.answer)}</strong></td><td>${portfolioNumber(site.modeled_positions)}</td><td>${portfolioNumber(site.base_gap_hours, 1)} h</td><td>${(100 * site.base_target_met_role_day_share).toFixed(1)}%</td></tr>`).join('');
+  document.getElementById('decision-sites').innerHTML = decisionAnswerData.site_results.map(site => `<tr><td>${portfolioEscape(placeName(site.site_id, site.site_name))}<p class="place-county">${portfolioEscape(placeCounty(site.site_id))}</p></td><td><strong>${portfolioEscape(site.answer)}</strong></td><td>${portfolioNumber(site.modeled_positions)}</td><td>${portfolioNumber(site.base_gap_hours, 1)} h</td><td>${(100 * site.base_target_met_role_day_share).toFixed(1)}%</td></tr>`).join('');
   const affordable = decisionAnswerData.actions.affordable_base_case;
   const resilient = decisionAnswerData.actions.lowest_risk_tested;
   document.getElementById('decision-affordable').textContent = `${affordable.scheduled_workers} workers with up to ${affordable.overtime_limit_hours} overtime hours reaches ${(100 * affordable.base_on_time_share).toFixed(1)}% in the later-period base case at ${portfolioMoney(affordable.base_modeled_cost)}, but passes only ${affordable.stress_cases_passed}/${affordable.stress_cases_tested} listed stresses.`;
