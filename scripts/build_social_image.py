@@ -46,7 +46,7 @@ def main():
         draw.rounded_rectangle([x, 400, x + 340, 530], 16, fill=(255, 255, 255, 22), outline=(255, 255, 255, 50))
         draw.text((x + 24, 420), value, font=font(44, True), fill='white')
         draw.text((x + 24, 482), label, font=font(19), fill=(185, 205, 223))
-    draw.text((64, 566), 'Forecast demand  ·  Plan capacity  ·  Ship parcels      Tri Vi  ·  github.com/vmtri15',
+    draw.text((64, 566), 'Forecast demand  ·  Plan capacity  ·  Ship parcels      Tri Vi and Khuyen Gia Bao Dinh',
               font=font(19), fill=(185, 205, 223))
     image.save(OUTPUT, optimize=True)
     print(f'Wrote {OUTPUT.relative_to(ROOT)}')

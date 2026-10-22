@@ -242,9 +242,9 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_error(503, 'Story data unavailable. Run scripts/build_static_dashboard.py, then reload.')
                 return
             content_type = 'application/json'
-        elif path in ('/favicon.svg', '/og-image.png'):
+        elif path in ('/favicon.svg', '/og-image.png', '/images/tri.jpg', '/images/khuyen.jpg'):
             body = (ROOT / 'dashboard' / path[1:]).read_bytes()
-            content_type = 'image/svg+xml' if path.endswith('.svg') else 'image/png'
+            content_type = {'.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg'}[path[-4:]]
         elif path in ('/', '/app.js', '/portfolio.js', '/platform.js', '/style.css', '/published.css', '/portfolio.css', '/platform.css'):
             name = 'index.html' if path == '/' else path[1:]
             body = (ROOT / 'dashboard' / name).read_bytes()
