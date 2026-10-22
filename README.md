@@ -20,6 +20,8 @@ Each modeled site covers at least 95% of its workload on most days, but none rem
 
 Choose the 6 worker plan when productivity is near 40 units per productive hour and attendance is stable. Choose the 10 worker plan when low productivity or two worker absence is possible. See [DECISION_ANSWER.md](DECISION_ANSWER.md) for the site by site answer.
 
+**At real labor costs.** These costs use the model's assumed $22 an hour. Real 2023 data from BLS puts a warehouse worker at about $33 an hour to the employer (pay plus benefits and payroll taxes), so both plans cost roughly half as much again, and the gap between them grows. Replayed on 25 four week windows of real 2023 demand, 6 workers with overtime and temps on call beat 10 workers by $41,239 every 4 weeks at real costs, against $27,200 at assumed costs, with the same on time service. See [Checked against real data](#checked-against-real-data).
+
 ## What this means for the business
 
 In plain English. Dollar amounts use the model's assumed wages, so they are planning estimates, not money already saved.
