@@ -1,0 +1,37 @@
+{
+  "evidence_status": "real_planner_orders_through_the_middle_mile_with_assumed_vans_costs_and_customer_locations",
+  "plans": [
+    {
+      "plan": "affordable_6_workers",
+      "parcels": 32634,
+      "owned_vans": 2,
+      "peak_vans": 35,
+      "contract_van_days": 1522,
+      "cost": 1329945,
+      "cost_owning_for_peak": 4027125,
+      "cost_all_contracted": 1333665,
+      "cost_per_parcel": 40.75,
+      "carrier_cost": 499082,
+      "carrier_cost_per_parcel": 15.29,
+      "stations_cheaper_by_van": 0,
+      "orders_per_van_day": 17.2,
+      "break_even_orders_per_van_day": 46.1
+    },
+    {
+      "plan": "safe_10_workers",
+      "parcels": 32634,
+      "owned_vans": 0,
+      "peak_vans": 37,
+      "contract_van_days": 1859,
+      "cost": 1308876,
+      "cost_owning_for_peak": 4241616,
+      "cost_all_contracted": 1308876,
+      "cost_per_parcel": 40.11,
+      "carrier_cost": 499082,
+      "carrier_cost_per_parcel": 15.29,
+      "stations_cheaper_by_van": 0,
+      "orders_per_van_day": 17.6,
+      "break_even_orders_per_van_day": 46.0
+    }
+  ]
+}

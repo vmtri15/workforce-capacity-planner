@@ -162,6 +162,7 @@ def evaluate_plan(name, plan, orders, net):
     delay = truck_delay(net.c)
     delayed = [net.deliver(r, s, t, delay) for r, s, t in zip(o['ready'], o['site'], o['station'])]
     o['late_with_truck_delays'] = [d > p for (d, _), p in zip(delayed, o['promise'])]
+    o['delivered'] = [d for d, _ in delayed]  # the day the station hands the parcel to a van (last_mile/ uses it)
     truck_late = o['late_with_truck_delays'] & ~o['late_without_truck_delays']
 
     # each truck's own effect: late parcels that are on time once only that truck's delay is removed

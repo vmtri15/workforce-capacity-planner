@@ -1,0 +1,123 @@
+{
+  "evidence_status": "real_2023_order_lines_and_product_classes_with_assumed_lead_times_and_costs",
+  "train": [
+    "2023-01-05",
+    "2023-06-30"
+  ],
+  "test": [
+    "2023-07-01",
+    "2023-10-19"
+  ],
+  "items_stocked": 4863,
+  "test_orders": 11076,
+  "items_new_in_test": 517,
+  "test_lines_on_new_items": 0.0297,
+  "test_orders_with_a_new_item": 0.0572,
+  "why_lines_ran_short_flat_95": {
+    "short_lines": 4762,
+    "share_bigger_than_cover": 0.6107,
+    "share_never_sold_before": 0.274,
+    "share_no_safety_stock": 0.3639
+  },
+  "policies": [
+    {
+      "policy": "flat_80",
+      "orders": 11076,
+      "orders_delayed": 4562,
+      "share_orders_delayed": 0.4119,
+      "line_fill_rate": 0.7892,
+      "unit_fill_rate": 0.6638,
+      "average_units_held": 16143,
+      "average_stock_value": 564994,
+      "holding_cost_per_year": 141248
+    },
+    {
+      "policy": "flat_90",
+      "orders": 11076,
+      "orders_delayed": 3370,
+      "share_orders_delayed": 0.3043,
+      "line_fill_rate": 0.853,
+      "unit_fill_rate": 0.7536,
+      "average_units_held": 23276,
+      "average_stock_value": 814644,
+      "holding_cost_per_year": 203661
+    },
+    {
+      "policy": "flat_95",
+      "orders": 11076,
+      "orders_delayed": 2563,
+      "share_orders_delayed": 0.2314,
+      "line_fill_rate": 0.8918,
+      "unit_fill_rate": 0.8158,
+      "average_units_held": 30839,
+      "average_stock_value": 1079375,
+      "holding_cost_per_year": 269844
+    },
+    {
+      "policy": "flat_98",
+      "orders": 11076,
+      "orders_delayed": 1821,
+      "share_orders_delayed": 0.1644,
+      "line_fill_rate": 0.9281,
+      "unit_fill_rate": 0.8856,
+      "average_units_held": 52275,
+      "average_stock_value": 1829630,
+      "holding_cost_per_year": 457407
+    },
+    {
+      "policy": "flat_99",
+      "orders": 11076,
+      "orders_delayed": 1696,
+      "share_orders_delayed": 0.1531,
+      "line_fill_rate": 0.9323,
+      "unit_fill_rate": 0.891,
+      "average_units_held": 54263,
+      "average_stock_value": 1899202,
+      "holding_cost_per_year": 474800
+    },
+    {
+      "policy": "by_class",
+      "orders": 11076,
+      "orders_delayed": 2467,
+      "share_orders_delayed": 0.2227,
+      "line_fill_rate": 0.8967,
+      "unit_fill_rate": 0.8388,
+      "average_units_held": 37554,
+      "average_stock_value": 1314382,
+      "holding_cost_per_year": 328596
+    },
+    {
+      "policy": "by_class_lean",
+      "orders": 11076,
+      "orders_delayed": 3450,
+      "share_orders_delayed": 0.3115,
+      "line_fill_rate": 0.8462,
+      "unit_fill_rate": 0.7518,
+      "average_units_held": 22803,
+      "average_stock_value": 798114,
+      "holding_cost_per_year": 199528
+    },
+    {
+      "policy": "flat_95_reliable_supplier",
+      "orders": 11076,
+      "orders_delayed": 2569,
+      "share_orders_delayed": 0.2319,
+      "line_fill_rate": 0.8898,
+      "unit_fill_rate": 0.8129,
+      "average_units_held": 30868,
+      "average_stock_value": 1080397,
+      "holding_cost_per_year": 270099
+    },
+    {
+      "policy": "flat_95_monthly_replan",
+      "orders": 11076,
+      "orders_delayed": 2603,
+      "share_orders_delayed": 0.235,
+      "line_fill_rate": 0.8903,
+      "unit_fill_rate": 0.8178,
+      "average_units_held": 30848,
+      "average_stock_value": 1079665,
+      "holding_cost_per_year": 269916
+    }
+  ]
+}

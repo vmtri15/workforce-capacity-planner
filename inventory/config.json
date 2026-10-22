@@ -1,0 +1,59 @@
+{
+  "evidence_status": "real_2023_order_lines_and_product_classes_with_assumed_lead_times_and_costs",
+  "train": [
+    "2023-01-05",
+    "2023-06-30"
+  ],
+  "test": [
+    "2023-07-01",
+    "2023-10-19"
+  ],
+  "planning_lead_time_days": 8,
+  "actual_lead_time_days": {
+    "min": 5,
+    "max": 11,
+    "seed": 11
+  },
+  "cover_days": 14,
+  "unit_cost": 35.0,
+  "holding_cost_per_year": 0.25,
+  "flat_targets": [
+    0.8,
+    0.9,
+    0.95,
+    0.98,
+    0.99
+  ],
+  "class_policies": {
+    "by_class": {
+      "A": 0.99,
+      "B": 0.95,
+      "C": 0.9
+    },
+    "by_class_lean": {
+      "A": 0.95,
+      "B": 0.9,
+      "C": 0.8
+    }
+  },
+  "assumptions": [
+    "Order lines, products, sizes, dates and the ABC class of each product are real (footwear warehouse dataset, CC BY 4.0).",
+    "Each customer is served by one site, the same assignment the middle mile uses. Each site stocks each product and size it sells.",
+    "Policies are set on January to June demand and tested on July to October demand they never saw.",
+    "Reorder point: the target share of 8 day windows in January to June that a site and size could cover. Reorder up to that point plus 14 days of average demand.",
+    "One more policy keeps the 95% target but with a supplier that always delivers in exactly 8 days, to price supplier reliability.",
+    "Supplier lead times are assumed: 5 to 11 days, random per replenishment order, planned as 8.",
+    "One policy keeps the 95% target but resets every reorder point at the start of each month from the 180 days before it, so it follows changes in the product mix. It still never sees the month it is stocking for.",
+    "Unit cost is an assumed $35 per pair and holding cost 25% of value a year. Ordering costs are left out."
+  ],
+  "reliable_supplier": {
+    "policy": "flat_95_reliable_supplier",
+    "target": 0.95,
+    "lead_time_days": 8
+  },
+  "monthly_replan": {
+    "policy": "flat_95_monthly_replan",
+    "target": 0.95,
+    "history_days": 180
+  }
+}

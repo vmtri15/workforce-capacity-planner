@@ -79,6 +79,11 @@ def story():
                         if key in ('sites', 'sort_centers', 'stations')},
         },
         'ask': ask_story(),
+        'inventory': json.loads((ROOT / 'inventory/results/summary.json').read_text(encoding='utf-8')),
+        'last_mile': {
+            'summary': json.loads((ROOT / 'last_mile/results/summary.json').read_text(encoding='utf-8')),
+            'by_station': read_any_csv(ROOT / 'last_mile/results/fleet_by_station.csv'),
+        },
     }
 
 

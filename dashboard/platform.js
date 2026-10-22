@@ -7,7 +7,7 @@
   const money = portfolioMoney;
   const pct = (value, digits = 1) => `${(100 * Number(value)).toFixed(digits)}%`;
   const GROUPS = {home: 'OVERVIEW', recommendations: 'OVERVIEW', portfolio: '1 · FORECAST DEMAND', forecast: '1 · FORECAST DEMAND',
-    network: '2 · PLAN CAPACITY', builder: '2 · PLAN CAPACITY', middlemile: '3 · SHIP PARCELS', ask: 'TOOLS', tableau: 'TOOLS',
+    inventory: '2 · PLAN CAPACITY', lastmile: '3 · SHIP PARCELS', network: '2 · PLAN CAPACITY', builder: '2 · PLAN CAPACITY', middlemile: '3 · SHIP PARCELS', ask: 'TOOLS', tableau: 'TOOLS',
     methodology: 'TOOLS', about: 'ABOUT', overview: 'ARCHIVE', scenarios: 'ARCHIVE', evidence: 'ARCHIVE'};
   const MODEL_NAMES = {SameWeekdayLastWeek: 'Same day last week', Mean20Days: '20 day average', QuantileP90: 'P90 high case'};
   const SOURCE_NAMES = {oracle: 'Hindsight (a perfect forecast)', fixed_6_workers_ot2: '6 workers + overtime, fixed',
@@ -132,6 +132,9 @@
     const perHireParcel = (ten.labor_cost - six.labor_cost) / (six.late_with_truck_delays - ten.late_with_truck_delays);
     const warehouseShare = six.late_without_truck_delays / six.late_with_truck_delays;
     const round = (value, step) => Math.round(value / step) * step;
+    const invBy = Object.fromEntries(story.inventory.policies.map(r => [r.policy, r]));
+    const invBase = invBy.flat_95, invHigh = invBy.flat_99;
+    const lmPlan = story.last_mile.summary.plans.find(p => p.plan === 'affordable_6_workers');
     const cards = [
       ['save', money(round(saved, 100)), 'saved every 4 weeks',
        `Keep 6 workers and have temps on call for busy days, instead of hiring 4 more permanent workers. On real 2023 demand the lean plan still shipped ${pct(flexible.mean_on_time_share)} of orders on time, against ${pct(safe.mean_on_time_share)} for the bigger team.`,
@@ -145,10 +148,18 @@
       ['watch', `${affordable.stress_cases_passed} of ${affordable.stress_cases_tested}`, 'tough weeks the lean plan survives',
        'The lean plan works in a normal week but fails when workers are slower than usual or two people are out. Those are the two warning signs to watch.',
        'When you see them, call in temps right away.'],
+      ['stock', pct(story.inventory.why_lines_ran_short_flat_95.share_bigger_than_cover, 0), 'of stockouts start with one unusually big order',
+       `Holding more of everything barely helps: going from a 95% to a 99% stock target adds ${money(invHigh.average_stock_value - invBase.average_stock_value)} of stock and still leaves ${pct(invHigh.share_orders_delayed, 0)} of orders waiting. Most waits come from one big order for a slow size, or a brand-new item.`,
+       'Quote longer lead times for big orders; stock new items at launch.'],
+      ['carrier', `$${lmPlan.carrier_cost_per_parcel.toFixed(0)} vs $${lmPlan.cost_per_parcel.toFixed(0)}`, 'per order: parcel carrier vs own vans',
+       `Each station sees too few orders to fill a van: about ${lmPlan.orders_per_van_day} a day, when a van needs about ${Math.round(lmPlan.break_even_orders_per_van_day)} to pay off.`,
+       'Use a parcel carrier until a station fills a van.'],
     ];
     const icons = {save: '<path d="M12 3v18M17 7.5c0-1.9-2.2-3-5-3s-5 1.1-5 3 2.2 2.8 5 3.4 5 1.5 5 3.6-2.2 3-5 3-5-1.1-5-3"/>',
       forecast: '<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>', truck: '<path d="M1 6h13v10H1zM14 10h4l3 3v3h-7"/><circle cx="5" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
-      watch: '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h0"/>'};
+      watch: '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h0"/>',
+      stock: '<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+      carrier: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'};
     $('home-impact').innerHTML = cards.map(([kind, value, label, text, action]) => `<article class="impact-card ${kind}"><span class="impact-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons[kind]}</svg></span><strong>${value}</strong><small>${label}</small><p>${esc(text)}</p><p class="impact-action">${esc(action)}</p></article>`).join('');
   }
 
@@ -327,6 +338,66 @@
     });
   }
 
+  // ---- inventory ----
+  const POLICY_NAMES = {by_class: 'By class (A 99%, B 95%, C 90%)', by_class_lean: 'By class, lean (A 95%, B 90%, C 80%)',
+    flat_95_reliable_supplier: '95%, supplier always on time', flat_95_monthly_replan: '95%, re-planned every month'};
+  const policyName = p => POLICY_NAMES[p] || p.replace(/^flat_(\d+)$/, '$1% target for every item');
+
+  function renderInventory() {
+    const inv = story.inventory, rows = inv.policies, why = inv.why_lines_ran_short_flat_95;
+    const by = Object.fromEntries(rows.map(r => [r.policy, r]));
+    const base = by.flat_95, high = by.flat_99;
+    $('inv-metrics').innerHTML = [
+      metric('Orders waiting for stock', pct(base.share_orders_delayed, 0), 'With a 95% target, July to October', 'Orders where at least one item was out of stock at the site, so the order waited for the next delivery from the supplier.'),
+      metric('Stock held', money(base.average_stock_value), 'Average value across the 3 sites'),
+      metric('Cost to hold it', money(base.holding_cost_per_year), 'A year, at an assumed 25% of value'),
+      metric('Orders with a brand-new item', pct(inv.test_orders_with_a_new_item, 1), 'No history to stock from, so they always wait'),
+    ].join('');
+    const W = 900, H = 380, L = 70, R = 30, T = 24, B = 50;
+    const xs = rows.map(r => r.average_stock_value), ys = rows.map(r => r.share_orders_delayed);
+    const x0 = Math.min(...xs) * 0.9, x1 = Math.max(...xs) * 1.05, y1 = Math.max(...ys) * 1.1;
+    const X = v => L + (v - x0) / (x1 - x0) * (W - L - R), Y = v => H - B - v / y1 * (H - T - B);
+    const flat = rows.filter(r => /^flat_\d+$/.test(r.policy)).sort((a, b) => a.average_stock_value - b.average_stock_value);
+    const ticks = [0, .1, .2, .3, .4].filter(t => t <= y1);
+    const grid = ticks.map(t => `<line class="inv-axis" x1="${L}" x2="${W - R}" y1="${Y(t)}" y2="${Y(t)}"/><text class="inv-text" x="${L - 10}" y="${Y(t) + 4}" text-anchor="end">${pct(t, 0)}</text>`).join('');
+    const xt = [0.5e6, 1e6, 1.5e6, 2e6].filter(v => v > x0 && v < x1).map(v => `<text class="inv-text" x="${X(v)}" y="${H - B + 22}" text-anchor="middle">$${(v / 1e6).toFixed(1)}M</text>`).join('');
+    const line = `<polyline class="inv-line" points="${flat.map(r => `${X(r.average_stock_value)},${Y(r.share_orders_delayed)}`).join(' ')}"/>`;
+    const dots = rows.map((r, i) => `<circle class="inv-dot ${/^flat_\d+$/.test(r.policy) ? 'flat' : 'other'}" data-i="${i}" cx="${X(r.average_stock_value)}" cy="${Y(r.share_orders_delayed)}" r="8" tabindex="0"><title>${esc(policyName(r.policy))}</title></circle>`).join('');
+    const labels = flat.map(r => `<text class="inv-label" x="${X(r.average_stock_value) + 12}" y="${Y(r.share_orders_delayed) - 10}">${r.policy.replace('flat_', '')}%</text>`).join('');
+    $('inv-chart').innerHTML = `${grid}${xt}<text class="inv-text" x="${(L + W - R) / 2}" y="${H - 8}" text-anchor="middle">Average stock value</text><text class="inv-text" x="16" y="${T}" >Orders waiting</text>${line}${dots}${labels}`;
+    const show = i => { const r = rows[i]; $('inv-chart-detail').textContent = `${policyName(r.policy)}: ${pct(r.share_orders_delayed, 1)} of orders wait, ${money(r.average_stock_value)} of stock, ${money(r.holding_cost_per_year)} a year to hold`; };
+    $('inv-chart').querySelectorAll('.inv-dot').forEach(dot => ['mouseenter', 'focus', 'click'].forEach(type => dot.addEventListener(type, () => show(+dot.dataset.i))));
+    const reasons = [['One big order for a slow item', why.share_bigger_than_cover, 'A single order line larger than two weeks of that item\'s normal demand'],
+      ['Item had no safety stock', why.share_no_safety_stock, 'Sold so rarely before that history said hold none'],
+      ['Item never sold before July', why.share_never_sold_before, 'New products and sizes']];
+    $('inv-reasons').innerHTML = reasons.map(([label, share, note], i) => `<div class="leader-row${i === 0 ? ' best' : ''}" title="${esc(note)}"><span>${esc(label)}</span><div class="mix-track"><div class="mix-fill" style="width:${(100 * share).toFixed(1)}%"></div></div><strong>${pct(share, 0)}</strong></div>`).join('') +
+      `<p class="footnote">${num(why.short_lines)} lines ran short out of the July to October orders.</p>`;
+    $('inv-takeaway').textContent = `Raising the target from 95% to 99% cuts waiting orders from ${pct(base.share_orders_delayed, 0)} to ${pct(high.share_orders_delayed, 0)}, but adds ${money(high.average_stock_value - base.average_stock_value)} of stock (${money(high.holding_cost_per_year - base.holding_cost_per_year)} a year to hold). A perfectly reliable supplier (${pct(by.flat_95_reliable_supplier.share_orders_delayed, 0)}) and monthly re-planning (${pct(by.flat_95_monthly_replan.share_orders_delayed, 0)}) changed almost nothing. Most stockouts come from one big order for a slow size or a brand-new item, so quote a longer lead time for unusually large orders and stock new items at launch, instead of holding more of everything.`;
+    $('inv-table').innerHTML = rows.slice().sort((a, b) => a.average_stock_value - b.average_stock_value).map(r => `<tr class="${r.policy === 'flat_95' ? 'highlight' : ''}"><td>${esc(policyName(r.policy))}</td><td>${pct(r.share_orders_delayed, 1)}</td><td>${pct(r.line_fill_rate, 1)}</td><td>${money(r.average_stock_value)}</td><td>${money(r.holding_cost_per_year)}</td></tr>`).join('');
+  }
+
+  // ---- last mile ----
+  function renderLastMile(plan) {
+    const lm = story.last_mile, s = lm.summary.plans.find(p => p.plan === plan);
+    const other = lm.summary.plans.find(p => p.plan !== plan);
+    const stations = lm.by_station.filter(r => r.plan === plan);
+    const net = story.middle_mile.network;
+    $('lm-metrics').innerHTML = [
+      metric('Parcel carrier', `$${s.carrier_cost_per_parcel.toFixed(2)}`, 'Average cost per order, assumed price'),
+      metric('Running vans', `$${s.cost_per_parcel.toFixed(2)}`, 'Cheapest mix of owned and contracted vans', 'Owned vans are paid every day; contracted vans only on days they are called. The model picks the cheapest mix for each station.'),
+      metric('Orders per van a day', `${s.orders_per_van_day}`, `A van needs about ${Math.round(s.break_even_orders_per_van_day)} to beat the carrier`),
+      metric('Vans needed at peak', num(s.peak_vans), "Each station's busiest day, added up"),
+    ].join('');
+    const most = Math.max(...stations.flatMap(r => [+r.cost_per_parcel, r.carrier_cost / r.parcels]));
+    $('lm-bars').innerHTML = stations.sort((a, b) => b.parcels - a.parcels).map(r => {
+      const carrier = r.carrier_cost / r.parcels;
+      return `<div class="compare-row"><span>${esc(placeName(r.station, net.stations[r.station].name))}</span><div class="pair-bars"><i class="amber" style="width:${(100 * r.cost_per_parcel / most).toFixed(1)}%" title="Vans: $${(+r.cost_per_parcel).toFixed(2)}"></i><i class="teal" style="width:${(100 * carrier / most).toFixed(1)}%" title="Carrier: $${carrier.toFixed(2)}"></i></div><strong>$${(+r.cost_per_parcel).toFixed(0)} / $${carrier.toFixed(0)}</strong></div>`;
+    }).join('');
+    $('lm-table').innerHTML = stations.map(r => `<tr><td>${esc(placeName(r.station, net.stations[r.station].name))}</td><td>${num(r.parcels)}</td><td>${num(r.median_vans)}</td><td>${num(r.peak_vans)}</td><td>$${(+r.cost_per_parcel).toFixed(2)}</td><td>$${(r.carrier_cost / r.parcels).toFixed(2)}</td><td><i class="pill ${r.cheaper_option === 'carrier' ? 'good' : ''}">${esc(r.cheaper_option)}</i></td></tr>`).join('');
+    const six = lm.summary.plans.find(p => p.plan === 'affordable_6_workers'), ten = lm.summary.plans.find(p => p.plan === 'safe_10_workers');
+    $('lm-takeaway').textContent = `A parcel carrier costs about $${s.carrier_cost_per_parcel.toFixed(0)} an order; running vans costs about $${s.cost_per_parcel.toFixed(0)}, because each van carries only ${s.orders_per_van_day} orders a day and needs about ${Math.round(s.break_even_orders_per_van_day)} to break even. The carrier wins at all 6 stations, saving about ${money(s.cost - s.carrier_cost)} over the 10 months of 2023 data. Revisit vans when a station's volume roughly triples. If vans were used, the lean 6 worker plan would cost about ${money(six.cost - ten.cost)} more in vans than the 10 worker plan, because late parcels arrive in bunches; that is small next to the labor saving.`;
+  }
+
   // ---- Ask the planner on the public site ----
   function renderAskSaved() {
     const ask = story.ask;
@@ -351,6 +422,9 @@
       renderHome();
       renderForecast();
       renderMiddleMile('affordable_6_workers');
+      renderInventory();
+      renderLastMile('affordable_6_workers');
+      $('lm-plan').addEventListener('planchange', event => renderLastMile(event.detail));
       $('mm-plan').addEventListener('planchange', event => renderMiddleMile(event.detail));
       renderAskSaved();
     } catch (error) {

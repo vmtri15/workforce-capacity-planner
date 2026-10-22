@@ -7,6 +7,7 @@ This repo is a three part series on fulfillment operations:
 1. **Forecast demand.** How much work is coming? (`scripts/forecast_demand.py`, see Technical details)
 2. **Plan capacity.** Do the sites have enough workers? (this page)
 3. **Protect parcels on the middle mile.** When trucks run late, which parcels are at risk and what is the cheapest fix? ([middle_mile/](middle_mile/README.md)) With the 6 worker plan, trucks cause 242 late parcels; with 10 workers, only 32, because understaffing leaves no time to absorb a late truck.
+4. **Stock the shelves and reach the door.** How much inventory should each site hold, and should stations run vans or use a parcel carrier? ([inventory/](inventory/), [last_mile/](last_mile/), see Part 4 below)
 
 ## The answer
 
@@ -29,6 +30,36 @@ In plain English. Dollar amounts use the model's assumed wages, so they are plan
 | A better forecast is not worth buying | A perfect forecast would save only about **$260 every 4 weeks**. Daily orders swing too much to predict well (the best model still misses a day by 60%). | Spend on flexibility, not forecasting tools. |
 | Fix staffing before trucks | Fixing a risky truck costs about **$30 per late parcel saved**; hiring costs about $176. But **74% of late parcels** already leave the warehouse late. | Staff the warehouse first, then fix the riskiest trucks. |
 | Know the two warning signs | The lean plan survives only **12 of 36 tough weeks**. It fails when workers are slower than usual or two people are out. | When either shows up, call in temps right away. |
+
+## Part 4: inventory and last mile
+
+**Inventory** (`inventory/build_inventory.py`). Reorder points for every site, product and size are set on January to June 2023 order lines and tested on July to October, which they never saw. Order lines, products, sizes and ABC classes are real; supplier lead times (5 to 11 days), unit cost and holding cost are assumed.
+
+| Policy | Orders waiting for stock | Average stock value |
+| --- | ---: | ---: |
+| 80% target for every item | 41% | $565,000 |
+| 95% target for every item | 23% | $1,079,000 |
+| 99% target for every item | 15% | $1,899,000 |
+| By class (A 99%, B 95%, C 90%) | 22% | $1,314,000 |
+| 95%, supplier always on time | 23% | $1,080,000 |
+| 95%, re-planned every month | 24% | $1,080,000 |
+
+More stock helps with falling returns, and neither a perfectly reliable supplier nor monthly re-planning changes much. The lines that run short explain why: 61% are one order bigger than two weeks of that item's normal demand, 27% are items never sold before July, and 36% are slow sellers with no safety stock (a line can have more than one reason). So the cheaper fix is a quoted lead time for unusually large orders and stock for new items at launch, not more of everything. Higher targets for A items cost more than a flat 95% and delay about as many orders, because one missing slow seller holds up the whole order.
+
+**Last mile** (`last_mile/build_last_mile.py`). Every 2023 order comes out of the middle mile with its delivery station and day, for each staffing plan. Each station's day is routed with OR-Tools (van capacity, a 10 hour shift, fewest vans first), then the cheapest mix of owned and contracted vans is compared with a parcel carrier. Customer locations, van costs and the carrier price are assumed.
+
+| | 6 worker plan | 10 worker plan |
+| --- | ---: | ---: |
+| Running vans, cost per order | $40.75 | $40.11 |
+| Parcel carrier, cost per order | $15.29 | $15.29 |
+| Orders per van a day (break-even about 46) | 17.2 | 17.6 |
+
+A carrier is cheaper at all 6 stations: each van would carry about 17 orders a day and needs about 46 to pay off, so vans make sense only if a station's volume roughly triples. If vans were used, the lean plan would cost about $21,000 more in vans, because late parcels arrive in bunches.
+
+```bash
+.venv/bin/python inventory/build_inventory.py
+.venv/bin/python last_mile/build_last_mile.py
+```
 
 ## See it
 
