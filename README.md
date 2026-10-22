@@ -115,13 +115,64 @@ The result is a planning answer under stated assumptions. It does not prove how 
 
 Python, SQL (SQLite), Google OR Tools, Tableau Public, HTML and JavaScript, GitHub Pages.
 
-## Run it locally
+## Run it yourself
+
+The saved results are in the repo, so the site works as soon as you clone it. To rebuild everything from the public data, about 15 minutes in total:
+
+**1. Set up** (Python 3.12, on Mac, Linux or Windows).
 
 ```bash
-python3 scripts/serve_dashboard.py
+git clone https://github.com/vmtri15/workforce-capacity-planner.git
+cd workforce-capacity-planner
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
 ```
 
-Then open http://127.0.0.1:8765. Everything below is technical detail for rebuilding the data and rerunning the models.
+On Windows, use `.venv\Scripts\python` wherever these steps say `.venv/bin/python`.
+
+**2. Get free API keys** and put them in a file called `.env` in the project folder, one per line (`NAME=your-key`). The file is ignored by git, so the keys never leave your computer. Without a key, its step is skipped and the saved results for it are kept.
+
+| Key | Used for | Sign up |
+| --- | --- | --- |
+| `CENSUS_API_KEY` | Warehouse employment by county, tract populations | https://api.census.gov/data/key_signup.html |
+| `BLS_API_KEY` | Pay, employer costs, temp pay, quits | https://data.bls.gov/registrationEngine/ |
+| `NOAA_TOKEN` | 2023 daily weather | https://www.ncdc.noaa.gov/cdo-web/token |
+| `FRED_API_KEY` | Diesel prices, retail inventories, context | https://fredaccount.stlouisfed.org/apikey |
+| `ORS_API_KEY` | Delivery areas, road distances, truck routes | https://openrouteservice.org/dev/#/signup |
+| `GEMINI_API_KEY` | Only for live Ask the Planner questions | https://aistudio.google.com/apikey |
+
+**3. Download the public data** into `data/raw/` (also ignored by git). One command fetches the 2023 footwear orders (Mendeley Data, CC BY 4.0), UCI Online Retail II, BLS QCEW, the Census tract file and everything behind the keys above. Files you already have are kept.
+
+```bash
+.venv/bin/python scripts/fetch_public_data.py
+```
+
+**4. Rebuild and rerun, in this order.** Each step reads the one before it.
+
+```bash
+.venv/bin/python scripts/build_database.py
+.venv/bin/python scripts/run_planning_engine.py
+.venv/bin/python scripts/build_2023_network_capacity.py
+.venv/bin/python scripts/forecast_demand.py
+.venv/bin/python scripts/forecast_staffing_link.py
+.venv/bin/python middle_mile/connected/build_connected.py
+.venv/bin/python inventory/build_inventory.py
+.venv/bin/python last_mile/build_last_mile.py
+PYTHONPATH=scripts .venv/bin/python scripts/real_cost_check.py
+.venv/bin/python scripts/build_decision_answer.py
+.venv/bin/python scripts/build_static_dashboard.py
+```
+
+This chain was tested on a fresh clone built only from the downloaded data: every saved result came out identical (only a timestamp changed).
+
+**5. Open the site and run the tests.**
+
+```bash
+.venv/bin/python scripts/serve_dashboard.py
+PYTHONPATH=src .venv/bin/python -m unittest discover -s tests
+```
+
+The site is then at http://127.0.0.1:8765, with live Ask the Planner questions if `GEMINI_API_KEY` is set. Optional extras (the 5 year forecast method check, the 2011 CP-SAT model, the Ask the Planner evaluation) are covered under Technical details below.
 
 ## Ask the Planner: questions in plain English
 

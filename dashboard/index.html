@@ -128,6 +128,19 @@
     <section class="analysis-panel"><h2>Honest limits</h2><p>Orders are real; wages, productivity, the truck network and delays are modeled. Every page labels which is which, and the results are a planning answer, not proof of real savings.</p><button type="button" data-go="methodology">See the methodology</button></section>
   </div>
   <section class="analysis-panel"><h2>The series</h2><div class="series-links"><button type="button" data-go="forecast"><b>Part 1</b> Forecast demand<span>7 models backtested on 2023 orders, a P90 high case, and what forecast error costs</span></button><button type="button" data-go="builder"><b>Part 2</b> Plan warehouse capacity<span>Staffing simulation, 36 stress tests and a CP-SAT optimizer</span></button><button type="button" data-go="middlemile"><b>Part 3</b> Ship parcels (middle mile)<span>Trucks, cutoffs and late parcels, connected to the staffing plan</span></button><button type="button" data-go="inventory"><b>Part 4a</b> Inventory<span>How much stock each site needs, and why orders still wait</span></button><button type="button" data-go="lastmile"><b>Part 4b</b> Last mile<span>Vans or a parcel carrier from the stations to the door</span></button></div></section>
+  <section class="analysis-panel run-yourself">
+    <div class="section-heading"><div><h2>Run it yourself</h2><p>Every number on this site can be rebuilt from free public data in about 15 minutes. Tested on a fresh copy: every saved result came out identical.</p></div>
+      <a class="button-link" href="https://github.com/vmtri15/workforce-capacity-planner#run-it-yourself" target="_blank" rel="noopener noreferrer">Full steps on GitHub</a></div>
+    <ol class="run-steps">
+      <li><strong>Set up.</strong> Clone the repository and install the Python packages (Python 3.12).<pre>git clone https://github.com/vmtri15/workforce-capacity-planner.git
+cd workforce-capacity-planner
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt</pre></li>
+      <li><strong>Get free API keys</strong> from Census, BLS, NOAA, FRED and OpenRouteService, and put them in a <code>.env</code> file. Keys stay on your computer; a missing key only skips its step.</li>
+      <li><strong>Download the public data</strong> in one step: the 2023 orders, retail history, labor data, census tracts, weather and roads.<pre>.venv/bin/python scripts/fetch_public_data.py</pre></li>
+      <li><strong>Rebuild and rerun</strong> the database and every model in order, then open the site locally. The exact commands are in the README.</li>
+    </ol>
+  </section>
 </section>
 <section id="inventory" hidden>
   <div id="inv-metrics" class="metrics"></div>
