@@ -1,6 +1,7 @@
 import random
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,6 +34,14 @@ class LastMileTest(unittest.TestCase):
         self.assertEqual(a, b)
         distance = lm.mm.haversine_km(station['lat'], station['lng'], a[0], a[1])
         self.assertLessEqual(distance, lm.CONFIG['delivery_radius_km']['chicago'] + 0.5)
+
+    def test_fuel_cost_uses_that_weeks_diesel_price(self):
+        prices = lm.pd.Series([4.0, 5.0], index=lm.pd.to_datetime(['2023-01-02', '2023-01-09']))
+        with mock.patch.object(lm, '_diesel', prices):
+            per_km = lambda price: lm.CONFIG['fuel_gallons_per_km'] * price + lm.CONFIG['other_cost_per_km']
+            self.assertAlmostEqual(lm.km_cost('2023-01-05'), per_km(4.0))  # the week starting Jan 2
+            self.assertAlmostEqual(lm.km_cost('2023-01-10'), per_km(5.0))
+            self.assertAlmostEqual(lm.km_cost(), per_km(4.5))  # 2023 average
 
     def test_fleet_choice_is_never_worse_than_owning_for_peak_or_contracting_everything(self):
         fleet = lm.best_fleet([0, 1, 2, 2, 5, 1, 0], km_cost=100.0)

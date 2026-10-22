@@ -62,6 +62,13 @@ def ask_story():
             'accuracy': summary['accuracy_answerable'], 'examples': examples}
 
 
+def fred_story():
+    """FRED series without their raw values, plus the demand lead check."""
+    fred = json.loads((ROOT / 'data/processed/fred_benchmarks.json').read_text(encoding='utf-8'))
+    return dict(series={k: {f: v for f, v in s.items() if f != 'values'} for k, s in fred['series'].items()},
+                demand_vs_shoe_stores=fred['demand_vs_shoe_stores'])
+
+
 def story():
     """The three part series in one bundle: forecast, staffing link and middle mile."""
     return {
@@ -79,6 +86,12 @@ def story():
                         if key in ('sites', 'sort_centers', 'stations')},
         },
         'ask': ask_story(),
+        'checks': {
+            'bls': json.loads((ROOT / 'data/processed/bls_2023_benchmarks.json').read_text(encoding='utf-8'))['checks'],
+            'road_check': read_any_csv(MIDDLE_MILE / 'road_check.csv'),
+            'fred': fred_story(),
+            'real_cost': read_any_csv(ROOT / 'data/processed/real_cost_check.csv'),
+        },
         'inventory': json.loads((ROOT / 'inventory/results/summary.json').read_text(encoding='utf-8')),
         'last_mile': {
             'summary': json.loads((ROOT / 'last_mile/results/summary.json').read_text(encoding='utf-8')),

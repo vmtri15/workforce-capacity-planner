@@ -139,7 +139,7 @@
     </section>
     <section class="analysis-panel wide">
       <div class="section-heading"><div><h2>Every policy tested</h2><p>Real 2023 order lines; lead times, unit cost and holding cost are assumed</p></div></div>
-      <div class="table-wrap"><table><thead><tr><th>Policy</th><th>Orders waiting</th><th>Lines shipped from stock</th><th>Average stock value</th><th>Holding cost a year</th></tr></thead><tbody id="inv-table"></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Policy</th><th>Orders waiting</th><th>Lines shipped from stock</th><th>Months of stock</th><th>Average stock value</th><th>Holding cost a year</th></tr></thead><tbody id="inv-table"></tbody></table></div>
     </section>
   </div>
 </section>
@@ -149,7 +149,7 @@
       <button type="button" role="radio" aria-checked="true" data-plan="affordable_6_workers">6 workers + overtime</button>
       <button type="button" role="radio" aria-checked="false" data-plan="safe_10_workers">10 workers + overtime</button>
     </div>
-    <div class="network-actions"><span>Real 2023 orders from the middle mile · Assumed customer locations, vans and prices</span></div>
+    <div class="network-actions"><span>Real 2023 orders from the middle mile · Customers at Census tract centers · Assumed vans and prices</span></div>
   </div>
   <div id="lm-metrics" class="metrics"></div>
   <div class="portfolio-grid">
@@ -202,6 +202,10 @@
     <article><span>03</span><h3>Service measure</h3><p>A case meets the target when at least 95% of units are completed within two operating days. Later-period validation is shown separately from the full replay.</p></article>
     <article><span>04</span><h3>Decision rule</h3><p>Compare feasible policies on service, total modeled cost, backlog, and stress behavior. A passing case is a candidate for validation, not a prescribed headcount.</p></article>
   </div>
+  <section class="analysis-panel">
+    <div class="section-heading"><div><h2>Checked against real data</h2><p>Free public data used to test or replace the model's assumptions</p></div></div>
+    <div class="table-wrap"><table class="checks-table"><thead><tr><th>Source</th><th>What it checks</th><th>What we found</th></tr></thead><tbody id="real-checks"></tbody></table></div>
+  </section>
   <section class="analysis-panel lineage-panel"><h2>Evidence boundaries</h2><div class="lineage"><div><strong>Observed</strong><p>Order dates, order-size segments, units, and order counts from the retained source extract.</p></div><div><strong>Modeled</strong><p>Completion timing, backlog, policy cost, staffing availability, productivity, absences, and lead times.</p></div><div><strong>External</strong><p>O*NET 31.0 occupational evidence used to describe role requirements, not employee performance.</p></div></div></section>
 </section>
 <section id="overview" hidden><div class="filters"><label>Site<select id="site"><option value="all">All sites</option></select></label><label>Productivity<select id="case"><option value="low">Low</option><option value="base" selected>Base</option><option value="high">High</option></select></label><label>From<input id="start" type="date"></label><label>Through<input id="end" type="date"></label><button id="reset">Reset filters</button></div><p id="range-error" role="alert" hidden>Select a start date on or before the end date.</p><div id="metrics" class="metrics"></div><section class="chart-section"><div class="section-heading"><div><h2>Daily productive hours</h2><p>Picking and packing &middot; Fixed staffing baseline</p></div><div class="legend"><span><i class="teal"></i>Required</span><span><i class="blue"></i>Available</span></div></div><canvas id="chart" role="img" aria-label="Daily required and available productive hours"></canvas><p id="chart-detail" class="chart-detail"> </p></section><section><div class="section-heading"><h2>Site performance</h2><span id="period"></span></div><div class="table-wrap"><table><thead><tr><th>Modeled site</th><th>Daily positions</th><th>Required hours</th><th>Gap hours</th><th>Target met*</th><th>Direct wage cost</th></tr></thead><tbody id="sites"></tbody></table></div><p class="footnote">* Share of role-site-days meeting the 95% completion target. Source-missing dates are modeled as zero demand. Wage cost covers direct roles only.</p></section><details><summary>Daily capacity records</summary><div class="table-wrap"><table><thead><tr><th>Date</th><th>Site</th><th>Role</th><th>Required h</th><th>Available h</th><th>Gap h</th></tr></thead><tbody id="daily"></tbody></table></div></details></section>

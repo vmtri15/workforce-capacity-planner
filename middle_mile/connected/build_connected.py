@@ -96,19 +96,34 @@ def run_staffing(orders, plan):
     return fifo_completion(orders['units'].to_numpy(), done_by_day), labor, summary['on_time_unit_share']
 
 
+TRUCK_ROADS = REPO / 'data/raw/ors/truck_lanes.json'  # truck drive times, from last_mile/fetch_road_matrix.py
+
+
 class Network:
     def __init__(self, config=CONFIG):
         self.c = config
         self.places = {**config['sites'], **config['sort_centers'], **config['stations']}
         self.hours = {}
+        self.roads = None
+        if TRUCK_ROADS.exists():
+            r = json.loads(TRUCK_ROADS.read_text())
+            i = {p: n for n, p in enumerate(r['places'])}
+            self.roads = {(a, b): r['minutes'][i[a]][i[b]] / 60 for a in i for b in i if r['minutes'][i[a]][i[b]] is not None}
 
     def km(self, a, b):
         p, q = self.places[a], self.places[b]
         return float(haversine_km(p['lat'], p['lng'], q['lat'], q['lng']))
 
+    def drive_hours(self, a, b):
+        """Truck drive time: OpenRouteService's truck route (no traffic) when fetched, otherwise straight line at the
+        configured speed. The delivery promise still uses straight line distance, like a carrier's zone chart."""
+        if self.roads and (a, b) in self.roads:
+            return self.roads[a, b]
+        return self.km(a, b) / self.c['truck_speed_kmh']
+
     def lane_time(self, lane):
         if lane not in self.hours:
-            self.hours[lane] = (self.c['loading_hours'] + self.km(*lane) / self.c['truck_speed_kmh']) * HOUR
+            self.hours[lane] = (self.c['loading_hours'] + self.drive_hours(*lane)) * HOUR
         return self.hours[lane]
 
     def promise(self, created, site, station):
@@ -131,15 +146,37 @@ class Network:
         return delivered, [(leg1, dep1), (leg2, dep2)]
 
 
-def truck_delay(config=CONFIG):
-    """A random arrival delay in hours for any truck, the same every run for the same truck."""
+WEATHER = REPO / 'data/raw/noaa/ghcnd_2023.csv'  # from fetch_noaa_weather.py
+
+
+def weather_slowdown(config=CONFIG):
+    """Share of driving speed lost at each place on each day, from NOAA snow and rain. Empty without the file."""
+    if not WEATHER.exists():
+        return {}
+    w, cut = config['weather'], config['weather']['speed_reduction']
+    days = pd.read_csv(WEATHER).pivot_table(index=['station', 'date'], columns='datatype', values='value').fillna(0)
+    by_station = {}
+    for (station, day), r in days.iterrows():
+        loss = (cut['heavy_snow'] if r.get('SNOW', 0) >= w['heavy_snow_mm'] else cut['light_snow'] if r.get('SNOW', 0) > 0
+                else cut['heavy_rain'] if r.get('PRCP', 0) >= w['heavy_rain_mm'] else 0.0)
+        by_station[station, pd.Timestamp(day).date()] = loss
+    return {(place, day): loss for place, station in w['stations'].items() for (s, day), loss in by_station.items() if s == station}
+
+
+def truck_delay(config=CONFIG, net=None, weather=True):
+    """Arrival delay in hours for any truck, the same every run for the same truck: a random delay, plus the extra
+    driving time when snow or heavy rain at either end of the lane slows the trucks that day."""
     d, cache = config['delays'], {}
+    slowdown = weather_slowdown(config) if weather and net is not None else {}
 
     def delay(truck):
         if truck not in cache:
             (a, b), dep = truck
             seed = int(hashlib.sha256(f"{d['seed']}|{a}|{b}|{dep.isoformat()}".encode()).hexdigest()[:12], 16)
             cache[truck] = d['median_hours'] * float(np.exp(d['sigma'] * np.random.default_rng(seed).standard_normal()))
+            loss = max(slowdown.get((a, dep.date()), 0.0), slowdown.get((b, dep.date()), 0.0))
+            if loss:
+                cache[truck] += net.drive_hours(a, b) * (1 / (1 - loss) - 1)
         return cache[truck]
     return delay
 
@@ -159,8 +196,10 @@ def evaluate_plan(name, plan, orders, net):
 
     base = [net.deliver(r, s, t) for r, s, t in zip(o['ready'], o['site'], o['station'])]
     o['late_without_truck_delays'] = [d > p for (d, _), p in zip(base, o['promise'])]
-    delay = truck_delay(net.c)
+    delay = truck_delay(net.c, net)
     delayed = [net.deliver(r, s, t, delay) for r, s, t in zip(o['ready'], o['site'], o['station'])]
+    calm = truck_delay(net.c, net, weather=False)  # the same random delays without the weather, to measure its share
+    late_if_calm = [net.deliver(r, s, t, calm)[0] > p for r, s, t, p in zip(o['ready'], o['site'], o['station'], o['promise'])]
     o['late_with_truck_delays'] = [d > p for (d, _), p in zip(delayed, o['promise'])]
     o['delivered'] = [d for d, _ in delayed]  # the day the station hands the parcel to a van (last_mile/ uses it)
     truck_late = o['late_with_truck_delays'] & ~o['late_without_truck_delays']
@@ -199,7 +238,9 @@ def evaluate_plan(name, plan, orders, net):
                    orders=len(orders), unfinished_orders=unfinished,
                    late_without_truck_delays=int(o['late_without_truck_delays'].sum()),
                    late_with_truck_delays=int(o['late_with_truck_delays'].sum()),
-                   late_caused_by_trucks=int(truck_late.sum()), at_risk_trucks=len(trucks),
+                   late_caused_by_trucks=int(truck_late.sum()),
+                   late_caused_by_weather=int((o['late_with_truck_delays'] & ~pd.Series(late_if_calm)).sum()),
+                   at_risk_trucks=len(trucks),
                    late_after_truck_recovery=int(sum(recovered)),
                    truck_recovery_cost=round(sum(r['cost'] for r in trucks if r['best_option']), 2))
     return summary, pd.DataFrame(trucks), o
@@ -229,6 +270,16 @@ def main():
     routes['km'] = [round(net.km(a, b)) for a, b in zip(routes['site'], routes['station'])]
     routes['promise_transit_days'] = [1 if k <= CONFIG['promise']['next_day_within_km'] else 2 for k in routes['km']]
     routes.to_csv(OUT / 'routes.csv', index=False)
+    lanes_file = REPO / 'data/raw/ors/truck_lanes.json'  # from last_mile/fetch_road_matrix.py
+    if lanes_file.exists():  # the assumed lane drive times next to OpenRouteService truck routes (no traffic)
+        road = json.loads(lanes_file.read_text())
+        i = {p: n for n, p in enumerate(road['places'])}
+        lanes = sorted({(s, sc) for s in CONFIG['sites'] for sc in CONFIG['sort_centers']}
+                       | {(v['sort_center'], k) for k, v in CONFIG['stations'].items()})
+        pd.DataFrame([dict(lane=f'{a}>{b}', straight_km=round(net.km(a, b)), road_km=round(road['km'][i[a]][i[b]]),
+                           straight_line_drive_hours=round(net.km(a, b) / CONFIG['truck_speed_kmh'], 2),
+                           road_truck_hours=round(road['minutes'][i[a]][i[b]] / 60, 2)) for a, b in lanes]
+                     ).to_csv(OUT / 'road_check.csv', index=False)
     (OUT / 'summary.json').write_text(json.dumps(dict(evidence_status=CONFIG['evidence_status'], plans=rows), indent=2, default=str) + '\n')
     pd.set_option('display.width', 220)
     print(table.T.to_string())

@@ -132,13 +132,15 @@
     const perHireParcel = (ten.labor_cost - six.labor_cost) / (six.late_with_truck_delays - ten.late_with_truck_delays);
     const warehouseShare = six.late_without_truck_delays / six.late_with_truck_delays;
     const round = (value, step) => Math.round(value / step) * step;
+    const real = Object.fromEntries(story.checks.real_cost.map(r => [r.plan, +r.mean_cost_real]));
+    const realSaved = real.fixed_10_workers_ot2 - real.fixed_6_workers_ot2_temps4;
     const invBy = Object.fromEntries(story.inventory.policies.map(r => [r.policy, r]));
     const invBase = invBy.flat_95, invHigh = invBy.flat_99;
     const lmPlan = story.last_mile.summary.plans.find(p => p.plan === 'affordable_6_workers');
     const cards = [
       ['save', money(round(saved, 100)), 'saved every 4 weeks',
        `Keep 6 workers and have temps on call for busy days, instead of hiring 4 more permanent workers. On real 2023 demand the lean plan still shipped ${pct(flexible.mean_on_time_share)} of orders on time, against ${pct(safe.mean_on_time_share)} for the bigger team.`,
-       `That is ${pct(saved / safe.mean_total_cost, 0)} cheaper, or roughly ${money(round(saved * 13, 10000))} a year.`],
+       `That is ${pct(saved / safe.mean_total_cost, 0)} cheaper, roughly ${money(round(saved * 13, 10000))} a year. At real 2023 labor costs (BLS) the gap grows to about ${money(round(realSaved, 100))} every 4 weeks.`],
       ['forecast', money(round(Math.max(perfectGain, 0), 10)), 'extra saving from a perfect forecast, per 4 weeks',
        `Even knowing next month's orders in advance would barely change the bill. Daily orders swing too much to predict well, so money spent on better forecasting tools would not pay back.`,
        'Spend on flexibility (temps, overtime) instead.'],
@@ -271,7 +273,7 @@
     $('mm-trucks').innerHTML = trucks.slice(0, 12).map(row => `<tr><td>${esc(lane(row.lane))}</td><td>${esc(row.departure.slice(0, 16))}</td><td>${Number(row.delay_hours).toFixed(1)} h</td><td>${num(row.parcels_on_board)}</td><td><strong>${num(row.late_parcels_caused)}</strong></td><td><i class="pill">${esc(row.best_option)}</i></td><td>${money(row.cost)}</td></tr>`).join('');
     renderMap(plan);
     const six = plans.affordable_6_workers, ten = plans.safe_10_workers;
-    $('mm-takeaway').textContent = `Most late parcels with 6 workers (${num(six.late_without_truck_delays)} of ${num(six.late_with_truck_delays)}) leave the warehouse late, so no truck fix can save them. Trucks add ${num(six.late_caused_by_trucks)} more, and recovering them costs ${money(six.truck_recovery_cost)}, a small fraction of the ${money(ten.labor_cost - six.labor_cost)} labor gap between the plans. With 10 workers only ${num(ten.late_with_truck_delays)} parcels are late, all from trucks.`;
+    $('mm-takeaway').textContent = `Most late parcels with 6 workers (${num(six.late_without_truck_delays)} of ${num(six.late_with_truck_delays)}) leave the warehouse late, so no truck fix can save them. Trucks add ${num(six.late_caused_by_trucks)} more, and recovering them costs ${money(six.truck_recovery_cost)}, a small fraction of the ${money(ten.labor_cost - six.labor_cost)} labor gap between the plans. With 10 workers only ${num(ten.late_with_truck_delays)} parcels are late, all from trucks, and real 2023 snow and heavy rain cause ${num(ten.late_caused_by_weather)} of them (${num(six.late_caused_by_weather)} with 6 workers).`;
   }
 
   function renderMap(plan) {
@@ -349,7 +351,7 @@
     const base = by.flat_95, high = by.flat_99;
     $('inv-metrics').innerHTML = [
       metric('Orders waiting for stock', pct(base.share_orders_delayed, 0), 'With a 95% target, July to October', 'Orders where at least one item was out of stock at the site, so the order waited for the next delivery from the supplier.'),
-      metric('Stock held', money(base.average_stock_value), 'Average value across the 3 sites'),
+      metric('Stock held', money(base.average_stock_value), `${base.months_of_supply.toFixed(1)} months of sales; US retailers held ${story.checks.fred.series.RETAILIRSA.average_2023.toFixed(1)} in 2023`, 'Months of stock: average stock divided by a month of sales. The US figure is the FRED retail inventories to sales ratio.'),
       metric('Cost to hold it', money(base.holding_cost_per_year), 'A year, at an assumed 25% of value'),
       metric('Orders with a brand-new item', pct(inv.test_orders_with_a_new_item, 1), 'No history to stock from, so they always wait'),
     ].join('');
@@ -373,7 +375,7 @@
     $('inv-reasons').innerHTML = reasons.map(([label, share, note], i) => `<div class="leader-row${i === 0 ? ' best' : ''}" title="${esc(note)}"><span>${esc(label)}</span><div class="mix-track"><div class="mix-fill" style="width:${(100 * share).toFixed(1)}%"></div></div><strong>${pct(share, 0)}</strong></div>`).join('') +
       `<p class="footnote">${num(why.short_lines)} lines ran short out of the July to October orders.</p>`;
     $('inv-takeaway').textContent = `Raising the target from 95% to 99% cuts waiting orders from ${pct(base.share_orders_delayed, 0)} to ${pct(high.share_orders_delayed, 0)}, but adds ${money(high.average_stock_value - base.average_stock_value)} of stock (${money(high.holding_cost_per_year - base.holding_cost_per_year)} a year to hold). A perfectly reliable supplier (${pct(by.flat_95_reliable_supplier.share_orders_delayed, 0)}) and monthly re-planning (${pct(by.flat_95_monthly_replan.share_orders_delayed, 0)}) changed almost nothing. Most stockouts come from one big order for a slow size or a brand-new item, so quote a longer lead time for unusually large orders and stock new items at launch, instead of holding more of everything.`;
-    $('inv-table').innerHTML = rows.slice().sort((a, b) => a.average_stock_value - b.average_stock_value).map(r => `<tr class="${r.policy === 'flat_95' ? 'highlight' : ''}"><td>${esc(policyName(r.policy))}</td><td>${pct(r.share_orders_delayed, 1)}</td><td>${pct(r.line_fill_rate, 1)}</td><td>${money(r.average_stock_value)}</td><td>${money(r.holding_cost_per_year)}</td></tr>`).join('');
+    $('inv-table').innerHTML = rows.slice().sort((a, b) => a.average_stock_value - b.average_stock_value).map(r => `<tr class="${r.policy === 'flat_95' ? 'highlight' : ''}"><td>${esc(policyName(r.policy))}</td><td>${pct(r.share_orders_delayed, 1)}</td><td>${pct(r.line_fill_rate, 1)}</td><td>${r.months_of_supply.toFixed(2)}</td><td>${money(r.average_stock_value)}</td><td>${money(r.holding_cost_per_year)}</td></tr>`).join('');
   }
 
   // ---- last mile ----
@@ -395,7 +397,33 @@
     }).join('');
     $('lm-table').innerHTML = stations.map(r => `<tr><td>${esc(placeName(r.station, net.stations[r.station].name))}</td><td>${num(r.parcels)}</td><td>${num(r.median_vans)}</td><td>${num(r.peak_vans)}</td><td>$${(+r.cost_per_parcel).toFixed(2)}</td><td>$${(r.carrier_cost / r.parcels).toFixed(2)}</td><td><i class="pill ${r.cheaper_option === 'carrier' ? 'good' : ''}">${esc(r.cheaper_option)}</i></td></tr>`).join('');
     const six = lm.summary.plans.find(p => p.plan === 'affordable_6_workers'), ten = lm.summary.plans.find(p => p.plan === 'safe_10_workers');
-    $('lm-takeaway').textContent = `A parcel carrier costs about $${s.carrier_cost_per_parcel.toFixed(0)} an order; running vans costs about $${s.cost_per_parcel.toFixed(0)}, because each van carries only ${s.orders_per_van_day} orders a day and needs about ${Math.round(s.break_even_orders_per_van_day)} to break even. The carrier wins at all 6 stations, saving about ${money(s.cost - s.carrier_cost)} over the 10 months of 2023 data. Revisit vans when a station's volume roughly triples. If vans were used, the lean 6 worker plan would cost about ${money(six.cost - ten.cost)} more in vans than the 10 worker plan, because late parcels arrive in bunches; that is small next to the labor saving.`;
+    $('lm-takeaway').textContent = `A parcel carrier costs about $${s.carrier_cost_per_parcel.toFixed(0)} an order; running vans costs about $${s.cost_per_parcel.toFixed(0)}, because each van carries only ${s.orders_per_van_day} orders a day and needs about ${Math.round(s.break_even_orders_per_van_day)} to break even. The carrier wins at all 6 stations, saving about ${money(s.cost - s.carrier_cost)} over the 10 months of 2023 data. Revisit vans when a station's volume grows about ${(s.break_even_orders_per_van_day / s.orders_per_van_day).toFixed(1)} times. If vans were used, the lean 6 worker plan would cost about ${money(six.cost - ten.cost)} more in vans than the 10 worker plan, because late parcels arrive in bunches; that is small next to the labor saving.`;
+  }
+
+  function renderChecks() {
+    const bls = story.checks.bls, lanes = story.checks.road_check, roads = story.last_mile.summary.roads;
+    const rc = Object.fromEntries(story.checks.real_cost.map(r => [r.plan, r]));
+    const realGap = rc.fixed_10_workers_ot2.mean_cost_real - rc.fixed_6_workers_ot2_temps4.mean_cost_real;
+    const assumedGap = rc.fixed_10_workers_ot2.mean_cost_assumed - rc.fixed_6_workers_ot2_temps4.mean_cost_assumed;
+    const plans = Object.fromEntries(story.middle_mile.summary.plans.map(p => [p.plan, p]));
+    const six = plans.affordable_6_workers, ten = plans.safe_10_workers;
+    const indy = lanes.find(l => l.lane === 'chicago_sc>indianapolis');
+    const rows = [
+      ['U.S. Census (Gazetteer and ACS)', 'Where last-mile customers are', 'Customers now sit at real census tract centers inside each station\'s 45 minute drive area (OpenRouteService), picked with odds matching each tract\'s population, instead of random points (some of which landed in Lake Michigan). A parcel carrier still beats vans at every station.'],
+      ['Bureau of Labor Statistics (CES, JOLTS, ECEC)', 'Pay, employer costs, temp rates and turnover', `Warehouse workers earned $${bls.real_production_worker_hourly_earnings.toFixed(2)} an hour in 2023; with benefits and payroll taxes (x${bls.employer_cost_multiplier.toFixed(2)}) they cost employers about $${bls.real_regular_employer_cost.toFixed(2)}, not the $${bls.assumed_regular_hourly_cost} assumed. Temps earned $${bls.real_temp_pay.toFixed(2)}, about $${bls.real_temp_bill_rate.toFixed(2)} billed with an assumed ${bls.assumed_agency_markup}x agency markup. Rerun at those costs, temps on call beat 10 workers by ${money(realGap)} every 4 weeks, up from ${money(assumedGap)}. A 2.6% monthly quit rate means a team of ${bls.expected_quits_per_year_in_a_team_of} loses about ${Math.round(bls.expected_quits_per_year)} people a year.`],
+      ['NOAA Climate Data Online', 'Truck delays', `Trucks are now slowed by real 2023 snow and heavy rain at both ends of each lane. Weather causes ${num(six.late_caused_by_weather)} of ${num(six.late_caused_by_trucks)} truck-caused late parcels with 6 workers, and ${num(ten.late_caused_by_weather)} of ${num(ten.late_caused_by_trucks)} with 10.`],
+      ['OpenRouteService', 'Road distances and drive times', `Van roads run ${roads.median_road_to_straight} times the straight line, close to the 1.3 assumed, and vans now route on real roads. Trucks now drive real truck routes too: Chicago to Indianapolis takes ${(+indy.road_truck_hours).toFixed(1)} hours, not the ${(+indy.straight_line_drive_hours).toFixed(1)} a straight line suggests, leaving minutes before the station cutoff; that one lane causes most truck lateness.`],
+    ];
+    const f = story.checks.fred.series, lead = story.checks.fred.demand_vs_shoe_stores, fuel = story.last_mile.summary.fuel;
+    const inv95 = story.inventory.policies.find(p => p.policy === 'flat_95'), inv99 = story.inventory.policies.find(p => p.policy === 'flat_99');
+    const change = id => `${f[id].change_2023_vs_2022 >= 0 ? '+' : ''}${pct(f[id].change_2023_vs_2022, 1)}`;
+    rows.push(
+      ['FRED: diesel price', 'Van fuel cost', `US diesel averaged $${f.GASDESW.average_2023.toFixed(2)} a gallon in 2023 (${change('GASDESW')} vs 2022). Vans now pay that week's real price: about $${fuel.average_cost_per_km_2023.toFixed(2)} a km with wear, not the $${fuel.assumed_cost_per_km_before.toFixed(2)} assumed. Vans get cheaper, but a carrier still wins.`],
+      ['FRED: retail inventories to sales', 'How much stock is sensible', `US retailers held ${f.RETAILIRSA.average_2023.toFixed(2)} months of sales in stock in 2023. A 95% target holds ${inv95.months_of_supply.toFixed(2)} months, about the same; a 99% target holds ${inv99.months_of_supply.toFixed(2)}, nearly double.`],
+      ['FRED: labor market', 'Hiring conditions', `US warehouse jobs fell ${pct(-f.CES4349300001.change_2023_vs_2022, 1)} in 2023 and Chicago metro unemployment averaged ${f.CHIC917URN.average_2023.toFixed(1)}%, so hiring got easier, while warehousing prices rose ${change('PCU493110493110')}.`],
+      ['FRED: demand and freight', 'The 2023 backdrop', `A soft freight year: Cass shipments ${change('FRGSHPUSM649NCIS')}, truck tonnage ${change('TRUCKD11')}, retail sales ${change('RSXFS')}, online share ${f.ECOMPCTSA.average_2023.toFixed(1)}%. Warehouse orders line up best with US shoe store sales 3 months later (correlation ${lead['3_months_later']}), fitting a supplier that stocks stores ahead of their season, but with only ${lead.months} months that is a hint, not proof.`],
+    );
+    $('real-checks').innerHTML = rows.map(r => `<tr><td><strong>${esc(r[0])}</strong></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td></tr>`).join('');
   }
 
   // ---- Ask the planner on the public site ----
@@ -423,6 +451,7 @@
       renderForecast();
       renderMiddleMile('affordable_6_workers');
       renderInventory();
+      renderChecks();
       renderLastMile('affordable_6_workers');
       $('lm-plan').addEventListener('planchange', event => renderLastMile(event.detail));
       $('mm-plan').addEventListener('planchange', event => renderMiddleMile(event.detail));

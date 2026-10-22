@@ -29,6 +29,7 @@
       "unit_fill_rate": 0.6638,
       "average_units_held": 16143,
       "average_stock_value": 564994,
+      "months_of_supply": 0.74,
       "holding_cost_per_year": 141248
     },
     {
@@ -40,6 +41,7 @@
       "unit_fill_rate": 0.7536,
       "average_units_held": 23276,
       "average_stock_value": 814644,
+      "months_of_supply": 1.07,
       "holding_cost_per_year": 203661
     },
     {
@@ -51,6 +53,7 @@
       "unit_fill_rate": 0.8158,
       "average_units_held": 30839,
       "average_stock_value": 1079375,
+      "months_of_supply": 1.42,
       "holding_cost_per_year": 269844
     },
     {
@@ -62,6 +65,7 @@
       "unit_fill_rate": 0.8856,
       "average_units_held": 52275,
       "average_stock_value": 1829630,
+      "months_of_supply": 2.4,
       "holding_cost_per_year": 457407
     },
     {
@@ -73,6 +77,7 @@
       "unit_fill_rate": 0.891,
       "average_units_held": 54263,
       "average_stock_value": 1899202,
+      "months_of_supply": 2.49,
       "holding_cost_per_year": 474800
     },
     {
@@ -84,6 +89,7 @@
       "unit_fill_rate": 0.8388,
       "average_units_held": 37554,
       "average_stock_value": 1314382,
+      "months_of_supply": 1.73,
       "holding_cost_per_year": 328596
     },
     {
@@ -95,6 +101,7 @@
       "unit_fill_rate": 0.7518,
       "average_units_held": 22803,
       "average_stock_value": 798114,
+      "months_of_supply": 1.05,
       "holding_cost_per_year": 199528
     },
     {
@@ -106,6 +113,7 @@
       "unit_fill_rate": 0.8129,
       "average_units_held": 30868,
       "average_stock_value": 1080397,
+      "months_of_supply": 1.42,
       "holding_cost_per_year": 270099
     },
     {
@@ -117,6 +125,7 @@
       "unit_fill_rate": 0.8178,
       "average_units_held": 30848,
       "average_stock_value": 1079665,
+      "months_of_supply": 1.42,
       "holding_cost_per_year": 269916
     }
   ]

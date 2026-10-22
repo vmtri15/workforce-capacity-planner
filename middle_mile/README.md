@@ -9,27 +9,29 @@ This is part three of the series in this repo, in two parts:
 
 ## Part 3b: the planner's network
 
-The planner's own staffing model decides on which day each of the 32,634 real 2023 orders is finished. That day sets when the parcel can leave the site, so the staffing decision flows straight into the middle mile. Each parcel then rides a truck to a sort center and a second truck to a delivery station, and is compared with its delivery promise.
+The planner's own staffing model decides on which day each of the 32,634 real 2023 orders is finished. That day sets when the parcel can leave the site, so the staffing decision flows straight into the middle mile. Each parcel then rides a truck to a sort center and a second truck to a delivery station, and is compared with its delivery promise. Trucks drive real truck routes (OpenRouteService drive times, no traffic) and are slowed by the real 2023 weather at both ends of their lane (NOAA daily snow and rain at the nearest airport, with speed cuts from FHWA), on top of a random delay.
 
 | | 6 workers (affordable plan) | 10 workers (safe plan) |
 | --- | ---: | ---: |
 | Labor cost | $242,253 | $398,222 |
 | Late parcels caused by the warehouse | 677 | 0 |
-| Late parcels once random truck delays are added | 919 | 32 |
-| Late parcels caused by trucks | 242 | 32 |
-| Trucks that caused late parcels | 30 | 7 |
-| Late parcels after rescuing those trucks | 678 | 0 |
-| Cost of rescuing them | $7,327 | $1,514 |
+| Late parcels once truck delays are added | 1,123 | 138 |
+| Late parcels caused by trucks | 446 | 138 |
+| ... of which caused by snow or heavy rain | 37 | 12 |
+| Trucks that caused late parcels | 53 | 14 |
+| Late parcels after rescuing those trucks | 689 | 0 |
+| Cost of rescuing them | $13,236 | $3,234 |
 
 Costs are hypothetical units, the same ones the planner uses.
 
 **What it means**
 
-- **Understaffing makes truck delays far more harmful.** With 6 workers, trucks cause 242 late parcels. With 10 workers, only 32. An order the warehouse finishes on the last day of its window has no time left, so even a small truck delay breaks its promise.
-- **The warehouse is the bigger cause.** Under the affordable plan, 677 parcels are late before any truck is late, and trucks add 242.
-- **Rescue the at risk trucks first. It is cheap.** Splitting the load on the 30 trucks that cause late parcels costs $7,327 and fixes 241 of the 242, about $30 per parcel.
-- **More staff is the expensive fix.** Moving from 6 to 10 workers costs $155,969 more and removes the remaining 678 late parcels, about $221 for each extra on time parcel, even after the trucks are rescued.
-- **Which lane looks worst depends on the assumed schedule.** Most truck caused late parcels are on the Chicago to Indianapolis lane, because Indianapolis gets a next day promise and its truck arrives about 40 minutes before the station cutoff.
+- **Understaffing makes truck delays far more harmful.** With 6 workers, trucks cause 446 late parcels. With 10 workers, 138. An order the warehouse finishes on the last day of its window has no time left, so even a small truck delay breaks its promise.
+- **The warehouse is the bigger cause.** Under the affordable plan, 677 parcels are late before any truck is late, and trucks add 446.
+- **Rescue the at risk trucks first. It is cheap.** Rescuing the 53 trucks that cause late parcels costs $13,236 and fixes 434 of the 446, about $30 per parcel.
+- **More staff is the expensive fix.** Moving from 6 to 10 workers costs $155,969 more and removes the remaining 689 late parcels, about $226 for each extra on time parcel, even after the trucks are rescued.
+- **Weather adds, but the schedule matters more.** Snow and heavy rain cause 37 of the 446 truck caused late parcels with 6 workers and 12 of the 138 with 10. Lanes touching Milwaukee, Minneapolis and Detroit see the most snow days.
+- **One tight schedule causes most truck lateness.** The Chicago to Indianapolis truck causes 365 of the 446 truck caused late parcels with 6 workers and 129 of the 138 with 10. It leaves at 01:00 and, on the real truck route (4.7 hours plus an hour of loading), reaches Indianapolis about 18 minutes before the 07:00 cutoff, so almost any delay breaks a next day promise. An earlier departure or a later cutoff for that lane is the cheapest fix to test next.
 
 **What is real and what is assumed**
 
@@ -37,8 +39,8 @@ Costs are hypothetical units, the same ones the planner uses.
 | --- | --- |
 | 32,634 orders with their time, customer and units | The Midwest network: three sites, two sort centers, six delivery stations |
 | The two staffing plans and their cost rates | Which customer ships from which site to which station |
-| The day each order is finished, from the planner's service model | Truck schedules, speed, the 07:00 station cutoff and truck delays |
-| The site shares (43%, 42%, 15%) | The promise: 2 working days to finish an order, plus 1 day of transit within 300 km or 2 days beyond |
+| The day each order is finished, from the planner's service model | Truck schedules, the 07:00 station cutoff, random truck delays and how much weather slows trucks (drive times are real truck routes) |
+| The site shares (43%, 42%, 15%); 2023 daily weather from NOAA | The promise: 2 working days to finish an order, plus 1 day of transit within 300 km or 2 days beyond |
 
 City locations are real places. Station populations are approximate 2020 metro populations, used only as weights. Because a few large customers place thousands of orders, actual route volumes differ from the site shares: O'Hare ships 52% of orders against its 42% share. The planner's service model treats the three sites as one operation, so this changes which routes carry parcels, not when orders are finished.
 

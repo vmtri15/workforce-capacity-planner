@@ -1,37 +1,48 @@
 {
-  "evidence_status": "real_planner_orders_through_the_middle_mile_with_assumed_vans_costs_and_customer_locations",
+  "evidence_status": "real_planner_orders_through_the_middle_mile_customers_at_census_tract_centers_assumed_vans_and_costs",
+  "roads": {
+    "source": "OpenRouteService driving-car, no traffic",
+    "pairs": 72784,
+    "median_road_to_straight": 1.34,
+    "median_speed_kmh": 48.7
+  },
+  "fuel": {
+    "source": "FRED GASDESW, weekly US on-highway diesel",
+    "average_cost_per_km_2023": 0.34,
+    "assumed_cost_per_km_before": 0.7
+  },
   "plans": [
     {
       "plan": "affordable_6_workers",
       "parcels": 32634,
       "owned_vans": 2,
-      "peak_vans": 35,
-      "contract_van_days": 1522,
-      "cost": 1329945,
-      "cost_owning_for_peak": 4027125,
-      "cost_all_contracted": 1333665,
-      "cost_per_parcel": 40.75,
+      "peak_vans": 34,
+      "contract_van_days": 1304,
+      "cost": 1077271,
+      "cost_owning_for_peak": 3795811,
+      "cost_all_contracted": 1082191,
+      "cost_per_parcel": 33.01,
       "carrier_cost": 499082,
       "carrier_cost_per_parcel": 15.29,
       "stations_cheaper_by_van": 0,
-      "orders_per_van_day": 17.2,
-      "break_even_orders_per_van_day": 46.1
+      "orders_per_van_day": 19.5,
+      "break_even_orders_per_van_day": 42.2
     },
     {
       "plan": "safe_10_workers",
       "parcels": 32634,
       "owned_vans": 0,
       "peak_vans": 37,
-      "contract_van_days": 1859,
-      "cost": 1308876,
-      "cost_owning_for_peak": 4241616,
-      "cost_all_contracted": 1308876,
-      "cost_per_parcel": 40.11,
+      "contract_van_days": 1651,
+      "cost": 1065084,
+      "cost_owning_for_peak": 4122624,
+      "cost_all_contracted": 1065084,
+      "cost_per_parcel": 32.64,
       "carrier_cost": 499082,
       "carrier_cost_per_parcel": 15.29,
       "stations_cheaper_by_van": 0,
-      "orders_per_van_day": 17.6,
-      "break_even_orders_per_van_day": 46.0
+      "orders_per_van_day": 19.8,
+      "break_even_orders_per_van_day": 42.2
     }
   ]
 }

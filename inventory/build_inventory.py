@@ -128,6 +128,7 @@ def evaluate(name, reorder, test, mean_daily, fixed_lead=None, replan=None):
                line_fill_rate=round(1 - t['short'].mean(), 4),
                unit_fill_rate=round(1 - t.loc[t['short'], 'qty'].sum() / t['qty'].sum(), 4),
                average_units_held=round(units), average_stock_value=round(value),
+               months_of_supply=round(units / (t['qty'].sum() / len(held) * 365 / 12), 2),  # comparable to FRED RETAILIRSA
                holding_cost_per_year=round(value * CONFIG['holding_cost_per_year']))
     by_class = t.groupby('abc').agg(lines=('short', 'size'), line_fill_rate=('short', lambda s: round(1 - s.mean(), 4)))
     return row, by_class.reset_index().assign(policy=name), why_short(test, short, reorder, mean_daily)

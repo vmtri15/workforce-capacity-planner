@@ -1,0 +1,13 @@
+lane,straight_km,road_km,straight_line_drive_hours,road_truck_hours
+chicago_sc>chicago,19,23,0.31,0.55
+chicago_sc>detroit,397,461,6.62,5.95
+chicago_sc>indianapolis,262,296,4.36,4.7
+chicago_sc>st_louis,404,462,6.74,6.87
+joliet>chicago_sc,49,63,0.81,1.32
+joliet>milwaukee_sc,167,194,2.78,3.28
+kenosha>chicago_sc,87,107,1.46,1.85
+kenosha>milwaukee_sc,38,44,0.63,0.84
+milwaukee_sc>milwaukee,17,22,0.28,0.46
+milwaukee_sc>minneapolis,489,558,8.14,8.44
+ohare>chicago_sc,25,44,0.41,0.86
+ohare>milwaukee_sc,101,112,1.69,1.89

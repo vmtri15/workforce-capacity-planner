@@ -1,0 +1,4 @@
+plan,mean_cost_assumed,on_time_share,mean_cost_real,assumed_regular_hourly_cost,assumed_temporary_hourly_cost,real_regular_hourly_cost,real_temporary_hourly_cost
+fixed_10_workers_ot2,69484.8,1.0,104985.22,22,30,33.24,36.77
+fixed_6_workers_ot2,42026.16,0.98,63497.71,22,30,33.24,36.77
+fixed_6_workers_ot2_temps4,42285.12,1.0,63746.58,22,30,33.24,36.77

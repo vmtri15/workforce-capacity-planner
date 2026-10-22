@@ -26,11 +26,11 @@ Each plan's finished orders were sent through a truck network to the customer (3
 
 | Plan | Labor cost | Late, warehouse only | Late, with truck delays | Caused by trucks | At-risk trucks | Truck recovery cost | Late after recovery |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 6 workers, up to 2 OT hours | $242,253 | 677 | 919 | 242 | 30 | $7,327 | 678 |
-| 10 workers, up to 2 OT hours | $398,222 | 0 | 32 | 32 | 7 | $1,514 | 0 |
+| 6 workers, up to 2 OT hours | $242,253 | 677 | 1,123 | 446 | 53 | $13,236 | 689 |
+| 10 workers, up to 2 OT hours | $398,222 | 0 | 138 | 138 | 14 | $3,234 | 0 |
 
 - **Finding:** Trucks add late parcels on top of the warehouse, and the 6 worker plan exposes more of them. Recovering the at-risk trucks costs far less than the labor gap between the plans, but it only removes the truck-caused lateness; the warehouse backlog stays.
-- **Evidence:** Real planner orders and staffing plans on an assumed Midwest network, truck schedule and delays; full-year replay, so labor costs are not comparable to the later-period costs above.
+- **Evidence:** Real planner orders, staffing plans and 2023 NOAA weather on an assumed Midwest network, truck schedule and random delays; full-year replay, so labor costs are not comparable to the later-period costs above.
 
 ## Evidence Boundary
 

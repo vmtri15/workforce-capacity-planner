@@ -87,7 +87,7 @@ def middle_mile_check() -> dict | None:
         "finding": "Trucks add late parcels on top of the warehouse, and the 6 worker plan exposes more of them. "
                    "Recovering the at-risk trucks costs far less than the labor gap between the plans, "
                    "but it only removes the truck-caused lateness; the warehouse backlog stays.",
-        "evidence_status": "Real planner orders and staffing plans on an assumed Midwest network, truck schedule and delays; "
+        "evidence_status": "Real planner orders, staffing plans and 2023 NOAA weather on an assumed Midwest network, truck schedule and random delays; "
                            "full-year replay, so labor costs are not comparable to the later-period costs above.",
     }
 

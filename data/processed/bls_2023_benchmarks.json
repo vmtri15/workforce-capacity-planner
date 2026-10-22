@@ -1,0 +1,151 @@
+{
+  "source": "U.S. Bureau of Labor Statistics, Current Employment Statistics and JOLTS, 2023, national",
+  "series": {
+    "hourly_earnings_all_employees": {
+      "series_id": "CEU4349300003",
+      "months": 12,
+      "average_2023": 23.78,
+      "january": 23.01,
+      "december": 24.37,
+      "monthly": {
+        "M01": 23.01,
+        "M02": 23.21,
+        "M03": 23.24,
+        "M04": 23.75,
+        "M05": 23.83,
+        "M06": 23.91,
+        "M07": 23.98,
+        "M08": 24.01,
+        "M09": 23.97,
+        "M10": 24.05,
+        "M11": 24.05,
+        "M12": 24.37
+      }
+    },
+    "hourly_earnings_production_workers": {
+      "series_id": "CEU4349300008",
+      "months": 12,
+      "average_2023": 22.89,
+      "january": 21.77,
+      "december": 23.33,
+      "monthly": {
+        "M01": 21.77,
+        "M02": 22.33,
+        "M03": 22.42,
+        "M04": 22.68,
+        "M05": 23.1,
+        "M06": 22.99,
+        "M07": 23.02,
+        "M08": 23.37,
+        "M09": 23.06,
+        "M10": 23.06,
+        "M11": 23.58,
+        "M12": 23.33
+      }
+    },
+    "quits_rate_percent": {
+      "series_id": "JTU480099000000000QUR",
+      "months": 12,
+      "average_2023": 2.61,
+      "january": 3.0,
+      "december": 2.6,
+      "monthly": {
+        "M01": 3.0,
+        "M02": 2.4,
+        "M03": 2.9,
+        "M04": 2.8,
+        "M05": 2.3,
+        "M06": 2.4,
+        "M07": 2.6,
+        "M08": 3.0,
+        "M09": 2.2,
+        "M10": 2.5,
+        "M11": 2.6,
+        "M12": 2.6
+      }
+    },
+    "job_openings_rate_percent": {
+      "series_id": "JTU480099000000000JOR",
+      "months": 12,
+      "average_2023": 6.23,
+      "january": 7.6,
+      "december": 4.1,
+      "monthly": {
+        "M01": 7.6,
+        "M02": 7.2,
+        "M03": 5.2,
+        "M04": 7.4,
+        "M05": 6.5,
+        "M06": 5.8,
+        "M07": 6.5,
+        "M08": 5.4,
+        "M09": 6.1,
+        "M10": 7.1,
+        "M11": 5.8,
+        "M12": 4.1
+      }
+    },
+    "employer_cost_per_hour_total": {
+      "series_id": "CMU2010000520000D",
+      "months": 4,
+      "average_2023": 33.63,
+      "january": 33.13,
+      "december": 34.43,
+      "monthly": {
+        "Q01": 33.13,
+        "Q02": 33.5,
+        "Q03": 33.46,
+        "Q04": 34.43
+      }
+    },
+    "employer_cost_per_hour_wages": {
+      "series_id": "CMU2020000520000D",
+      "months": 4,
+      "average_2023": 23.16,
+      "january": 22.72,
+      "december": 23.89,
+      "monthly": {
+        "Q01": 22.72,
+        "Q02": 22.99,
+        "Q03": 23.03,
+        "Q04": 23.89
+      }
+    },
+    "temp_help_hourly_earnings": {
+      "series_id": "CEU6056132003",
+      "months": 12,
+      "average_2023": 24.51,
+      "january": 24.78,
+      "december": 24.48,
+      "monthly": {
+        "M01": 24.78,
+        "M02": 24.7,
+        "M03": 24.77,
+        "M04": 24.78,
+        "M05": 24.34,
+        "M06": 24.14,
+        "M07": 24.57,
+        "M08": 24.34,
+        "M09": 24.28,
+        "M10": 24.38,
+        "M11": 24.56,
+        "M12": 24.48
+      }
+    }
+  },
+  "checks": {
+    "assumed_regular_hourly_cost": 22,
+    "real_production_worker_hourly_earnings": 22.89,
+    "assumed_temporary_hourly_cost": 30,
+    "quits_per_year_share_of_team": 0.31,
+    "expected_quits_per_year_in_a_team_of": 6,
+    "expected_quits_per_year": 1.9,
+    "months_between_quits_in_the_team": 6.4,
+    "employer_cost_multiplier": 1.452,
+    "real_regular_employer_cost": 33.24,
+    "real_temp_pay": 24.51,
+    "assumed_agency_markup": 1.5,
+    "real_temp_bill_rate": 36.77,
+    "note": "Earnings are wages before benefits and payroll taxes; the employer cost multiplier (total compensation over wages, ECEC) turns them into employer costs. Quits are national for transportation, warehousing and utilities, not these sites."
+  }
+}

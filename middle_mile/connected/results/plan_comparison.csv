@@ -1,3 +1,3 @@
-plan,labor_cost,on_time_unit_share_in_warehouse,orders,unfinished_orders,late_without_truck_delays,late_with_truck_delays,late_caused_by_trucks,at_risk_trucks,late_after_truck_recovery,truck_recovery_cost
-affordable_6_workers,242253.0,0.9759,32634,0,677,919,242,30,678,7327.46
-safe_10_workers,398222.0,1.0,32634,0,0,32,32,7,0,1513.67
+plan,labor_cost,on_time_unit_share_in_warehouse,orders,unfinished_orders,late_without_truck_delays,late_with_truck_delays,late_caused_by_trucks,late_caused_by_weather,at_risk_trucks,late_after_truck_recovery,truck_recovery_cost
+affordable_6_workers,242253.0,0.9759,32634,0,677,1123,446,37,53,689,13236.43
+safe_10_workers,398222.0,1.0,32634,0,0,138,138,12,14,0,3234.3

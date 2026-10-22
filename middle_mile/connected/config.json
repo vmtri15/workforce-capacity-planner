@@ -1,43 +1,151 @@
 {
-  "evidence_status": "real_planner_orders_and_staffing_on_an_assumed_midwest_network",
-  "sites": {
-    "joliet": {"name": "Joliet/Elwood", "lat": 41.40, "lng": -88.11},
-    "ohare": {"name": "O'Hare area", "lat": 41.98, "lng": -87.90},
-    "kenosha": {"name": "Kenosha/Pleasant Prairie", "lat": 42.55, "lng": -87.93}
+ "evidence_status": "real_planner_orders_and_staffing_on_an_assumed_midwest_network",
+ "sites": {
+  "joliet": {
+   "name": "Joliet/Elwood",
+   "lat": 41.4,
+   "lng": -88.11
   },
-  "sort_centers": {
-    "chicago_sc": {"name": "Chicago sort center (Bedford Park)", "lat": 41.77, "lng": -87.80},
-    "milwaukee_sc": {"name": "Milwaukee sort center (Oak Creek)", "lat": 42.89, "lng": -87.90}
+  "ohare": {
+   "name": "O'Hare area",
+   "lat": 41.98,
+   "lng": -87.9
   },
+  "kenosha": {
+   "name": "Kenosha/Pleasant Prairie",
+   "lat": 42.55,
+   "lng": -87.93
+  }
+ },
+ "sort_centers": {
+  "chicago_sc": {
+   "name": "Chicago sort center (Bedford Park)",
+   "lat": 41.77,
+   "lng": -87.8
+  },
+  "milwaukee_sc": {
+   "name": "Milwaukee sort center (Oak Creek)",
+   "lat": 42.89,
+   "lng": -87.9
+  }
+ },
+ "stations": {
+  "chicago": {
+   "name": "Chicago",
+   "lat": 41.88,
+   "lng": -87.63,
+   "population_millions": 9.62,
+   "sort_center": "chicago_sc"
+  },
+  "detroit": {
+   "name": "Detroit",
+   "lat": 42.33,
+   "lng": -83.05,
+   "population_millions": 4.39,
+   "sort_center": "chicago_sc"
+  },
+  "minneapolis": {
+   "name": "Minneapolis",
+   "lat": 44.98,
+   "lng": -93.27,
+   "population_millions": 3.69,
+   "sort_center": "milwaukee_sc"
+  },
+  "st_louis": {
+   "name": "St. Louis",
+   "lat": 38.63,
+   "lng": -90.2,
+   "population_millions": 2.82,
+   "sort_center": "chicago_sc"
+  },
+  "indianapolis": {
+   "name": "Indianapolis",
+   "lat": 39.77,
+   "lng": -86.16,
+   "population_millions": 2.11,
+   "sort_center": "chicago_sc"
+  },
+  "milwaukee": {
+   "name": "Milwaukee",
+   "lat": 43.04,
+   "lng": -87.91,
+   "population_millions": 1.57,
+   "sort_center": "milwaukee_sc"
+  }
+ },
+ "ready_hour": 17,
+ "site_departures": [
+  "18:00",
+  "22:00"
+ ],
+ "sort_hours": 2,
+ "sort_center_departures": [
+  "01:00",
+  "04:00"
+ ],
+ "station_cutoff_hour": 7,
+ "truck_speed_kmh": 60,
+ "loading_hours": 1,
+ "promise": {
+  "processing_operating_days": 2,
+  "next_day_within_km": 300
+ },
+ "delays": {
+  "seed": 7,
+  "median_hours": 0.5,
+  "sigma": 1.0
+ },
+ "recovery": {
+  "swap_cost": 300,
+  "swap_recovers_hours": 3,
+  "split_cost_per_km": 1.0,
+  "split_minimum_cost": 150
+ },
+ "staffing_plans": {
+  "affordable_6_workers": {
+   "extra_workers": 0,
+   "overtime_hours": 2,
+   "temp_workers": 0
+  },
+  "safe_10_workers": {
+   "extra_workers": 4,
+   "overtime_hours": 2,
+   "temp_workers": 0
+  }
+ },
+ "assumptions": [
+  "Orders, order times, customer codes and the staffing plans are the planner's real inputs. Everything else here is assumed.",
+  "Site, sort center and station cities are real places with approximate coordinates. Station populations are approximate 2020 metro populations, used only as weights.",
+  "Each customer ships from one site (weighted by the planner's site shares) to one station (weighted by population). The same customer always uses the same route.",
+  "An order is ready to ship at 17:00 on the day the planner's staffing model finishes it.",
+  "Trucks and deliveries run every day. A parcel that reaches its station by 07:00 is delivered that day, otherwise the next day.",
+  "Promise: the planner's 2 operating day processing window, plus 1 day of transit within 300 km of the site or 2 days beyond.",
+  "Truck delays are lognormal with the median and sigma above, the same for every lane. Costs are hypothetical units.",
+  "Weather: on each truck's departure day, the worse of the weather at the two ends of its lane slows the drive (NOAA 2023 daily snow and rain at the nearest airport; speed cuts from FHWA). The random delay above comes on top.",
+  "Truck drive times come from OpenRouteService truck routes between the places (no traffic), plus loading time. Without that file, straight line distance at the configured speed. The delivery promise still uses straight line distance."
+ ],
+ "weather": {
+  "source": "NOAA GHCN-Daily 2023, the airport nearest each place",
   "stations": {
-    "chicago": {"name": "Chicago", "lat": 41.88, "lng": -87.63, "population_millions": 9.62, "sort_center": "chicago_sc"},
-    "detroit": {"name": "Detroit", "lat": 42.33, "lng": -83.05, "population_millions": 4.39, "sort_center": "chicago_sc"},
-    "minneapolis": {"name": "Minneapolis", "lat": 44.98, "lng": -93.27, "population_millions": 3.69, "sort_center": "milwaukee_sc"},
-    "st_louis": {"name": "St. Louis", "lat": 38.63, "lng": -90.20, "population_millions": 2.82, "sort_center": "chicago_sc"},
-    "indianapolis": {"name": "Indianapolis", "lat": 39.77, "lng": -86.16, "population_millions": 2.11, "sort_center": "chicago_sc"},
-    "milwaukee": {"name": "Milwaukee", "lat": 43.04, "lng": -87.91, "population_millions": 1.57, "sort_center": "milwaukee_sc"}
+   "joliet": "USW00094846",
+   "ohare": "USW00094846",
+   "kenosha": "USW00014839",
+   "chicago_sc": "USW00094846",
+   "milwaukee_sc": "USW00014839",
+   "chicago": "USW00094846",
+   "detroit": "USW00094847",
+   "minneapolis": "USW00014922",
+   "st_louis": "USW00013994",
+   "indianapolis": "USW00093819",
+   "milwaukee": "USW00014839"
   },
-  "ready_hour": 17,
-  "site_departures": ["18:00", "22:00"],
-  "sort_hours": 2,
-  "sort_center_departures": ["01:00", "04:00"],
-  "station_cutoff_hour": 7,
-  "truck_speed_kmh": 60,
-  "loading_hours": 1,
-  "promise": {"processing_operating_days": 2, "next_day_within_km": 300},
-  "delays": {"seed": 7, "median_hours": 0.5, "sigma": 1.0},
-  "recovery": {"swap_cost": 300, "swap_recovers_hours": 3, "split_cost_per_km": 1.0, "split_minimum_cost": 150},
-  "staffing_plans": {
-    "affordable_6_workers": {"extra_workers": 0, "overtime_hours": 2, "temp_workers": 0},
-    "safe_10_workers": {"extra_workers": 4, "overtime_hours": 2, "temp_workers": 0}
+  "heavy_snow_mm": 25,
+  "heavy_rain_mm": 25,
+  "speed_reduction": {
+   "heavy_snow": 0.25,
+   "light_snow": 0.1,
+   "heavy_rain": 0.1
   },
-  "assumptions": [
-    "Orders, order times, customer codes and the staffing plans are the planner's real inputs. Everything else here is assumed.",
-    "Site, sort center and station cities are real places with approximate coordinates. Station populations are approximate 2020 metro populations, used only as weights.",
-    "Each customer ships from one site (weighted by the planner's site shares) to one station (weighted by population). The same customer always uses the same route.",
-    "An order is ready to ship at 17:00 on the day the planner's staffing model finishes it.",
-    "Trucks and deliveries run every day. A parcel that reaches its station by 07:00 is delivered that day, otherwise the next day.",
-    "Promise: the planner's 2 operating day processing window, plus 1 day of transit within 300 km of the site or 2 days beyond.",
-    "Truck delays are lognormal with the median and sigma above, the same for every lane. Costs are hypothetical units."
-  ]
+  "speed_reduction_source": "FHWA Road Weather Management, How do weather events impact roads: light snow cuts freeway speeds 3 to 13%, heavy snow 5 to 40%, heavy rain 3 to 16%. Midpoint-style values are used."
+ }
 }

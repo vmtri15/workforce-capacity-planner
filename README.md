@@ -6,7 +6,7 @@ This repo is a three part series on fulfillment operations:
 
 1. **Forecast demand.** How much work is coming? (`scripts/forecast_demand.py`, see Technical details)
 2. **Plan capacity.** Do the sites have enough workers? (this page)
-3. **Protect parcels on the middle mile.** When trucks run late, which parcels are at risk and what is the cheapest fix? ([middle_mile/](middle_mile/README.md)) With the 6 worker plan, trucks cause 242 late parcels; with 10 workers, only 32, because understaffing leaves no time to absorb a late truck.
+3. **Protect parcels on the middle mile.** When trucks run late, which parcels are at risk and what is the cheapest fix? ([middle_mile/](middle_mile/README.md)) With the 6 worker plan, trucks cause 446 late parcels (37 from real 2023 snow and heavy rain, 365 on one tight Chicago to Indianapolis schedule); with 10 workers, 138, because understaffing leaves no time to absorb a late truck.
 4. **Stock the shelves and reach the door.** How much inventory should each site hold, and should stations run vans or use a parcel carrier? ([inventory/](inventory/), [last_mile/](last_mile/), see Part 4 below)
 
 ## The answer
@@ -26,9 +26,9 @@ In plain English. Dollar amounts use the model's assumed wages, so they are plan
 
 | Takeaway | The number | What to do |
 | --- | --- | --- |
-| Temps on call beat permanent hiring | About **$27,200 saved every 4 weeks** (39% cheaper, roughly $350,000 a year). On real 2023 demand the lean plan still shipped 99.7% of orders on time, against 100% for 4 extra permanent workers. | Keep 6 workers, with overtime and temps on call for busy days. |
+| Temps on call beat permanent hiring | About **$27,200 saved every 4 weeks** (39% cheaper, roughly $350,000 a year); at real 2023 labor costs from BLS, about **$41,200**. On real 2023 demand the lean plan still shipped 99.7% of orders on time, against 100% for 4 extra permanent workers. | Keep 6 workers, with overtime and temps on call for busy days. |
 | A better forecast is not worth buying | A perfect forecast would save only about **$260 every 4 weeks**. Daily orders swing too much to predict well (the best model still misses a day by 60%). | Spend on flexibility, not forecasting tools. |
-| Fix staffing before trucks | Fixing a risky truck costs about **$30 per late parcel saved**; hiring costs about $176. But **74% of late parcels** already leave the warehouse late. | Staff the warehouse first, then fix the riskiest trucks. |
+| Fix staffing before trucks | Fixing a risky truck costs about **$30 per late parcel saved**; hiring costs about $158. But **60% of late parcels** already leave the warehouse late. | Staff the warehouse first, then fix the riskiest trucks. |
 | Know the two warning signs | The lean plan survives only **12 of 36 tough weeks**. It fails when workers are slower than usual or two people are out. | When either shows up, call in temps right away. |
 
 ## Part 4: inventory and last mile
@@ -44,21 +44,46 @@ In plain English. Dollar amounts use the model's assumed wages, so they are plan
 | 95%, supplier always on time | 23% | $1,080,000 |
 | 95%, re-planned every month | 24% | $1,080,000 |
 
-More stock helps with falling returns, and neither a perfectly reliable supplier nor monthly re-planning changes much. The lines that run short explain why: 61% are one order bigger than two weeks of that item's normal demand, 27% are items never sold before July, and 36% are slow sellers with no safety stock (a line can have more than one reason). So the cheaper fix is a quoted lead time for unusually large orders and stock for new items at launch, not more of everything. Higher targets for A items cost more than a flat 95% and delay about as many orders, because one missing slow seller holds up the whole order.
+More stock helps with falling returns, and neither a perfectly reliable supplier nor monthly re-planning changes much. The lines that run short explain why: 61% are one order bigger than two weeks of that item's normal demand, 27% are items never sold before July, and 36% are slow sellers with no safety stock (a line can have more than one reason). For scale, a 95% target holds 1.42 months of sales in stock, close to the 1.32 months US retailers held in 2023 (FRED); a 99% target holds 2.49. So the cheaper fix is a quoted lead time for unusually large orders and stock for new items at launch, not more of everything. Higher targets for A items cost more than a flat 95% and delay about as many orders, because one missing slow seller holds up the whole order.
 
-**Last mile** (`last_mile/build_last_mile.py`). Every 2023 order comes out of the middle mile with its delivery station and day, for each staffing plan. Each station's day is routed with OR-Tools (van capacity, a 10 hour shift, fewest vans first), then the cheapest mix of owned and contracted vans is compared with a parcel carrier. Customer locations, van costs and the carrier price are assumed.
+**Last mile** (`last_mile/build_last_mile.py`). Every 2023 order comes out of the middle mile with its delivery station and day, for each staffing plan. Each station's day is routed with OR-Tools (van capacity, a 10 hour shift, fewest vans first), then the cheapest mix of owned and contracted vans is compared with a parcel carrier. Customers sit at real 2023 Census tract centers inside each station's 45 minute drive area (OpenRouteService), picked with odds matching each tract's population (ACS 2022); which tract each customer gets, van day rates and the carrier price are assumed. Van fuel is priced at each week's real 2023 US diesel price (FRED).
 
 | | 6 worker plan | 10 worker plan |
 | --- | ---: | ---: |
-| Running vans, cost per order | $40.75 | $40.11 |
+| Running vans, cost per order | $33.01 | $32.64 |
 | Parcel carrier, cost per order | $15.29 | $15.29 |
-| Orders per van a day (break-even about 46) | 17.2 | 17.6 |
+| Orders per van a day (break-even about 42) | 19.5 | 19.8 |
 
-A carrier is cheaper at all 6 stations: each van would carry about 17 orders a day and needs about 46 to pay off, so vans make sense only if a station's volume roughly triples. If vans were used, the lean plan would cost about $21,000 more in vans, because late parcels arrive in bunches.
+A carrier is cheaper at all 6 stations: each van would carry about 20 orders a day and needs about 42 to pay off, so vans make sense only if a station's volume more than doubles. If vans were used, the lean plan would cost about $12,000 more in vans, because late parcels arrive in bunches.
 
 ```bash
 .venv/bin/python inventory/build_inventory.py
 .venv/bin/python last_mile/build_last_mile.py
+```
+
+## Checked against real data
+
+Five free public APIs test or replace the model's assumptions. Each needs a free key in `.env` (`CENSUS_API_KEY`, `BLS_API_KEY`, `NOAA_TOKEN`, `ORS_API_KEY`, `FRED_API_KEY`); the downloaded data stays in `data/raw/`, which git ignores.
+
+| Source | What it checks | What we found |
+| --- | --- | --- |
+| U.S. Census Gazetteer and ACS 2022 | Where last-mile customers are | Customers sit at real census tract centers, weighted by tract population, instead of random points (some landed in Lake Michigan). The carrier still wins everywhere. |
+| OpenRouteService delivery areas | How far vans go | Each station serves everywhere a van reaches in 45 minutes (an isochrone), not a fixed circle. |
+| BLS (CES, JOLTS, ECEC), 2023 | Pay, employer costs, temp rates and turnover | Warehouse production workers earned $22.89 an hour; benefits and payroll taxes add 45% (ECEC), so they cost employers about $33.24, not the $22 assumed. Temps earned $24.51, about $36.77 billed with an assumed 1.5x agency markup. Rerun at those costs (`scripts/real_cost_check.py`), temps on call beat 10 workers by $41,239 every 4 weeks instead of $27,200, so the recommendation gets stronger. A 2.6% monthly quit rate means a team of 6 loses about 2 people a year. |
+| NOAA Climate Data Online, 2023 daily | Truck delays | Trucks are slowed by real snow and heavy rain at both ends of each lane (FHWA speed cuts). Weather causes 37 of 446 truck caused late parcels with 6 workers and 12 of 138 with 10. |
+| OpenRouteService | Road distances and drive times | Van roads run 1.34 times the straight line (1.3 assumed), and vans now route on real roads (traffic is left out, so van times are optimistic). Trucks now drive real truck routes too: on the critical Chicago to Indianapolis lane that is 4.7 hours, not the 4.4 a straight line suggests, which leaves about 18 minutes before the station cutoff. Truck caused late parcels rose from 301 to 446 with 6 workers. |
+| FRED: diesel price, 2023 weekly | Van fuel cost | Diesel averaged $4.21 a gallon (15.5% below 2022). Vans now pay each week's real price, about $0.34 a km with wear instead of $0.70 assumed. Vans get cheaper (about $33 an order), but the carrier still wins. |
+| FRED: retail inventories to sales | How much stock is sensible | US retailers held 1.32 months of sales in stock in 2023. A 95% target holds 1.42 months, about the same; 99% holds 2.49, nearly double. |
+| FRED: labor market | Hiring conditions | US warehouse jobs fell 4.0% in 2023 and Chicago metro unemployment averaged 4.4%, so hiring got easier, while warehousing prices rose 11.4%. |
+| FRED: demand and freight | The 2023 backdrop | A soft freight year: Cass shipments -5.5%, truck tonnage -1.8%, retail sales +0.8%, online share 15.3%. Warehouse orders line up best with US shoe store sales 3 months later (correlation 0.55), fitting a supplier that stocks stores ahead of their season, but 10 months is a hint, not proof. |
+
+```bash
+.venv/bin/python last_mile/fetch_census_population.py
+.venv/bin/python scripts/fetch_bls_benchmarks.py
+.venv/bin/python middle_mile/connected/fetch_noaa_weather.py
+.venv/bin/python last_mile/fetch_road_matrix.py
+.venv/bin/python scripts/fetch_fred_benchmarks.py
+PYTHONPATH=scripts .venv/bin/python scripts/real_cost_check.py
 ```
 
 ## See it
