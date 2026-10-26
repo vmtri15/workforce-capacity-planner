@@ -93,6 +93,7 @@ def story():
             'real_cost': read_any_csv(ROOT / 'data/processed/real_cost_check.csv'),
         },
         'inventory': json.loads((ROOT / 'inventory/results/summary.json').read_text(encoding='utf-8')),
+        'process_control': json.loads((ROOT / 'data/processed/process_control.json').read_text(encoding='utf-8')),
         'last_mile': {
             'summary': json.loads((ROOT / 'last_mile/results/summary.json').read_text(encoding='utf-8')),
             'by_station': read_any_csv(ROOT / 'last_mile/results/fleet_by_station.csv'),

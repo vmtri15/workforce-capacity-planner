@@ -6,7 +6,7 @@
   const num = portfolioNumber;
   const money = portfolioMoney;
   const pct = (value, digits = 1) => `${(100 * Number(value)).toFixed(digits)}%`;
-  const GROUPS = {home: 'OVERVIEW', recommendations: 'OVERVIEW', portfolio: '1 · FORECAST DEMAND', forecast: '1 · FORECAST DEMAND',
+  const GROUPS = {home: 'OVERVIEW', recommendations: 'OVERVIEW', processcontrol: 'OVERVIEW', portfolio: '1 · FORECAST DEMAND', forecast: '1 · FORECAST DEMAND',
     inventory: '2 · PLAN CAPACITY', lastmile: '3 · SHIP PARCELS', network: '2 · PLAN CAPACITY', builder: '2 · PLAN CAPACITY', middlemile: '3 · SHIP PARCELS', ask: 'TOOLS', tableau: 'TOOLS',
     methodology: 'TOOLS', about: 'ABOUT', overview: 'ARCHIVE', scenarios: 'ARCHIVE', evidence: 'ARCHIVE'};
   const MODEL_NAMES = {SameWeekdayLastWeek: 'Same day last week', Mean20Days: '20 day average', QuantileP90: 'P90 high case'};
@@ -340,6 +340,51 @@
     });
   }
 
+
+  // ---- process control ----
+  function controlChart(points, value, opts) {  // points with value(), limits {center, ucl, lcl} or per point ucl, an optional spec line
+    const {W, top, height, ymax, fmt, ucl, lcl, center, usl, label, tag = ''} = opts, L = 56, R = 16;
+    const X = i => L + i / Math.max(1, points.length - 1) * (W - L - R), Y = v => top + height - Math.min(v, ymax) / ymax * height;
+    const grid = [0, ymax / 2, ymax].map(t => `<line class="inv-axis" x1="${L}" x2="${W - R}" y1="${Y(t)}" y2="${Y(t)}"/><text class="inv-text" x="${L - 8}" y="${Y(t) + 4}" text-anchor="end">${fmt(t)}</text>`).join('');
+    const limit = (v, cls) => typeof v === 'number' ? `<line class="${cls}" x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}"/>` : '';
+    const stepUcl = Array.isArray(ucl) ? `<polyline class="pc-limit" fill="none" points="${ucl.map((u, i) => `${X(i)},${Y(u)}`).join(' ')}"/>` : limit(ucl, 'pc-limit');
+    const line = `<polyline class="pc-line" points="${points.map((p, i) => `${X(i)},${Y(value(p))}`).join(' ')}"/>`;
+    const dots = points.map((p, i) => `<circle class="pc-dot${p.out ? ' out' : ''}" data-c="${tag}" data-i="${i}" cx="${X(i)}" cy="${Y(value(p))}" r="${p.out ? 4 : 3}" tabindex="0"/>`).join('');
+    return `${grid}<text class="inv-text" x="${L}" y="${top - 8}">${label}</text>${line}${limit(center, 'pc-center')}${stepUcl}${limit(lcl, 'pc-limit')}${limit(usl, 'pc-usl')}${dots}`;
+  }
+
+  function hover(svg, detail, text) {
+    svg.querySelectorAll('.pc-dot').forEach(dot => ['mouseenter', 'focus', 'click'].forEach(type => dot.addEventListener(type, () => { detail.textContent = text(+dot.dataset.i, dot); })));
+  }
+
+  function renderProcessControl(plan) {
+    const pc = story.process_control, pk = pc.packing, lp = pc.late_parcels[plan], six = pc.late_parcels.affordable_6_workers;
+    const means = Object.values(pk.person_means);
+    $('pc-metrics').innerHTML = [
+      metric('Packing capability (Ppk)', pk.ppk.toFixed(2), `Against the ${pk.usl_seconds} s per unit the base case allows; 1.33 is the usual target`, 'Ppk: distance from the average to the limit, in units of 3 standard deviations of all boxes. Cpk uses the short-term spread instead and comes out at ' + pk.cpk.toFixed(2) + '.'),
+      metric('Boxes over the limit', pct(pk.share_over_usl, 0), `${num(pk.boxes)} one-item boxes, ${pk.people} packers`),
+      metric('Out-of-control days', `${lp.days_above_limit} of ${lp.days}`, 'Days with a late share above the p-chart limit'),
+      metric('Late parcels on those days', pct(lp.late ? lp.late_on_those_days / lp.late : 0, 0), `${num(lp.late_on_those_days)} of ${num(lp.late)} late parcels`),
+    ].join('');
+    $('pc-imr-sub').textContent = `Packing-station seconds for each one-item box, in recording order (${num(pk.boxes)} boxes, ${pk.people} people); limits from the average moving range`;
+    const box = pk.points.map(p => ({...p, out: p.seconds > pk.ucl || p.seconds < pk.lcl}));
+    const mr = box.slice(1).map((p, i) => ({seconds: Math.abs(p.seconds - box[i].seconds), person: p.person})).map(p => ({...p, out: p.seconds > pk.mr_ucl}));
+    const ymax = Math.ceil(Math.max(...box.map(p => p.seconds)) / 20) * 20, secs = v => `${Math.round(v)} s`;
+    $('pc-imr').innerHTML = controlChart(box, p => p.seconds, {W: 900, top: 26, height: 250, ymax, fmt: secs, ucl: pk.ucl, lcl: pk.lcl, center: pk.mean_seconds, usl: pk.usl_seconds, label: 'Individuals (seconds per box)'})
+      + controlChart(mr, p => p.seconds, {W: 900, top: 330, height: 80, ymax: Math.ceil(Math.max(...mr.map(p => p.seconds)) / 20) * 20, fmt: secs, ucl: pk.mr_ucl, center: pk.mr_bar, label: 'Moving range', tag: 'mr'});
+    hover($('pc-imr'), $('pc-imr-detail'), (i, dot) => {
+      const inMr = dot.dataset.c === 'mr', p = inMr ? mr[i] : box[i];
+      return inMr ? `Change from the box before: ${p.seconds.toFixed(1)} s (packer ${p.person})${p.out ? ', above the limit' : ''}`
+        : `Box ${i + 1}, packer ${p.person}: ${p.seconds.toFixed(1)} s${p.out ? ', beyond the control limits' : ''}${p.seconds > pk.usl_seconds ? `, over the ${pk.usl_seconds} s the planner allows` : ''}`;
+    });
+    const days = lp.points.map(d => ({...d, p: d.late / d.parcels, out: d.above}));
+    const pmax = Math.max(.1, Math.ceil(Math.max(...six.points.map(d => d.late / d.parcels).filter(v => v < 1)) * 10) / 10);
+    $('pc-p').innerHTML = controlChart(days, d => d.p, {W: 900, top: 26, height: 240, ymax: pmax, fmt: v => pct(v, 0), ucl: days.map(d => d.ucl), center: lp.p_bar, label: 'Late share of the day\'s parcels'});
+    hover($('pc-p'), $('pc-p-detail'), i => { const d = days[i]; return `Promised ${d.date}: ${num(d.late)} of ${num(d.parcels)} parcels late (${pct(d.p, 1)}), limit ${pct(d.ucl, 1)}${d.out ? ', a special-cause day' : ''}`; });
+    const rates = pk.ppk_at_stress_rates;
+    $('pc-takeaway').textContent = `Packing time is not in statistical control: ${pk.points_beyond_limits} of ${num(pk.boxes)} boxes fall outside the limits, and packer averages range from ${Math.min(...means).toFixed(0)} to ${Math.max(...means).toFixed(0)} seconds, so who packs is the biggest special cause. Against the ${pk.usl_seconds} s per unit of the 40 units/hour base case, ${pct(pk.share_over_usl, 0)} of boxes run over (Ppk ${pk.ppk.toFixed(2)}); even the 30 units/hour stress case only reaches Ppk ${rates['30'].toFixed(2)}. That is why the plan keeps temps on call, and why standard work and coaching for the slowest packers come before any headcount change. Late parcels are not noise either: with 6 workers, ${six.days_above_limit} of ${six.days} days hold ${pct(six.late_on_those_days / six.late, 0)} of all late parcels, ${pct(six.late_on_those_days_that_were_peaks / six.late_on_those_days, 0)} of them on peak days (at least half again the usual volume) and only ${num(six.weather_late_on_those_days)} from weather. Call in temps when the forecast shows a peak day, and investigate any day above the limit.`;
+  }
+
   // ---- inventory ----
   const POLICY_NAMES = {by_class: 'By class (A 99%, B 95%, C 90%)', by_class_lean: 'By class, lean (A 95%, B 90%, C 80%)',
     flat_95_reliable_supplier: '95%, supplier always on time', flat_95_monthly_replan: '95%, re-planned every month'};
@@ -451,6 +496,8 @@
       renderForecast();
       renderMiddleMile('affordable_6_workers');
       renderInventory();
+      renderProcessControl('affordable_6_workers');
+      $('pc-plan').addEventListener('planchange', event => renderProcessControl(event.detail));
       renderChecks();
       renderLastMile('affordable_6_workers');
       $('lm-plan').addEventListener('planchange', event => renderLastMile(event.detail));

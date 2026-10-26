@@ -386,3 +386,17 @@ main > section:not([hidden]) { animation: rise .28s ease both; }
 .run-steps strong { color: var(--ink); }
 .run-steps pre { margin: 8px 0 0; padding: 12px 14px; border-radius: 10px; background: var(--subtle); border: 1px solid var(--line); color: var(--ink); font-size: 12px; line-height: 1.6; overflow-x: auto; white-space: pre; }
 .run-steps code { font-size: 12px; background: var(--subtle); padding: 1px 5px; border-radius: 5px; }
+
+/* process control */
+.legend i.red { background: var(--red); }
+.dmaic { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.dmaic li { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: var(--subtle); }
+.dmaic b { display: block; color: var(--brand); font-size: 13px; letter-spacing: .5px; margin-bottom: 6px; }
+.dmaic span { color: var(--muted); font-size: 13px; line-height: 1.55; }
+.pc-dot { cursor: pointer; fill: var(--chart-a); outline: none; }
+.pc-dot.out { fill: var(--red); }
+.pc-dot:hover, .pc-dot:focus-visible { stroke: var(--ink); stroke-width: 2; }
+.pc-line { fill: none; stroke: var(--chart-text); stroke-width: 1; opacity: .5; }
+.pc-limit { stroke: var(--red); stroke-dasharray: 5 4; }
+.pc-center { stroke: var(--chart-ink); opacity: .6; }
+.pc-usl { stroke: var(--amber); stroke-width: 2; }

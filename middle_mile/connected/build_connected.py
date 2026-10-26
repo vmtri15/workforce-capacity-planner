@@ -202,6 +202,7 @@ def evaluate_plan(name, plan, orders, net):
     late_if_calm = [net.deliver(r, s, t, calm)[0] > p for r, s, t, p in zip(o['ready'], o['site'], o['station'], o['promise'])]
     o['late_with_truck_delays'] = [d > p for (d, _), p in zip(delayed, o['promise'])]
     o['delivered'] = [d for d, _ in delayed]  # the day the station hands the parcel to a van (last_mile/ uses it)
+    o['late_if_calm'] = late_if_calm
     truck_late = o['late_with_truck_delays'] & ~o['late_without_truck_delays']
 
     # each truck's own effect: late parcels that are on time once only that truck's delay is removed
@@ -254,11 +255,15 @@ def main():
     orders['site'] = [weighted_pick(c, shares, 'site') for c in orders['customer']]
     orders['station'] = [weighted_pick(c, stations, 'station') for c in orders['customer']]
     OUT.mkdir(exist_ok=True)
-    rows, all_trucks = [], []
+    rows, all_trucks, daily = [], [], []
     for name, plan in CONFIG['staffing_plans'].items():
         summary, trucks, detail = evaluate_plan(name, plan, orders, net)
         rows.append(summary)
         all_trucks.append(trucks)
+        weather_late = detail['late_with_truck_delays'] & ~detail['late_if_calm']
+        daily.append(detail.assign(weather_late=weather_late).groupby('promise').agg(
+            parcels=('order_id', 'size'), late=('late_with_truck_delays', 'sum'), late_from_weather=('weather_late', 'sum'))
+            .reset_index().rename(columns={'promise': 'promise_date'}).assign(plan=name))
         print(json.dumps(summary), flush=True)
     table = pd.DataFrame(rows)
     table.to_csv(OUT / 'plan_comparison.csv', index=False)
@@ -266,6 +271,7 @@ def main():
     if len(trucks):
         trucks.drop(columns=['new_delay']).sort_values(['plan', 'late_parcels_caused'], ascending=[True, False]).to_csv(
             OUT / 'at_risk_trucks.csv', index=False)
+    pd.concat(daily)[['plan', 'promise_date', 'parcels', 'late', 'late_from_weather']].to_csv(OUT / 'daily_late.csv', index=False)
     routes = orders.groupby(['site', 'station']).agg(orders=('order_id', 'size'), units=('units', 'sum')).reset_index()
     routes['km'] = [round(net.km(a, b)) for a, b in zip(routes['site'], routes['station'])]
     routes['promise_transit_days'] = [1 if k <= CONFIG['promise']['next_day_within_km'] else 2 for k in routes['km']]

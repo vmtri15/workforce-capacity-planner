@@ -63,6 +63,29 @@ A carrier is cheaper at all 6 stations: each van would carry about 20 orders a d
 .venv/bin/python last_mile/build_last_mile.py
 ```
 
+## Process control (Six Sigma)
+
+`scripts/build_process_control.py` runs two standard Six Sigma checks on the project's own data. The site's Process control page shows them, with the whole project mapped to DMAIC (Define, Measure, Analyze, Improve, Control).
+
+**Packing time, I-MR chart and capability.** 476 one-item boxes from the real OpenPack packing recordings (11 people, scenario S1, the same screen as `evaluate_openpack_timing.py`), in recording order. The planner's base case of 40 units per hour allows 90 seconds per unit.
+
+| | Value |
+| --- | ---: |
+| Average packing-station time | 79.6 s |
+| Boxes beyond the 3 sigma limits | 61 |
+| Boxes over 90 s | 22% |
+| Cpk at 90 s (short-term spread) | 0.39 |
+| Ppk at 90 s (all boxes) | 0.21 |
+| Ppk at 120 s (the 30 units/hour stress case) | 0.81 |
+
+Packing time is not in statistical control. Packer averages run from 55 to 98 seconds, so who packs is the biggest special cause, and Ppk is the fair capability number. Even the slowest stress case falls short of the usual 1.33 target. This supports keeping temps on call, and putting standard work and coaching for the slowest packers ahead of any headcount change.
+
+**Late parcels, p-chart.** The daily share of parcels delivered after their promise date, from the middle-mile replay (`middle_mile/connected/results/daily_late.csv`). With 6 workers, 16 of 224 days are above the upper limit, and they hold 928 of the 1,123 late parcels (83%). 87% of those fall on peak days (at least half again the usual volume), and only 21 come from weather. With 10 workers, 9 days hold 131 of 138. Late parcels are a peak-day signal, not random noise: call in temps when the forecast shows a peak.
+
+```bash
+.venv/bin/python scripts/build_process_control.py
+```
+
 ## Checked against real data
 
 Five free public APIs test or replace the model's assumptions. Each needs a free key in `.env` (`CENSUS_API_KEY`, `BLS_API_KEY`, `NOAA_TOKEN`, `ORS_API_KEY`, `FRED_API_KEY`); the downloaded data stays in `data/raw/`, which git ignores.
@@ -158,6 +181,7 @@ On Windows, use `.venv\Scripts\python` wherever these steps say `.venv/bin/pytho
 .venv/bin/python middle_mile/connected/build_connected.py
 .venv/bin/python inventory/build_inventory.py
 .venv/bin/python last_mile/build_last_mile.py
+.venv/bin/python scripts/build_process_control.py
 PYTHONPATH=scripts .venv/bin/python scripts/real_cost_check.py
 .venv/bin/python scripts/build_decision_answer.py
 .venv/bin/python scripts/build_static_dashboard.py
