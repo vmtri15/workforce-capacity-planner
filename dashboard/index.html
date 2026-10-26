@@ -157,7 +157,7 @@ python3 -m venv .venv
       <ol class="dmaic">
         <li><b>Define</b><span>How many workers do three Midwest sites need to ship 95% of units on time, at the lowest cost?</span></li>
         <li><b>Measure</b><span>Replayed 32,634 real 2023 orders through 30 staffing plans and 36 stress tests.</span></li>
-        <li><b>Analyze</b><span>Found flexible capacity matters more than forecast accuracy (a perfect forecast saves about $260 per 4 weeks), and 82% of truck-caused delays sit on one lane.</span></li>
+        <li><b>Analyze</b><span>Found flexible capacity matters more than forecast accuracy (a perfect forecast saves about $260 per 4 weeks), 82% of truck-caused delays sit on one lane, and ANOVA shows who packs changes packing time.</span></li>
         <li><b>Improve</b><span>6 workers with overtime and temps on call: $41K cheaper every 4 weeks than 10 workers, 99.7% on time.</span></li>
         <li><b>Control</b><span>The two charts below: watch packing time and the daily late-parcel rate, and act only on signals outside the limits.</span></li>
       </ol>
@@ -167,6 +167,40 @@ python3 -m venv .venv
         <div class="legend"><span><i class="teal"></i>Box within limits</span><span><i class="red"></i>Beyond the 3 sigma limits</span><span><i class="amber"></i>Planner allows 90 s</span></div></div>
       <div class="map-wrap"><svg id="pc-imr" viewBox="0 0 900 430" role="img" aria-label="Individuals and moving range chart of packing seconds per one-item box"></svg></div>
       <p id="pc-imr-detail" class="chart-detail">Hover or tap a point to read it.</p>
+    </section>
+    <section class="analysis-panel wide">
+      <div class="section-heading"><div><h2>Does who packs matter? (randomized block ANOVA)</h2><p id="pc-anova-sub"></p></div></div>
+      <div class="pc-hyp"><p><b>H<sub>0</sub>:</b> every packer has the same mean packing time, once box size is accounted for</p><p><b>H<sub>1</sub>:</b> at least one packer's mean is different <span class="muted">(α = 0.05)</span></p></div>
+      <div class="pc-two">
+        <div class="table-wrap pc-out"><p class="pc-out-title">General Linear Model: seconds versus Packer, Box size</p>
+          <table><thead><tr><th>Source</th><th>DF</th><th>Adj SS</th><th>Adj MS</th><th>F-Value</th><th>P-Value</th></tr></thead><tbody id="pc-anova"></tbody></table>
+          <table class="pc-summary"><thead><tr><th>S</th><th>R-sq</th><th>R-sq(adj)</th></tr></thead><tbody id="pc-model"></tbody></table></div>
+        <div><svg id="pc-npp" viewBox="0 0 440 250" role="img" aria-label="Normal probability plot of the standardized residuals"></svg>
+          <svg id="pc-hist" viewBox="0 0 440 210" role="img" aria-label="Histogram of the standardized residuals"></svg></div>
+      </div>
+      <p id="pc-anova-note" class="pc-note"></p>
+    </section>
+    <section class="analysis-panel wide">
+      <div class="section-heading"><div><h2>Which packers are slower? (Tukey comparisons)</h2><p>Each packer's adjusted mean seconds per box (averaged over the five box sizes), with 95% Tukey grouping. Packers that do not share a letter are significantly different.</p></div>
+        <div class="legend"><span><i class="teal"></i>Adjusted mean</span><span><i class="ink"></i>Median packer</span></div></div>
+      <div class="pc-two">
+        <div class="table-wrap"><table><thead><tr><th>Packer</th><th>Boxes</th><th>Adjusted mean</th><th>Grouping</th></tr></thead><tbody id="pc-tukey"></tbody></table></div>
+        <svg id="pc-means" viewBox="0 0 440 330" role="img" aria-label="Adjusted mean packing seconds by packer with Tukey letters"></svg>
+      </div>
+    </section>
+    <section class="analysis-panel wide">
+      <div class="section-heading"><div><h2>Coaching decision: who is worth coaching?</h2><p>Pick packers to coach with standard work. A coached packer closes part of the gap to the median packer's pace, and the saving counts only when Tukey proved that packer is slower than the median packer.</p></div>
+        <button type="button" class="pc-reset" id="pc-reset">Reset</button></div>
+      <div class="pc-controls">
+        <label>Share of the gap coaching closes <b id="pc-close-out"></b><input type="range" id="pc-close" min="10" max="100" step="5" value="50"></label>
+        <label>Coaching cost per packer <span class="muted">(assumed)</span><input type="number" id="pc-cost" min="0" step="50" value="400"></label>
+      </div>
+      <div id="pc-picks" class="pc-picks"></div>
+      <div id="pc-sim" class="metrics"></div>
+      <p id="pc-sim-msg" class="pc-note"></p>
+      <h3 class="pc-h3">Every packer ranked by net value</h3>
+      <div class="table-wrap"><table><thead><tr><th>Rank</th><th>Packer</th><th>Gap to median</th><th>Proven slower?</th><th>Hours saved</th><th>Labor saved</th><th>Net after coaching cost</th></tr></thead><tbody id="pc-rank"></tbody></table></div>
+      <p id="pc-sim-foot" class="footnote"></p>
     </section>
     <section class="analysis-panel wide">
       <div class="section-heading"><div><h2>Are late parcels random noise? (p-chart)</h2><p>Share of each day's parcels delivered after the promise, by promise date, with 3 sigma limits</p></div>

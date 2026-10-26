@@ -65,7 +65,7 @@ A carrier is cheaper at all 6 stations: each van would carry about 20 orders a d
 
 ## Process control (Six Sigma)
 
-`scripts/build_process_control.py` runs two standard Six Sigma checks on the project's own data. The site's Process control page shows them, with the whole project mapped to DMAIC (Define, Measure, Analyze, Improve, Control).
+`scripts/build_process_control.py` runs standard Six Sigma and design-of-experiments checks on the project's own data. The site's Process control page shows them, with the whole project mapped to DMAIC (Define, Measure, Analyze, Improve, Control).
 
 **Packing time, I-MR chart and capability.** 476 one-item boxes from the real OpenPack packing recordings (11 people, scenario S1, the same screen as `evaluate_openpack_timing.py`), in recording order. The planner's base case of 40 units per hour allows 90 seconds per unit.
 
@@ -79,6 +79,10 @@ A carrier is cheaper at all 6 stations: each van would carry about 20 orders a d
 | Ppk at 120 s (the 30 units/hour stress case) | 0.81 |
 
 Packing time is not in statistical control. Packer averages run from 55 to 98 seconds, so who packs is the biggest special cause, and Ppk is the fair capability number. Even the slowest stress case falls short of the usual 1.33 target. This supports keeping temps on call, and putting standard work and coaching for the slowest packers ahead of any headcount change.
+
+**Who packs, randomized block ANOVA and Tukey.** All 791 S1 boxes with 1 to 5 items: packer is the factor (11 packers), box size is the block. Packer: F = 65.6, P < 0.001, after removing box size (F = 230.5); R-sq 66.3%. Tukey splits the packers into six groups, from U0110 (78 s adjusted mean per box) to U0104 (128 s). Two checks are reported rather than hidden: lack-of-fit is significant (P < 0.001), so the packer gap changes with box size, and the residuals are right-skewed; a fit on log seconds gives the same answer (F = 91.0).
+
+**Coaching simulator.** The site lets you pick packers to coach toward the median packer's pace. A saving counts only when Tukey proved the packer slower than the median packer, the same rule as counting only significant taste gains in a DOE decision. Packing times and Tukey results are real; the share of the gap coaching closes (default 50%), the coaching cost ($400 per packer) and each packer handling one worker's share of the 2023 orders (5,439 boxes) are assumed. At the defaults coaching pays for no one in labor alone; coaching U0104, the slowest proven packer, pays back once it closes 57% of the gap.
 
 **Late parcels, p-chart.** The daily share of parcels delivered after their promise date, from the middle-mile replay (`middle_mile/connected/results/daily_late.csv`). With 6 workers, 16 of 224 days are above the upper limit, and they hold 928 of the 1,123 late parcels (83%). 87% of those fall on peak days (at least half again the usual volume), and only 21 come from weather. With 10 workers, 9 days hold 131 of 138. Late parcels are a peak-day signal, not random noise: call in temps when the forecast shows a peak.
 

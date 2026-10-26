@@ -385,6 +385,104 @@
     $('pc-takeaway').textContent = `Packing time is not in statistical control: ${pk.points_beyond_limits} of ${num(pk.boxes)} boxes fall outside the limits, and packer averages range from ${Math.min(...means).toFixed(0)} to ${Math.max(...means).toFixed(0)} seconds, so who packs is the biggest special cause. Against the ${pk.usl_seconds} s per unit of the 40 units/hour base case, ${pct(pk.share_over_usl, 0)} of boxes run over (Ppk ${pk.ppk.toFixed(2)}); even the 30 units/hour stress case only reaches Ppk ${rates['30'].toFixed(2)}. That is why the plan keeps temps on call, and why standard work and coaching for the slowest packers come before any headcount change. Late parcels are not noise either: with 6 workers, ${six.days_above_limit} of ${six.days} days hold ${pct(six.late_on_those_days / six.late, 0)} of all late parcels, ${pct(six.late_on_those_days_that_were_peaks / six.late_on_those_days, 0)} of them on peak days (at least half again the usual volume) and only ${num(six.weather_late_on_those_days)} from weather. Call in temps when the forecast shows a peak day, and investigate any day above the limit.`;
   }
 
+
+  // ---- who packs: block ANOVA, Tukey and the coaching simulator ----
+  const pval = p => p < 0.001 ? '< 0.001' : p.toFixed(3);
+  const signedMoney = v => `${v < 0 ? '−' : ''}${money(Math.abs(v))}`;
+  function residualPlots(res) {
+    const n = res.length, W = 440, L = 40, R = 12;
+    const q = i => normalQuantile((i + 1 - 0.3) / (n + 0.4));
+    const lim = Math.ceil(Math.max(...res.map(Math.abs), 3));
+    const X = v => L + (v + lim) / (2 * lim) * (W - L - R), Y = z => 30 + (3.2 - z) / 6.4 * 190;
+    const grid = [-3, -2, -1, 0, 1, 2, 3].map(z => `<line class="inv-axis" x1="${L}" x2="${W - R}" y1="${Y(z)}" y2="${Y(z)}"/><text class="inv-text" x="${L - 6}" y="${Y(z) + 4}" text-anchor="end">${z}</text>`).join('');
+    const xt = [-lim, 0, lim].map(v => `<text class="inv-text" x="${X(v)}" y="240" text-anchor="middle">${v}</text>`).join('');
+    $('pc-npp').innerHTML = `<text class="inv-label" x="${L}" y="16">Normal probability plot (standardized residuals)</text>${grid}${xt}<line class="pc-usl" x1="${X(-3.2)}" y1="${Y(-3.2)}" x2="${X(3.2)}" y2="${Y(3.2)}"/>${res.map((v, i) => `<circle class="pc-dot" r="2" cx="${X(v)}" cy="${Y(q(i))}"/>`).join('')}`;
+    const bins = []; for (let a = -lim; a < lim; a += 0.5) bins.push({a, c: res.filter(v => v >= a && v < a + 0.5).length});
+    const most = Math.max(...bins.map(b => b.c)), HX = v => L + (v + lim) / (2 * lim) * (W - L - R), HY = c => 180 - c / most * 150;
+    $('pc-hist').innerHTML = `<text class="inv-label" x="${L}" y="16">Histogram</text><line class="inv-axis" x1="${L}" x2="${W - R}" y1="180" y2="180"/>${bins.map(b => b.c ? `<rect class="pc-bar" x="${HX(b.a) + 1}" y="${HY(b.c)}" width="${HX(b.a + 0.5) - HX(b.a) - 2}" height="${180 - HY(b.c)}"/>` : '').join('')}${[-lim, 0, lim].map(v => `<text class="inv-text" x="${HX(v)}" y="200" text-anchor="middle">${v}</text>`).join('')}`;
+  }
+
+  function normalQuantile(p) {  // Acklam's approximation, good to about 1e-9
+    const a = [-39.69683028665376, 220.9460984245205, -275.9285104469687, 138.357751867269, -30.66479806614716, 2.506628277459239],
+      b = [-54.47609879822406, 161.5858368580409, -155.6989798598866, 66.80131188771972, -13.28068155288572],
+      c = [-0.007784894002430293, -0.3223964580411365, -2.400758277161838, -2.549732539343734, 4.374664141464968, 2.938163982698783],
+      d = [0.007784695709041462, 0.3224671290700398, 2.445134137142996, 3.754408661907416];
+    const tail = q => (((((c[0] * q + c[1]) * q + c[2]) * q + c[3]) * q + c[4]) * q + c[5]) / ((((d[0] * q + d[1]) * q + d[2]) * q + d[3]) * q + 1);
+    if (p < 0.02425) return tail(Math.sqrt(-2 * Math.log(p)));
+    if (p > 1 - 0.02425) return -tail(Math.sqrt(-2 * Math.log(1 - p)));
+    const q = p - 0.5, r = q * q;
+    return (((((a[0] * r + a[1]) * r + a[2]) * r + a[3]) * r + a[4]) * r + a[5]) * q / (((((b[0] * r + b[1]) * r + b[2]) * r + b[3]) * r + b[4]) * r + 1);
+  }
+
+  function renderPackerStudy() {
+    const ps = story.process_control.packer_study, A = ps.anova;
+    $('pc-anova-sub').textContent = `${num(ps.boxes)} real boxes with 1 to 5 items from ${ps.packers} packers. Packer is the factor; box size is the block, because bigger boxes take longer for everyone.`;
+    const row = (name, r, cls = '') => `<tr class="${cls}"><td>${name}</td><td>${r.df}</td><td>${num(r.adj_ss)}</td><td>${r.adj_ms !== undefined ? num(r.adj_ms) : ''}</td><td>${r.f !== undefined ? r.f.toFixed(2) : ''}</td><td>${r.p !== undefined ? pval(r.p) : ''}</td></tr>`;
+    $('pc-anova').innerHTML = row('Packer', A.packer) + row('Box size (block)', A.box_size) + row('Error', A.error) + row('Lack-of-fit', A.lack_of_fit, 'indent') + row('Pure error', A.pure_error, 'indent') + row('Total', A.total);
+    $('pc-model').innerHTML = `<tr><td>${ps.s.toFixed(2)}</td><td>${pct(ps.r_sq, 1)}</td><td>${pct(ps.r_sq_adj, 1)}</td></tr>`;
+    residualPlots(ps.residuals);
+    $('pc-anova-note').innerHTML = `<b>Reject H<sub>0</sub>.</b> Packer: F = ${A.packer.f.toFixed(1)}, P ${pval(A.packer.p)} &lt; 0.05, so who packs changes packing time even after removing the effect of box size (F = ${A.box_size.f.toFixed(1)}). Two honest checks: lack-of-fit is significant (P ${pval(A.lack_of_fit.p)}), so the gap between packers is not the same for every box size, and the residuals are right-skewed (skew ${ps.residual_skew}). Refitting on log seconds gives the same answer (F = ${ps.log_check.packer_f.toFixed(1)}, P ${pval(ps.log_check.packer_p)}).`;
+    const median = ps.coaching.median_packer, means = ps.means;
+    $('pc-tukey').innerHTML = means.map(m => `<tr class="${m.packer === median ? 'highlight' : ''}"><td>${m.packer}${m.packer === median ? ' <i class="pill">median</i>' : ''}</td><td>${m.boxes}</td><td>${m.adjusted_mean.toFixed(1)} s</td><td><b style="letter-spacing:4px">${m.group}</b></td></tr>`).join('');
+    const W = 440, L = 58, R = 40, rowH = 26, top = 20, hi = Math.ceil(Math.max(...means.map(m => m.adjusted_mean)) / 20) * 20, lo = Math.floor(Math.min(...means.map(m => m.adjusted_mean)) / 20) * 20 - 20;
+    const X = v => L + (v - lo) / (hi - lo) * (W - L - R), medianMean = means.find(m => m.packer === median).adjusted_mean;
+    const ticks = []; for (let v = lo; v <= hi; v += 20) ticks.push(`<line class="inv-axis" x1="${X(v)}" x2="${X(v)}" y1="${top}" y2="${top + means.length * rowH}"/><text class="inv-text" x="${X(v)}" y="${top + means.length * rowH + 18}" text-anchor="middle">${v} s</text>`);
+    $('pc-means').innerHTML = ticks.join('') + `<line class="pc-center" x1="${X(medianMean)}" x2="${X(medianMean)}" y1="${top - 6}" y2="${top + means.length * rowH}"/>` + means.map((m, i) => {
+      const y = top + i * rowH + rowH / 2;
+      return `<text class="inv-text" x="${L - 8}" y="${y + 4}" text-anchor="end">${m.packer}</text><line class="pc-line" x1="${X(lo)}" x2="${X(m.adjusted_mean)}" y1="${y}" y2="${y}"/><circle class="pc-dot" cx="${X(m.adjusted_mean)}" cy="${y}" r="5"/><text class="inv-label" x="${X(m.adjusted_mean) + 10}" y="${y + 4}">${m.group}</text>`;
+    }).join('');
+    renderCoaching(true);
+  }
+
+  let coached = new Set();
+  function coachingRows() {
+    const ps = story.process_control.packer_study, c = ps.coaching, close = +$('pc-close').value / 100, cost = Math.max(0, +$('pc-cost').value || 0);
+    const median = ps.means.find(m => m.packer === c.median_packer);
+    const pairP = (a, b) => (ps.pairs.find(p => (p.a === a && p.b === b) || (p.a === b && p.b === a)) || {p_adj: 1}).p_adj;
+    return ps.means.filter(m => m.packer !== c.median_packer).map(m => {
+      const gap = m.adjusted_mean - median.adjusted_mean, proven = gap > 0 && pairP(m.packer, c.median_packer) < 0.05;
+      const seconds = proven ? gap * close : 0, hours = seconds * c.boxes_per_packer / 3600, saved = hours * c.hourly_cost;
+      return {packer: m.packer, gap, proven, seconds, hours, saved, net: saved - cost, cost, p: pairP(m.packer, c.median_packer)};
+    });
+  }
+
+  function renderCoaching(first) {
+    const ps = story.process_control.packer_study, pk = story.process_control.packing, c = ps.coaching, rows = coachingRows();
+    $('pc-close-out').textContent = `${$('pc-close').value}%`;
+    if (first) {
+      $('pc-picks').innerHTML = rows.map(r => `<button type="button" aria-pressed="false" data-packer="${r.packer}">${r.packer}<small>${r.gap >= 0 ? '+' : '−'}${Math.abs(r.gap).toFixed(1)} s vs median</small></button>`).join('');
+      $('pc-picks').querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
+        coached.has(b.dataset.packer) ? coached.delete(b.dataset.packer) : coached.add(b.dataset.packer);
+        renderCoaching();
+      }));
+      ['input', 'change'].forEach(type => { $('pc-close').addEventListener(type, () => renderCoaching()); $('pc-cost').addEventListener(type, () => renderCoaching()); });
+      $('pc-reset').addEventListener('click', () => { coached = new Set(); $('pc-close').value = 50; $('pc-cost').value = 400; renderCoaching(); });
+    }
+    $('pc-picks').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(coached.has(b.dataset.packer))));
+    const picked = rows.filter(r => coached.has(r.packer)), sum = k => picked.reduce((t, r) => t + r[k], 0);
+    // capability after coaching: shift each coached packer's one-item boxes by the seconds that coaching saves
+    const cut = Object.fromEntries(picked.map(r => [r.packer, r.seconds]));
+    const after = pk.points.map(p => p.seconds - (cut[p.person] || 0)), mean = after.reduce((t, v) => t + v, 0) / after.length;
+    const sd = Math.sqrt(after.reduce((t, v) => t + (v - mean) ** 2, 0) / (after.length - 1)), ppk = (pk.usl_seconds - mean) / (3 * sd);
+    const over = after.filter(v => v > pk.usl_seconds).length / after.length;
+    $('pc-sim').innerHTML = [
+      metric('Packers coached', `${picked.length}`, `${picked.filter(r => r.proven).length} proven slower than the median packer`),
+      metric('Labor saved', money(sum('saved')), `${num(Math.round(sum('hours')))} packing hours on ${num(c.boxes_per_packer)} boxes each`, `Each packer is assumed to pack one worker's share of the 2023 orders (${num(c.orders_2023)} ÷ ${c.base_workers} workers), at the planner's $${c.hourly_cost} an hour.`),
+      metric('Net after coaching cost', `<span class="${sum('net') < 0 ? 'pc-bad' : sum('net') > 0 ? 'pc-good' : ''}">${signedMoney(sum('net'))}</span>`, `${money(sum('cost'))} to coach`),
+      metric('Packing Ppk after', ppk.toFixed(2), `Was ${pk.ppk.toFixed(2)}; boxes over ${pk.usl_seconds} s: ${pct(pk.share_over_usl, 0)} → ${pct(over, 0)}`, 'Recomputed on the one-item boxes, with each coached packer\'s times lowered by the seconds coaching saves.'),
+    ].join('');
+    const unproven = picked.filter(r => !r.proven), msg = $('pc-sim-msg');
+    if (!picked.length) { msg.className = 'pc-note'; msg.textContent = 'Pick one or more packers to run a coaching plan. The ranking below shows what each one is worth on its own.'; }
+    else if (sum('net') > 0) { msg.className = 'pc-note good'; msg.innerHTML = `<b>Value created:</b> this plan nets ${money(sum('net'))} on the 2023 volume.${unproven.length ? ` ${unproven.map(r => r.packer).join(', ')} ${unproven.length > 1 ? 'are' : 'is'} not proven slower than the median packer, so ${unproven.length > 1 ? 'they add' : 'it adds'} cost but no counted saving.` : ''}`; }
+    else { msg.className = 'pc-note bad'; msg.innerHTML = `<b>Value destroyed:</b> this plan loses ${money(-sum('net'))}.${unproven.length ? ` ${unproven.map(r => r.packer).join(', ')}: Tukey did not prove ${unproven.length > 1 ? 'them' : 'this packer'} slower than the median, so you pay for coaching without a reliable saving.` : ' The proven gap is too small to pay back the coaching cost at this share of the gap closed.'}`; }
+    const ranked = rows.slice().sort((a, b) => b.net - a.net);
+    $('pc-rank').innerHTML = ranked.map((r, i) => `<tr class="${coached.has(r.packer) ? 'pc-picked' : ''}"><td>${i + 1}</td><td>${r.packer}</td><td>${r.gap >= 0 ? '+' : '−'}${Math.abs(r.gap).toFixed(1)} s</td><td>${r.proven ? `<span class="pc-good">Yes</span> (P ${pval(r.p)})` : `<span class="pc-bad">No</span> (P ${pval(r.p)})`}</td><td>${r.hours.toFixed(1)}</td><td>${money(r.saved)}</td><td class="${r.net < 0 ? 'pc-bad' : 'pc-good'}">${signedMoney(r.net)}</td></tr>`).join('');
+    const close = +$('pc-close').value / 100, cost = Math.max(0, +$('pc-cost').value || 0);
+    const pays = rows.filter(r => r.net > 0).map(r => r.packer), top = rows.filter(r => r.proven).sort((a, b) => b.gap - a.gap)[0];
+    const breakEven = top ? cost / (top.gap * c.boxes_per_packer / 3600 * c.hourly_cost) : null;
+    $('pc-sim-foot').textContent = `Real: packing times, Tukey results and the 2023 order count. Assumed: coaching closes ${pct(close, 0)} of the gap, costs ${money(cost)} per packer, and each packer packs one worker's share of the orders. ${pays.length ? `At these settings coaching pays for ${pays.join(', ')}.` : 'At these settings coaching pays for no one in labor alone; its value is the capability gain, fewer boxes over the planner\'s time.'}${top ? ` Coaching ${top.packer}, the slowest proven packer, pays back once it closes ${breakEven <= 1 ? pct(breakEven, 0) : 'more than 100%'} of the gap.` : ''}`;
+  }
+
   // ---- inventory ----
   const POLICY_NAMES = {by_class: 'By class (A 99%, B 95%, C 90%)', by_class_lean: 'By class, lean (A 95%, B 90%, C 80%)',
     flat_95_reliable_supplier: '95%, supplier always on time', flat_95_monthly_replan: '95%, re-planned every month'};
@@ -497,6 +595,7 @@
       renderMiddleMile('affordable_6_workers');
       renderInventory();
       renderProcessControl('affordable_6_workers');
+      renderPackerStudy();
       $('pc-plan').addEventListener('planchange', event => renderProcessControl(event.detail));
       renderChecks();
       renderLastMile('affordable_6_workers');
